@@ -1,6 +1,6 @@
 ---
-name: contenido-viral
-description: Applies the "false belief" hook formula when creating viral content for Imaquinaria's social networks — pieces, campaigns, or weak hooks.
+name: viralize
+description: Applies the "false belief → hook → truth" formula to create or fix viral content hooks for Imaquinaria's social channels — new pieces, campaigns, or weak-performing hooks.
 ---
 
 # Viral Content Formula
@@ -38,7 +38,7 @@ Reel structure: hook (0-3 s) → personalization process → reaction on receivi
 
 ### 4. Verify the promise (legitbait gate)
 
-The hook opens the curiosity; the product closes it. Every claim in the hook must be fulfilled by what is actually delivered or shown — a broken promise produces bad reviews and returns.
+The hook opens the curiosity; the product closes it. **Legitbait** is a hook that faithfully represents what follows; its opposite, clicktrap, promises what isn't delivered. Every claim in the hook must be fulfilled by what is actually delivered or shown — a broken promise produces bad reviews and returns.
 
 **Done when:** every promise in the hook is backed by the real product/content.
 
@@ -72,7 +72,7 @@ The truth is shown, not just said. Each completed sentence is a piece ready to p
 
 ### Hook calibration
 
-- **Legitbait vs clicktrap**: legitbait is a striking hook that faithfully represents what follows; clicktrap promises what isn't delivered. The strongest hook lives right at the edge between honest and exaggerated — get close to the edge without crossing it.
+- The strongest hook lives right at the edge between honest and exaggerated — get close to the legitbait/clicktrap edge without crossing it.
 - Technical specificity alienates: "A5 stationery with hand-sewn endpapers" only speaks to insiders; "the gift people actually use every day" speaks to everyone. Swap the technical term for the benefit or the question behind it.
 - Clarity can beat loudness: a simple, direct title can outperform a flashy one. If the hook sounds vague, try the direct version before the more "salesy" one.
 

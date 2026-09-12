@@ -1,16 +1,12 @@
 ---
 name: imaquinaria-brand
 description: >
-  Applies Imaquinaria's official brand identity to any visual artifact — HTML
-  components, SVG graphics, email templates, presentations, posters, physical
-  print materials, social media assets, or any other surface. Use this skill
-  whenever the output involves Imaquinaria's visual identity, even partially —
-  colors, logo placement, typography, UI components, stamp cards, promotional
-  materials, loyalty program visuals, or any branded touchpoint. Trigger on
-  requests like "make it look like Imaquinaria", "apply the brand", "design a
-  poster for the store", "create an email template", "build a loyalty card",
-  "design a stamp card", "create a social media post", or any task that involves
-  producing something that will represent the Imaquinaria brand visually.
+  Applies Imaquinaria's brand identity — colors, typography, logo, UI
+  components — to any artifact representing the brand: web components, HTML
+  email, print/presentation materials, or social media assets. Trigger
+  whenever the output touches Imaquinaria's visual identity, even partially:
+  logos, loyalty-program visuals (stamp cards, level badges, Kamon tier),
+  promotional materials, or any branded touchpoint.
 ---
 
 # Imaquinaria Brand Guidelines
@@ -237,7 +233,6 @@ Cada nivel usa su propio grupo de tokens `--level-{n}-bg/border/text` — nunca 
 - **Nombre en Imaquinaria:** Kamon
 - **Precio:** $2.990 CLP/mes
 - **Tokens de badge:** `--color-premium-badge-bg/border/text`
-- **Regla:** El púrpura es EXCLUSIVO del Kamon y la barra XP. Nunca usarlo para otras funciones.
 
 ---
 
@@ -262,15 +257,3 @@ Para instrucciones detalladas según el tipo de entregable, lee el archivo corre
 | Material físico / impresión | `references/print.md` |
 | Redes sociales / assets digitales | `references/social.md` |
 
----
-
-## 10. Lo que NUNCA se hace
-
-- Usar `#DC143C` — ese es el crimson CSS genérico, no el rojo de Imaquinaria.
-- Hardcodear colores en componentes web — siempre `var(--color-*)`.
-- Usar Noto Serif JP en cuerpo de texto.
-- Usar el púrpura como color de acción.
-- Recrear el wordmark "IMAQUINARIA" tipográficamente — siempre usar el archivo de assets.
-- Distorsionar o recolorear el isotipo del dragón.
-- Diseñar solo para modo claro.
-- Poner rojo y púrpura en la misma jerarquía visual.
