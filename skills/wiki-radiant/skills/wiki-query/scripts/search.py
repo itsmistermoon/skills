@@ -24,7 +24,7 @@ def _resolve_embeddings_dir() -> Path:
 
 
 sys.path.insert(0, str(_resolve_embeddings_dir()))
-import embeddings as emb
+import embeddings as emb  # noqa: E402
 
 DEFAULT_TOP_K = 5
 DEFAULT_THRESHOLD = 0.5

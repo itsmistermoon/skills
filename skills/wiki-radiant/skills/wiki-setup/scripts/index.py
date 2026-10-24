@@ -5,7 +5,6 @@ Usage: python {vault}/.hot/db/index.py [vault_path]
 """
 import hashlib
 import json
-import os
 import re
 import sqlite3
 import sys
@@ -24,7 +23,7 @@ def _resolve_embeddings_dir() -> Path:
 
 
 sys.path.insert(0, str(_resolve_embeddings_dir()))
-import embeddings as emb
+import embeddings as emb  # noqa: E402
 
 CHUNK_WORD_LIMIT = 500
 CHUNK_OVERLAP_WORDS = 100
@@ -207,8 +206,6 @@ def calibrate(conn: sqlite3.Connection, vault: Path, config_path: Path) -> None:
     Re-embeds text directly to avoid sqlite-vec blob format issues.
     Sets threshold at p75 of dissimilar distances, saves to .hot/db/config.json.
     """
-    import random
-
     rows = conn.execute("""
         SELECT path, content FROM documents ORDER BY RANDOM() LIMIT 100
     """).fetchall()
