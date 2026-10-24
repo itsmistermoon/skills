@@ -15,9 +15,9 @@ Setup for Radiant. Run from inside a vault directory (one containing `.git/`, an
 
 Scripts live in `scripts/` inside this skill's directory (`<skill-dir>/scripts/`, e.g. `~/.agents/skills/wiki-setup/scripts/` or `~/.claude/skills/wiki-setup/scripts/` when installed globally, or `./skills/wiki-setup/scripts/` in this repo). When running from a vault, resolve `<skill-dir>` to locate co-located scripts.
 
-- **`scripts/index.py`**: Builds/refreshes `.hot/db/vault.db` when semantic search is enabled (step 5); also copied to `~/.radiant/bin/` for the post-commit reindex hook (step 5a)
+- **`scripts/index.py`**: Builds/refreshes `.hot/db/vault.db` when semantic search is enabled (step 5); also copied to `~/.config/radiant/bin/` for the post-commit reindex hook (step 5a)
 - **`scripts/embeddings.py`**: Shared embedding backend, imported by `index.py`; not invoked directly
-- **`scripts/reindex-post-commit.sh`**: Copied to `~/.radiant/bin/hooks/` and wired into `{vault}/.git/hooks/post-commit` (step 5a)
+- **`scripts/reindex-post-commit.sh`**: Copied to `~/.config/radiant/bin/hooks/` and wired into `{vault}/.git/hooks/post-commit` (step 5a)
 - **`scripts/tags-audit.py`**: Runs a tags audit on a vault (maintenance menu option 10); optionally writes a dated snapshot under `meta/`
 
 ## Sub-tasks
@@ -42,7 +42,7 @@ Always end with the relevant subset of ## Output format.
    - If `AGENTS.md` exists but doesn't tell agents to read `.hot/HANDOFF.md` at session start (no `<!-- radiant:session-start -->` marker and no hand-written equivalent), offer to append the minimal Radiant block per the "Existing AGENTS.md without the Radiant block" section of `references/NEW-VAULT-SCAFFOLD.md`: append-only, never rewrite.
    - Derive vault name from `basename` of CWD (e.g., `/Users/jp/second-brain` → `second-brain`).
 
-2. **Read existing config**: from `~/.radiant/config.yml`, if it exists.
+2. **Read existing config**: from `~/.config/radiant/config.yml`, if it exists.
    - Check if the current vault path is already registered.
    - **If not registered** → vault is new. Proceed through steps 3–6 in full, then ## Output format.
    - **If already registered** → vault exists. Skip steps 3–6. Instead, show the menu in `references/MAINTENANCE-MODE.md` and execute only what the user selects.
@@ -63,7 +63,7 @@ Always end with the relevant subset of ## Output format.
 
    Use the chosen code (ISO 639-1, e.g. `en`, `es`, `pt`) in step 3a and the final confirmation (## Output format) below.
 
-3a. **Write config**: add the vault entry in `~/.radiant/config.yml`:
+3a. **Write config**: add the vault entry in `~/.config/radiant/config.yml`:
 
    ```yaml
    vaults:
@@ -73,14 +73,14 @@ Always end with the relevant subset of ## Output format.
      # ... other registered vaults preserved as-is
    default: {name}   # set as default only if this is the first vault, or if it was already default
    ```
-   - Create `~/.radiant/` if it doesn't exist.
+   - Create `~/.config/radiant/` if it doesn't exist.
    - Preserve all existing vault entries and unrelated top-level keys, including `upstream:` and `upstream_ref:`. Merge the new vault entry into the full config rather than reconstructing it from a subset of fields.
    - If this is the first vault registered, set it as `default`. If a `default` already exists, leave it unchanged.
 
-3b. **Sync infrastructure from upstream**: pull infrastructure files from the upstream repo: vault templates into the current vault, and shared skill references into `~/.radiant/references/` (global, once per machine). See `references/UPSTREAM-SYNC.md` for resolution, sync scope, exclusions, and rate limits.
+3b. **Sync infrastructure from upstream**: pull infrastructure files from the upstream repo: vault templates into the current vault, and shared skill references into `~/.config/radiant/references/` (global, once per machine). See `references/UPSTREAM-SYNC.md` for resolution, sync scope, exclusions, and rate limits.
 
    - **Vault templates**: if this is a new vault (scaffolded in step 1), proceed without asking (templates are part of the scaffolding the user already confirmed); if existing, ask before updating, per UPSTREAM-SYNC.md step 4.
-   - **Global shared references** (`~/.radiant/references/`): always ask before writing, new vault or not. Confirming local vault scaffolding is not consent to write machine-global files that affect every other vault. See UPSTREAM-SYNC.md step 4.
+   - **Global shared references** (`~/.config/radiant/references/`): always ask before writing, new vault or not. Confirming local vault scaffolding is not consent to write machine-global files that affect every other vault. See UPSTREAM-SYNC.md step 4.
 
 4. **Verify global skills are installed**: check each of the 7 skills (`hot-handoff`, `wiki-setup`, `wiki-query`, `wiki-ingest`, `wiki-imprint`, `wiki-lint`, `hot-triage`) individually for presence under `~/.agents/skills/`: do not assume presence just because this skill is running.
    - **All present** → report which 7 skills are present and move on.
@@ -90,7 +90,7 @@ Always end with the relevant subset of ## Output format.
      > npx skills add itsmistermoon/radiant --all -g -y
      > ```
 
-5. **Offer semantic search**: check dependencies *before* asking, so the offer itself is tailored to what's actually available. Run the detection procedure in `references/EMBEDDING-SETUP.md`, then ask using the tailored wording it returns (ready-to-go confirm, one-step-away confirm, or the full backend menu): never ask a generic "enable semantic search?" without having checked first. If the user accepts, install anything needed and run `index.py` (e.g. `python3 -B ~/.agents/skills/wiki-setup/scripts/index.py {vault}` or `python3 -B ~/.radiant/bin/index.py {vault}`) with `{vault}` as its argument; report chunks indexed. If declined or skipped, note in the final summary that semantic search is not active and can be enabled later via `/wiki-setup` (maintenance menu, option 5). Re-run this same detection procedure any time it's needed again: from 5a's reindex-hook fallback, or if `index.py` later fails with an import error after this check already passed (dependency became unavailable mid-session).
+5. **Offer semantic search**: check dependencies *before* asking, so the offer itself is tailored to what's actually available. Run the detection procedure in `references/EMBEDDING-SETUP.md`, then ask using the tailored wording it returns (ready-to-go confirm, one-step-away confirm, or the full backend menu): never ask a generic "enable semantic search?" without having checked first. If the user accepts, install anything needed and run `index.py` (e.g. `python3 -B ~/.agents/skills/wiki-setup/scripts/index.py {vault}` or `python3 -B ~/.config/radiant/bin/index.py {vault}`) with `{vault}` as its argument; report chunks indexed. If declined or skipped, note in the final summary that semantic search is not active and can be enabled later via `/wiki-setup` (maintenance menu, option 5). Re-run this same detection procedure any time it's needed again: from 5a's reindex-hook fallback, or if `index.py` later fails with an import error after this check already passed (dependency became unavailable mid-session).
 
 5a. **Post-commit hooks (opt-in, separate questions)**: see `references/POST-COMMIT-HOOKS.md` for the exact install mechanics of both:
    - **Prune**: refresh `vault-report.json` after each commit.

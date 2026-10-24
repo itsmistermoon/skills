@@ -14,7 +14,7 @@ Archive a valuable session synthesis as a permanent wiki page.
 
 ## Steps
 
-1. **Resolve vault**: per `~/.radiant/references/VAULT-RESOLUTION.md`, then its `locale:` per `~/.radiant/references/LOCALE-RESOLUTION.md` (both synced by `/wiki-setup`: if either is missing, run `/wiki-setup` first). If the first argument matches a registered vault name (e.g., `/wiki-imprint personal`), use that vault.
+1. **Resolve vault**: per `~/.config/radiant/references/VAULT-RESOLUTION.md`, then its `locale:` per `~/.config/radiant/references/LOCALE-RESOLUTION.md` (both synced by `/wiki-setup`: if either is missing, run `/wiki-setup` first). If the first argument matches a registered vault name (e.g., `/wiki-imprint personal`), use that vault.
 
 2. **Identify the synthesis**: review the current conversation and identify the main synthesis produced. Apply the source hierarchy (see ## Source hierarchy below) to determine what the synthesis derives from: and whether a `.raw/` primary source needs to be read before writing.
 

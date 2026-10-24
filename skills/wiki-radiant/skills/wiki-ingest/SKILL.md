@@ -18,12 +18,12 @@ Ingest a new source and synthesize wiki pages from it.
 Scripts live in `scripts/` inside this skill's directory (`<skill-dir>/scripts/`, e.g. `~/.agents/skills/wiki-ingest/scripts/` or `~/.claude/skills/wiki-ingest/scripts/` when installed globally, or `./skills/wiki-ingest/scripts/` in this repo). When running from a vault, resolve `<skill-dir>` to locate co-located scripts.
 
 - **`scripts/sanitize.sh`**: Detects and auto-redacts credentials in a temp file before ingestion (step 2)
-- **`scripts/index.py`**: Re-indexes vault embeddings after a new source is ingested (step 7; also available at `~/.radiant/bin/index.py`)
+- **`scripts/index.py`**: Re-indexes vault embeddings after a new source is ingested (step 7; also available at `~/.config/radiant/bin/index.py`)
 - **`scripts/embeddings.py`**: Shared embedding backend, imported by `index.py`; not invoked directly
 
 ## Steps
 
-1. **Resolve vault**: per `~/.radiant/references/VAULT-RESOLUTION.md`, then its `locale:` per `~/.radiant/references/LOCALE-RESOLUTION.md` (both synced by `/wiki-setup`: if either is missing, run `/wiki-setup` first). If the first argument matches a registered vault name (e.g., `/wiki-ingest second-brain <url>`), use that vault and treat the remaining argument as the URL or file path.
+1. **Resolve vault**: per `~/.config/radiant/references/VAULT-RESOLUTION.md`, then its `locale:` per `~/.config/radiant/references/LOCALE-RESOLUTION.md` (both synced by `/wiki-setup`: if either is missing, run `/wiki-setup` first). If the first argument matches a registered vault name (e.g., `/wiki-ingest second-brain <url>`), use that vault and treat the remaining argument as the URL or file path.
 
 2. **Download or read**: input is a URL, a local file, or pasted text:
    - URL → fetch content, run the **SPA check** and the **sanitization check** below, then save to `{vault}/.raw/{slug}.md` (never overwrite if exists).
@@ -60,7 +60,7 @@ Scripts live in `scripts/` inside this skill's directory (`<skill-dir>/scripts/`
    4. For each ENRICHABLE candidate, state exactly what to add and where: e.g., "Add OpenWiki to the comparison table in §Key mechanisms."
    5. Report all ENRICHABLE candidates to the user. Do not apply any changes without explicit confirmation per candidate.
 
-7. **Re-index embeddings**: runs last so it captures every page this run touched, including step 5/6 updates to existing pages: if `{vault}/.hot/db/vault.db` exists, locate `index.py` (e.g. `~/.agents/skills/wiki-ingest/scripts/index.py` or `~/.radiant/bin/index.py`), run `python3 -B <path-to-index.py> {vault}` and report the result inline: "Indexed N new chunk(s)." If the db does not exist, skip silently: the vault may not have semantic search enabled.
+7. **Re-index embeddings**: runs last so it captures every page this run touched, including step 5/6 updates to existing pages: if `{vault}/.hot/db/vault.db` exists, locate `index.py` (e.g. `~/.agents/skills/wiki-ingest/scripts/index.py` or `~/.config/radiant/bin/index.py`), run `python3 -B <path-to-index.py> {vault}` and report the result inline: "Indexed N new chunk(s)." If the db does not exist, skip silently: the vault may not have semantic search enabled.
 
 ## --research mode
 

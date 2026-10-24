@@ -15,17 +15,17 @@ Health check the active vault in three layers: structural (script), semantic (ag
 
 Scripts live in `scripts/` inside this skill's directory (`<skill-dir>/scripts/`, e.g. `~/.agents/skills/wiki-lint/scripts/` or `~/.claude/skills/wiki-lint/scripts/` when installed globally, or `./skills/wiki-lint/scripts/` in this repo). When running from a vault, resolve `<skill-dir>` to locate co-located scripts.
 
-- **`scripts/lint.sh`**: Layer 1 structural check; single writer of `meta/vault-report.json` (step 2; also installed at `~/.radiant/bin/lint.sh`)
+- **`scripts/lint.sh`**: Layer 1 structural check; single writer of `meta/vault-report.json` (step 2; also installed at `~/.config/radiant/bin/lint.sh`)
 - **`scripts/validate-schema.sh`**: Validates `vault-report.json` schema drift, called by `lint.sh` as a sibling
 - **`scripts/integrity.py`**: Checks Source raw targets, duplicate raw references, and index coverage; called by `lint.sh`. Install `scripts/requirements.txt` in the Python environment used for lint.
 
 ## Steps
 
-1. **Resolve vault**: per `~/.radiant/references/VAULT-RESOLUTION.md` (synced by `/wiki-setup`: if missing, run `/wiki-setup` first). If the first argument matches a registered vault name (e.g., `/wiki-lint personal`), use that vault.
+1. **Resolve vault**: per `~/.config/radiant/references/VAULT-RESOLUTION.md` (synced by `/wiki-setup`: if missing, run `/wiki-setup` first). If the first argument matches a registered vault name (e.g., `/wiki-lint personal`), use that vault.
 
    State the resolved vault before checking it. An explicit vault argument authorizes the requested check; ask only about an ambiguous target. Corrections require their own authorization below.
 
-2. **Layer 1: Structural check**: Locate `lint.sh` (e.g. `bash ~/.agents/skills/wiki-lint/scripts/lint.sh {vault}` or `bash ~/.radiant/bin/lint.sh {vault}`) and run it. If the script is missing, the skill installation is incomplete: run `/wiki-setup`, sub-task `skills`, to reinstall.
+2. **Layer 1: Structural check**: Locate `lint.sh` (e.g. `bash ~/.agents/skills/wiki-lint/scripts/lint.sh {vault}` or `bash ~/.config/radiant/bin/lint.sh {vault}`) and run it. If the script is missing, the skill installation is incomplete: run `/wiki-setup`, sub-task `skills`, to reinstall.
 
 3. **Layer 2: Semantic analysis**: Run the semantic checks below (L2a–L2e): read the actual pages, never reason about relationships from memory alone.
 

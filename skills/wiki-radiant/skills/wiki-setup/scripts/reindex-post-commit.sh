@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 # Post-commit hook: re-index vault embeddings when wiki/ files change.
-# Install: ln -sf ~/.radiant/bin/hooks/reindex-post-commit.sh \
+# Install: ln -sf ~/.config/radiant/bin/hooks/reindex-post-commit.sh \
 #          <vault>/.git/hooks/post-commit
 set -euo pipefail
 
 VAULT_ROOT="$(git rev-parse --show-toplevel)"
 DB="$VAULT_ROOT/.hot/db/vault.db"
-# Runs the stable runtime copy at ~/.radiant/bin/: never a script from
+# Runs the stable runtime copy at ~/.config/radiant/bin/: never a script from
 # inside the vault. The vault is a data source (vault.db), never a code source.
-INDEXER="${HOME}/.radiant/bin/index.py"
+INDEXER="${HOME}/.config/radiant/bin/index.py"
 LOG="$VAULT_ROOT/.git/radiant-reindex.log"
 
 # Only run if semantic search is enabled for this vault
