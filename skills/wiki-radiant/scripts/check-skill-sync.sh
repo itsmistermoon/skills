@@ -210,7 +210,7 @@ for shared_doc in VAULT-RESOLUTION.md LOCALE-RESOLUTION.md; do
     [[ -f "$f" ]] && found="$found $name"
   done
   if [[ -n "$found" ]]; then
-    fail "$shared_doc: re-duplicated locally in:$found: should be removed and referenced from ~/.radiant/references/ instead"
+    fail "$shared_doc: re-duplicated locally in:$found: should be removed and referenced from ~/.config/radiant/references/ instead"
   else
     ok "$shared_doc: no local copies re-introduced"
   fi

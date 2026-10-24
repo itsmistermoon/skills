@@ -6,6 +6,6 @@ Skills that generate content stored in the vault must write it in the vault's ow
 
 ## Resolution
 
-Read `locale:` from the vault's entry in `~/.radiant/config.yml`. Use it for all agent-generated content.
+Read `locale:` from the vault's entry in `~/.config/radiant/config.yml`. Use it for all agent-generated content.
 
 If the entry has no locale, use `en`. Local session handoffs outside a registered vault use the conversation language, as specified by hot-handoff.

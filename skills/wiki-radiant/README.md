@@ -23,7 +23,7 @@ The flat install exposes `/wiki-ingest`, `/wiki-query`, and the other names belo
 
 ## Start with a vault
 
-Create a Git repository for your knowledge and run `/wiki-setup` inside it. Setup creates the wiki structure, installs the shared reference documents in `~/.radiant/references/`, registers the vault, and asks for its content language. Semantic search and post-commit hooks are optional.
+Create a Git repository for your knowledge and run `/wiki-setup` inside it. Setup creates the wiki structure, installs the shared reference documents in `~/.config/radiant/references/`, registers the vault, and asks for its content language. Semantic search and post-commit hooks are optional.
 
 Then ingest a source with `/wiki-ingest <url-or-file>` and ask a question with `/wiki-query <question>`. Answers cite the wiki pages used. Missing knowledge is reported explicitly.
 
@@ -49,7 +49,7 @@ Session memory also works in an ordinary project repository: run `/hot-handoff` 
 
 ## Multiple vaults
 
-`~/.radiant/config.yml` stores registered vaults:
+`~/.config/radiant/config.yml` stores registered vaults:
 
 ```yaml
 vaults:

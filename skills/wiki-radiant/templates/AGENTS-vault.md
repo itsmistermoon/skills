@@ -20,4 +20,4 @@ Before your first response, read `.hot/HANDOFF.md` and `.hot/PLAYBOOK.md` if pre
 
 ## Vault identity
 
-<!-- Fill in: owner, purpose, domain-specific vocabulary if this vault has any (e.g. project-specific terms). Optional: delete this section if not needed. Locale lives in ~/.radiant/config.yml (set by /wiki-setup), not here. -->
+<!-- Fill in: owner, purpose, domain-specific vocabulary if this vault has any (e.g. project-specific terms). Optional: delete this section if not needed. Locale lives in ~/.config/radiant/config.yml (set by /wiki-setup), not here. -->

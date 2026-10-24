@@ -14,7 +14,7 @@ INDEXER="$SCRIPT_DIR/../skills/wiki-setup/scripts/index.py"
 if [[ $# -eq 1 && -d "$1" ]]; then
   VAULT_PATH="$(cd "$1" && pwd)"
 else
-  VAULT_PATH=$(python3 - "$HOME/.radiant/config.yml" "${1:-}" <<'PY'
+  VAULT_PATH=$(python3 - "$HOME/.config/radiant/config.yml" "${1:-}" <<'PY'
 import sys
 from pathlib import Path
 try:

@@ -15,7 +15,7 @@ from pathlib import Path
 def _resolve_embeddings_dir() -> Path:
     """Find the directory containing embeddings.py: always a sibling of this
     script (co-located with the skill, or copied alongside it into a vault's
-    .hot/db/ or ~/.radiant/bin/: either way, always a sibling)."""
+    .hot/db/ or ~/.config/radiant/bin/: either way, always a sibling)."""
     here = Path(__file__).parent
     if (here / "embeddings.py").exists():
         return here
@@ -24,7 +24,7 @@ def _resolve_embeddings_dir() -> Path:
 
 
 sys.path.insert(0, str(_resolve_embeddings_dir()))
-import embeddings as emb
+import embeddings as emb  # noqa: E402
 
 DEFAULT_TOP_K = 5
 DEFAULT_THRESHOLD = 0.5
