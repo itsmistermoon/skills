@@ -1,8 +1,8 @@
-# Componentes UI — Imaquinaria Brand
+# UI Components — Imaquinaria Brand
 
-## Botones
+## Buttons
 
-### Primario (acción principal)
+### Primary (main action)
 ```css
 background: var(--color-accent);       /* #E81036 */
 color: #fff;
@@ -14,7 +14,7 @@ border: none;
 ```
 Hover: `background: var(--color-accent-dark)` (#B90C2B)
 
-### Secundario (acción alternativa)
+### Secondary (alternative action)
 ```css
 background: transparent;
 color: var(--color-accent);
@@ -23,7 +23,7 @@ border-radius: var(--radius-md);
 ```
 Hover: `background: rgba(232,16,54,0.08)`
 
-### Ghost (acción terciaria)
+### Ghost (tertiary action)
 ```css
 background: transparent;
 color: var(--color-text-muted);
@@ -34,20 +34,20 @@ Hover: `color: var(--color-text)`
 
 ### Premium (Kamon)
 ```css
-background: var(--color-premium);     /* #4D2559 claro / #7A5789 oscuro */
+background: var(--color-premium);     /* #4D2559 light / #7A5789 dark */
 color: #fff;
 border-radius: var(--radius-md);
 ```
-Hover: `opacity: 0.85` (token `--color-premium-dark` eliminado)
+Hover: `opacity: 0.85` (token `--color-premium-dark` removed)
 
-### Tamaños
+### Sizes
 - Normal: `padding: 8px 18px; font-size: 13px`
 - Small: `padding: 5px 12px; font-size: 12px`
-- Icon: `padding: 8px` (cuadrado)
+- Icon: `padding: 8px` (square)
 
 ---
 
-## Inputs y formularios
+## Inputs and forms
 
 ```css
 .input-field {
@@ -70,15 +70,15 @@ Hover: `opacity: 0.85` (token `--color-premium-dark` eliminado)
 }
 ```
 
-Campos requeridos: marcar con `*` en `var(--color-accent)`.
+Required fields: mark with `*` in `var(--color-accent)`.
 
 ---
 
-## Badges de nivel
+## Level badges
 
-Los badges de nivel NO usan el color de acento — son neutros.
+Level badges do NOT use the accent color — they are neutral.
 
-Cada nivel usa su propio grupo de tokens. Ejemplo para nivel N (1–4):
+Each level uses its own token group. Example for level N (1–4):
 ```css
 .badge-level-N {
   background: var(--level-N-bg);
@@ -93,11 +93,11 @@ Cada nivel usa su propio grupo de tokens. Ejemplo para nivel N (1–4):
 }
 ```
 
-Niveles concretos en Imaquinaria: Rōnin (1), Samurai (2), Hatamoto (3), Daimyō (4). Todos usan el mismo patrón de tokens — no hay excepción de color para Daimyō.
+Level names at Imaquinaria: Rōnin (1), Samurai (2), Hatamoto (3), Daimyō (4). All use the same token pattern — there is no color exception for Daimyō.
 
 ---
 
-## Badge Kamon (Tier Premium)
+## Kamon badge (Premium Tier)
 
 ```css
 .badge-premium {
@@ -115,7 +115,7 @@ Niveles concretos en Imaquinaria: Rōnin (1), Samurai (2), Hatamoto (3), Daimyō
 
 ---
 
-## Barra de progreso XP
+## XP progress bar
 
 ```css
 .progress-track {
@@ -126,7 +126,7 @@ Niveles concretos en Imaquinaria: Rōnin (1), Samurai (2), Hatamoto (3), Daimyō
 }
 .progress-fill {
   height: 100%;
-  background: var(--color-premium);   /* SIEMPRE púrpura, nunca rojo */
+  background: var(--color-premium);   /* ALWAYS purple, never red */
   border-radius: 99px;
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -136,7 +136,7 @@ Niveles concretos en Imaquinaria: Rōnin (1), Samurai (2), Hatamoto (3), Daimyō
 
 ## Cards
 
-### Card principal
+### Main card
 ```css
 background: var(--color-surface);
 border: 0.5px solid var(--color-border);
@@ -144,27 +144,27 @@ border-radius: var(--radius-lg);          /* 16px */
 box-shadow: var(--shadow-sm);
 ```
 
-### Card secundaria / compacta
+### Secondary / compact card
 ```css
 border-radius: var(--radius-md);          /* 10px */
 ```
 
-En modo oscuro: sin `box-shadow` — la elevación se da por diferencia de color.
+In dark mode: no `box-shadow` — elevation comes from the color difference.
 
 ---
 
-## Stamp cards (grilla de sellos)
+## Stamp cards (stamp grid)
 
-### Contenedor
+### Container
 ```css
 .stamp-grid {
   display: grid;
   gap: 6px;
-  /* columns: definir según total_stamps, máximo 4 por fila en móvil */
+  /* columns: set from total_stamps, max 4 per row on mobile */
 }
 ```
 
-### Sello individual
+### Individual stamp
 ```css
 .stamp {
   aspect-ratio: 1;
@@ -184,7 +184,7 @@ En modo oscuro: sin `box-shadow` — la elevación se da por diferencia de color
 .stamp:not(.filled) svg { fill: var(--color-border); }
 ```
 
-Animación al rellenar un sello nuevo:
+Animation when a new stamp is filled:
 ```css
 @keyframes stamp-in {
   0%   { transform: scale(0) rotate(-15deg); opacity: 0; }
@@ -196,7 +196,7 @@ Animación al rellenar un sello nuevo:
 
 ---
 
-## Chips de estado
+## Status chips
 
 ```css
 /* Base */
@@ -208,17 +208,17 @@ Animación al rellenar un sello nuevo:
   color: var(--color-text-muted);
   border: 0.5px solid var(--color-border);
 }
-/* Completado / éxito */
+/* Completed / success */
 .chip-success { background: rgba(34,197,94,.1); color: #15803d; border-color: transparent; }
-/* Pendiente / advertencia */
+/* Pending / warning */
 .chip-warn    { background: rgba(234,179,8,.1); color: #a16207; border-color: transparent; }
-/* Error / cancelado */
+/* Error / cancelled */
 .chip-danger  { background: rgba(239,68,68,.1); color: #dc2626; border-color: transparent; }
 ```
 
 ---
 
-## Tablas de datos
+## Data tables
 
 ```css
 .data-table { width: 100%; border-collapse: collapse; }
@@ -240,28 +240,28 @@ Animación al rellenar un sello nuevo:
 
 ---
 
-## Navegación
+## Navigation
 
 ### Desktop (sidenav)
-- Ancho fijo: 220px
-- Fondo: `var(--color-surface)`, borde derecho: `0.5px solid var(--color-border)`
-- Item activo: `color: var(--color-accent)`, `border-left: 2px solid var(--color-accent)`
+- Fixed width: 220px
+- Background: `var(--color-surface)`, right border: `0.5px solid var(--color-border)`
+- Active item: `color: var(--color-accent)`, `border-left: 2px solid var(--color-accent)`
 
-### Móvil (bottom tab bar)
-- Fondo: `var(--color-surface)`
-- Item activo: `color: var(--color-accent)`
-- Touch targets mínimos: 44×44px
+### Mobile (bottom tab bar)
+- Background: `var(--color-surface)`
+- Active item: `color: var(--color-accent)`
+- Minimum touch targets: 44×44px
 
 ---
 
-## Microinteracciones — timing estándar
+## Microinteractions — standard timing
 
-| Interacción | Duración | Easing |
+| Interaction | Duration | Easing |
 |-------------|----------|--------|
-| Compra registrada | 600ms | ease-out |
-| Stamp acumulado | 500ms | cubic-bezier(.34,1.56,.64,1) |
-| Subida de nivel | 800ms | ease + glow pulse |
-| Navegación entre vistas | 250ms | ease |
-| Hover de botones | 200ms | ease |
+| Purchase recorded | 600ms | ease-out |
+| Stamp earned | 500ms | cubic-bezier(.34,1.56,.64,1) |
+| Level up | 800ms | ease + glow pulse |
+| View navigation | 250ms | ease |
+| Button hover | 200ms | ease |
 
-`prefers-reduced-motion`: suprimir bounce y glow, mantener solo cambios de color.
+`prefers-reduced-motion`: suppress bounce and glow; keep only color changes.

@@ -1,6 +1,6 @@
 ---
 name: viralize
-description: Applies the "false belief → hook → truth" formula to create or fix viral content hooks for Imaquinaria's social channels — new pieces, campaigns, or weak-performing hooks.
+description: Applies the "false belief → hook → truth" formula to create or fix viral content hooks for social channels — new pieces, campaigns, or weak-performing hooks.
 ---
 
 # Viral Content Formula
@@ -80,4 +80,4 @@ Main source: Derek Muller (Veritasium), ["Clickbait is Unreasonably Effective"](
 
 ## When producing the piece
 
-For visual identity (colors, logo, typography, social assets), apply the `imaquinaria-brand` skill (its `references/social.md` covers social media).
+For visual identity (colors, logo, typography, social assets), apply the brand guidelines of the project or client, if any exist.
