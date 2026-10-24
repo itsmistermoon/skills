@@ -8,12 +8,12 @@ Before responding, read `.hot/HANDOFF.md` and `.hot/PLAYBOOK.md` if present. Tre
 
 ## Development
 
-- Follow METHODOLOGY.md. Work on a feature branch and submit a PR. The first publication bootstraps the repository with a single root commit; subsequent changes follow the PR workflow.
+- Work on a feature branch and submit a PR. The first publication bootstraps the repository with a single root commit; subsequent changes follow the PR workflow.
 - Use GitHub Issues in `itsmistermoon/radiant` for multi-step changes.
 - Run `bash scripts/check-skill-sync.sh` and the Python tests before publication or a PR. Test observable outputs and failure modes rather than matching prose in instructions.
 - Keep changes simple and modular. Use existing dependencies first. Remove obsolete paths instead of adding compatibility layers or migrations.
 - Use writing-for-agents when editing skills or agent instructions. Keep the common path in SKILL.md and disclose conditional references when needed.
-- Edit this repository first. Refresh installed copies through `npx skills add itsmistermoon/radiant --all -g -y`; installed skill folders are generated artifacts.
+- Edit this repository first. Refresh installed copies through `npx skills add itsmistermoon/skills --all -g -y`; installed skill folders are generated artifacts.
 - Treat `.env` and credential files as off-limits. Keep personal vault content, session state, and machine-specific settings out of this repository.
 - Use periods, commas, or colons in prose instead of em dashes.
 
