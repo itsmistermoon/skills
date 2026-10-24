@@ -1,23 +1,23 @@
-# Email Transaccional — HTML Email
+# Transactional Email — HTML Email
 
-Imaquinaria envía emails vía AWS SES. Los emails HTML deben funcionar en Gmail,
-Outlook, Apple Mail y clientes móviles. CSS en HTML email es limitado — sin
-variables CSS, sin flexbox en Outlook, sin fuentes web en la mayoría de clientes.
+Imaquinaria sends email via AWS SES. HTML emails must work in Gmail, Outlook, Apple Mail and mobile clients. CSS in HTML email is limited — no CSS variables, no flexbox in Outlook, no web fonts in most clients.
 
-## Paleta hardcodeada para email (sin var())
+## Hardcoded email palette (no var())
 
 ```
-Fondo de página:     #F5F4F2
-Superficie (card):   #FFFFFF
-Texto principal:     #211A23
-Texto secundario:    #5A5258
-Acento / CTA:        #E81036
-Acento hover*:       #B90C2B   (* usar en VML para Outlook)
+Page background:     #F5F4F2
+Surface (card):      #FFFFFF
+Primary text:        #211A23
+Secondary text:      #5A5258
+Accent / CTA:        #E81036
+Accent hover*:       #B90C2B   (* use in VML for Outlook)
 Premium:             #4D2559
-Borde:               #E2DFE0
+Border:              #E2DFE0
 ```
 
-## Estructura base
+## Base structure
+
+Customer-facing copy in this template (footer links, the sample address, and the CTA label) is Spanish, because the audience is Chilean. Placeholders such as `{{titulo}}` are template variables that code fills in; keep their names in sync with the sending code.
 
 ```html
 <!DOCTYPE html>
@@ -29,46 +29,46 @@ Borde:               #E2DFE0
   <style>
     body { margin:0; padding:0; background:#F5F4F2;
            font-family: Arial, sans-serif; }
-    /* Fuente de fallback: Arial. Nunca depender de Archivo en email. */
+    /* Fallback font: Arial. Never rely on Archivo in email. */
   </style>
 </head>
 <body bgcolor="#F5F4F2">
   <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#F5F4F2">
     <tr><td align="center" style="padding: 32px 16px;">
 
-      <!-- Card principal -->
+      <!-- Main card -->
       <table width="560" cellpadding="0" cellspacing="0" border="0"
              style="background:#FFFFFF; border-radius:16px; overflow:hidden;
                     border: 1px solid #E2DFE0;">
 
-        <!-- Header con logo -->
+        <!-- Header with logo -->
         <tr>
           <td align="center" style="padding: 24px 32px 20px; border-bottom: 1px solid #E2DFE0;">
-            <!-- Logo: usar URL absoluta en producción -->
+            <!-- Logo: use an absolute URL in production -->
             <img src="https://cdn.loyalty.app/imaquinaria/logo.png"
                  alt="Imaquinaria" width="160" height="auto"
                  style="display:block; border:0;">
           </td>
         </tr>
 
-        <!-- Cuerpo -->
+        <!-- Body -->
         <tr>
           <td style="padding: 32px;">
-            <!-- Título -->
+            <!-- Title -->
             <h1 style="margin:0 0 16px; font-family:Arial,sans-serif; font-weight:800;
                        font-size:22px; color:#211A23; text-transform:uppercase;
                        letter-spacing:0.02em;">
               {{titulo}}
-              <!-- Nota: Arial 800 uppercase es el sustituto de League Spartan en email -->
+              <!-- Note: Arial 800 uppercase is the substitute for League Spartan in email -->
             </h1>
 
-            <!-- Cuerpo de texto -->
+            <!-- Body text -->
             <p style="margin:0 0 16px; font-family:Arial,sans-serif; font-size:14px;
                       line-height:1.6; color:#5A5258;">
               {{cuerpo}}
             </p>
 
-            <!-- CTA principal -->
+            <!-- Primary CTA -->
             <table cellpadding="0" cellspacing="0" border="0" style="margin: 24px 0;">
               <tr>
                 <td bgcolor="#E81036" style="border-radius:10px;">
@@ -105,30 +105,30 @@ Borde:               #E2DFE0
 </html>
 ```
 
-## Variantes de email por tipo
+## Email variants by type
 
-### Transaccional (confirmación de compra / canje)
-- Header: logo + fondo blanco
-- Destacar puntos ganados con color `#E81036` y tamaño mayor
-- Incluir nivel actual del cliente
-- Si se subió de nivel: bloque destacado con fondo `#4D2559`, texto blanco
+### Transactional (purchase / redemption confirmation)
+- Header: logo + white background
+- Highlight points earned in `#E81036`, at a larger size
+- Include the customer's current level
+- If the customer leveled up: a highlighted block with background `#4D2559` and white text
 
-### Bienvenida (registro nuevo)
-- Mostrar nivel inicial (Rōnin) con su emoji 🗡️
-- Explicar brevemente los 4 niveles en tabla simple
-- CTA: "Ir al portal" → URL del frontend
+### Welcome (new sign-up)
+- Show the starting level (Rōnin) with its emoji 🗡️
+- Briefly explain the 4 levels in a simple table
+- CTA: "Ir al portal" ("Go to portal") → frontend URL
 
-### Recordatorio / marketing (solo con consent_marketing=true)
-- Asunto corto, en español chileno
-- Destacar beneficio concreto (puntos por vencer, nueva stamp card)
-- Un solo CTA — no múltiples llamadas a la acción
+### Reminder / marketing (only with consent_marketing=true)
+- Short subject line, in Chilean Spanish
+- Highlight a concrete benefit (points about to expire, new stamp card)
+- A single CTA — no multiple calls to action
 
-## Reglas de email
+## Email rules
 
-- Ancho máximo del card: **560px** (compatible con Outlook)
-- Siempre incluir versión texto plano
-- Imágenes con `alt` descriptivo siempre
-- Sin CSS externo ni `<link>` — todo inline o en `<style>` del head
-- Sin JavaScript
-- Probar en Gmail, Outlook 2016+ y Apple Mail antes de enviar
-- El logo debe cargarse desde URL absoluta en producción (no relativa)
+- Maximum card width: **560px** (compatible with Outlook)
+- Always include a plain-text version
+- Images always have a descriptive `alt`
+- No external CSS or `<link>` — everything inline or in the `<style>` in the head
+- No JavaScript
+- Test in Gmail, Outlook 2016+ and Apple Mail before sending
+- The logo must load from an absolute URL in production (not a relative one)

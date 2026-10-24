@@ -1,18 +1,18 @@
-# Artefactos Web — HTML / CSS / React
+# Web Artifacts — HTML / CSS / React
 
-## Setup mínimo obligatorio
+## Mandatory minimum setup
 
-Todo artefacto web de Imaquinaria debe incluir este bloque en `<head>` o equivalente:
+Every Imaquinaria web artifact must include this block in `<head>` or equivalent:
 
 ```html
 <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,125,500;0,100,400;0,100,500&family=Noto+Serif+JP:wght@500&display=swap" rel="stylesheet">
 ```
 
-Y estos tokens CSS en `:root` / `[data-theme="dark"]`:
+And these CSS tokens in `:root` / `[data-theme="dark"]`:
 
 ```css
 :root {
-  /* Semantic — Light mode */
+  /* Semantic — light mode */
   --color-bg:           #F5F4F2;
   --color-surface:      #FAFAF8;
   --color-text:         #211A23;
@@ -82,62 +82,62 @@ Y estos tokens CSS en `:root` / `[data-theme="dark"]`:
 }
 ```
 
-## Modo oscuro
+## Dark mode
 
 ```js
-// Hook useTheme — lógica estándar
+// useTheme hook — standard logic
 const saved = localStorage.getItem('theme') ||
   (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
 document.documentElement.setAttribute('data-theme', saved);
 ```
 
-Toggle: botón en esquina superior derecha de nav. Solo ícono (sol/luna), sin texto.
+Toggle: button in the top-right corner of the nav. Icon only (sun/moon), no text.
 
-## Uso del logo en web
+## Using the logo on the web
 
 ```html
-<!-- Opción 1: logo completo (estándar) -->
+<!-- Option 1: full logo (standard) -->
 <img src="assets/logo-full.png" alt="Imaquinaria" height="80">
 
-<!-- Opción 2: solo isotipo (favicon, avatar) -->
+<!-- Option 2: mark only (favicon, avatar) -->
 <img src="assets/dragon-icon.png" alt="Imaquinaria" width="40" height="40">
 
-<!-- Opción 3: wordmark SVG inline (cuando se necesita escalar sin pérdida) -->
-<!-- Incrustar contenido de assets/wordmark.svg directamente en el HTML -->
+<!-- Option 3: inline SVG wordmark (when it must scale without loss) -->
+<!-- Inline the contents of assets/wordmark.svg directly into the HTML -->
 ```
 
-## React — estructura de theming
+## React — theming structure
 
 ```tsx
-// theme/variables.css — importar en main.tsx
-// Componentes usan var(--color-*) siempre, nunca valores literales
+// theme/variables.css — import in main.tsx
+// Components always use var(--color-*), never literal values
 
-// Tailwind: solo utility classes del core (no JIT personalizado)
-// Sin clases de color custom — las variables CSS manejan el theming
+// Tailwind: core utility classes only (no custom JIT)
+// No custom color classes — CSS variables handle theming
 ```
 
-## Accesibilidad obligatoria
+## Mandatory accessibility
 
 - Focus ring: `outline: 2px solid var(--color-accent); outline-offset: 2px`
-- Todos los `<input>` tienen `<label for="...">` asociado
-- Elementos decorativos: `aria-hidden="true"`
-- Navegación: `role="navigation"` con `aria-label`
-- `prefers-reduced-motion`: suprimir animaciones de bounce y glow
-- Montos en CLP: `Intl.NumberFormat('es-CL', {style:'currency', currency:'CLP'})`
-- Fechas: `Intl.DateTimeFormat('es-CL')`
-- `lang="es"` en `<html>`
+- Every `<input>` has an associated `<label for="...">`
+- Decorative elements: `aria-hidden="true"`
+- Navigation: `role="navigation"` with `aria-label`
+- `prefers-reduced-motion`: suppress bounce and glow animations
+- CLP amounts: `Intl.NumberFormat('es-CL', {style:'currency', currency:'CLP'})`
+- Dates: `Intl.DateTimeFormat('es-CL')`
+- `lang="es"` on `<html>`
 
 ## Responsive — breakpoints
 
-| Nombre | Rango | Comportamiento clave |
-|--------|-------|----------------------|
-| Móvil | ≤ 640px | Sidenav → bottom tab bar; columna única; botones full-width |
-| Tablet | 641–1024px | Sidenav colapsado (íconos); grid 2 cols |
-| Desktop | ≥ 1025px | Sidenav fijo 220px; grid 3 cols |
+| Name | Range | Key behavior |
+|------|-------|--------------|
+| Mobile | ≤ 640px | Sidenav → bottom tab bar; single column; full-width buttons |
+| Tablet | 641–1024px | Collapsed sidenav (icons); 2-column grid |
+| Desktop | ≥ 1025px | Fixed 220px sidenav; 3-column grid |
 
-Touch targets mínimos en móvil: 44×44px.
+Minimum touch targets on mobile: 44×44px.
 
-## Scrollbar personalizado
+## Custom scrollbar
 
 ```css
 ::-webkit-scrollbar { width: 4px; }

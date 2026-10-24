@@ -1,14 +1,18 @@
-# imaq-skills
+# skills
 
-Repositorio de respaldo y desarrollo de las skills de Claude para Imaquinaria. Este repo es la fuente de verdad versionada; desde aquí se sincroniza hacia la instalación global (`~/.agents/skills/`).
+Repository of Claude skills for the captain: the versioned source of truth, from which they are synced to the global install (`~/.agents/skills/`).
 
-## Skills
+## Structure
 
-- **skills/imaquinaria-brand**: identidad visual de marca (colores, tipografía, logo, componentes) para el programa de loyalty y todo material branded. Incluye `assets/` (logo, ícono, wordmark) y `references/` (guías por superficie: web, email, print, social, componentes).
-- **skills/viralize**: fórmula "creencia falsa → hook → verdad" para crear contenido viral en redes sociales.
+- `skills/<group>/README.md`: lists the group's skills with links and short descriptions.
+- `skills/<group>/<name>/SKILL.md`: each skill.
+- Current groups: `branding` (Imaquinaria identity), `misc` (general use), and `wiki-radiant` (personal knowledge base and session memory).
 
-## Convenciones
+## Conventions
 
-- Cada skill vive en `skills/<nombre>/` con un `SKILL.md` obligatorio (frontmatter `name` + `description`).
-- El `name` del frontmatter debe coincidir con el nombre de la carpeta.
-- Assets binarios de marca van en `assets/`; documentación de referencia extensa va en `references/`, separada por archivo según el tema.
+- Each skill has a required `SKILL.md` (frontmatter `name` + `description`).
+- The frontmatter `name` must match the folder name.
+- Each group has its own `README.md`; when adding, moving, or removing a skill, update its group's README and the root README.
+- Brand binary assets go in `assets/`; long reference documentation goes in `references/`, one file per topic.
+- `wiki-radiant` keeps its repo structure (scripts, templates, tests): its skills depend on those files. Its contribution guide is `skills/wiki-radiant/AGENTS.md`.
+- `.claude-plugin/` (root) contains `marketplace.json` and `plugin.json`; the `plugin.json` paths point to the skills of each group distributed as a plugin. When adding or removing a radiant skill, update that list. `.github/workflows/` (root) is the only place GitHub reads workflows from.

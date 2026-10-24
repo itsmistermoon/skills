@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "radiant",
+  "owner": {
+    "name": "itsmistermoon"
+  },
+  "description": "Radiant skill suite: LLM-native personal wiki",
+  "plugins": [
+    {
+      "name": "radiant",
+      "source": ".",
+      "description": "Ingest sources, synthesize wiki pages, and recall knowledge across sessions from a vault that lives anywhere.",
+      "category": "productivity",
+      "keywords": [
+        "knowledge-base",
+        "wiki",
+        "vault",
+        "memory",
+        "second-brain",
+        "rag"
+      ]
+    }
+  ]
+}

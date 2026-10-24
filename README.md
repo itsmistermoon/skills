@@ -1,9 +1,9 @@
-# imaq-skills
+# skills
 
-Skills de Claude para Imaquinaria, respaldadas y versionadas en este repo. Desde aquí se sincronizan hacia la instalación global (`~/.agents/skills/`).
+Claude skills for the captain, versioned in this repo and organized into groups. Each group is a folder under [`skills/`](skills/) with its own `README.md` that lists its skills.
 
-## Skills
+## Groups
 
-- **imaquinaria-brand**: identidad visual de marca (colores, tipografía, logo, componentes) para el programa de loyalty y todo material branded.
-- **viralize**: fórmula "creencia falsa → hook → verdad" para crear contenido viral en redes sociales.
-- **ambitious-prompts**: convierte solicitudes simples en prompts más ambiciosos cuando se busca mayor profundidad o alcance.
+- **[branding](skills/branding/README.md)**: Imaquinaria's brand identity.
+- **[misc](skills/misc/README.md)**: general-purpose skills without a dedicated theme.
+- **[wiki-radiant](skills/wiki-radiant/README.md)**: personal knowledge base (ingest, query, lint) and session memory.

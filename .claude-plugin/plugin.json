@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "radiant",
+  "displayName": "Radiant",
+  "description": "LLM-native personal wiki: ingest sources, synthesize wiki pages, and recall knowledge across sessions from a vault that lives anywhere.",
+  "author": {
+    "name": "itsmistermoon"
+  },
+  "homepage": "https://github.com/itsmistermoon/skills",
+  "repository": "https://github.com/itsmistermoon/skills",
+  "license": "MIT",
+  "keywords": [
+    "knowledge-base",
+    "wiki",
+    "vault",
+    "memory",
+    "second-brain",
+    "rag"
+  ],
+  "skills": [
+    "./skills/wiki-radiant/skills/hot-handoff",
+    "./skills/wiki-radiant/skills/hot-triage",
+    "./skills/wiki-radiant/skills/wiki-ingest",
+    "./skills/wiki-radiant/skills/wiki-query",
+    "./skills/wiki-radiant/skills/wiki-imprint",
+    "./skills/wiki-radiant/skills/wiki-lint",
+    "./skills/wiki-radiant/skills/wiki-setup"
+  ]
+}
