@@ -31,7 +31,7 @@ Write a JSON plan for each direction in the SVG's measured coordinate system. `s
 uv run /path/to/logo-grid/scripts/grid.py render input.svg direction.json output/direction-01
 ```
 
-The output basename yields an editable SVG and a PNG for review; its directory must already exist. The SVG has named `auxiliary`, `guides`, `construction`, `logo`, and `anchors` groups in drawing order. It uses the supplied reference exports' visual attributes: 2560×1440, #f7f7f5 background, #999 auxiliary 1 px, #0080dc dashed guides 0.5 px (5/5), #4d4d4d construction 1 px, and a black 10% fill with #1f1f1f 2 px outline for the logo. Anchors are hollow 12 px, blue 1.5 px. The logo is centered at approximately 42.5% of canvas height, limited to 1500 px width. There is no text, dimensioning, legend, or color in the logo copy. Reference exports take precedence over the older runbook's different line weights and neutral-only palette.
+The output basename yields an editable SVG and a PNG for review; its directory must already exist. The SVG has named `auxiliary`, `guides`, `construction`, `logo`, and `anchors` groups in drawing order. It uses the supplied reference exports' visual attributes: 2560×1440, #f7f7f5 background, #999 auxiliary 1 px, #0080dc dashed guides 0.5 px (5/5), #4d4d4d construction 1 px, and a black 10% fill with #1f1f1f 2 px outline for the logo. Anchors are hollow 12 px, blue 1.5 px. The logo is centered on the canvas; its height is up to 612 px (42.5% of canvas height) and its width up to 1500 px. There is no text, dimensioning, legend, or color in the logo copy. Reference exports take precedence over the older runbook's different line weights and neutral-only palette.
 
 ## Review
 
