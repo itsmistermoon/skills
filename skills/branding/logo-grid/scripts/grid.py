@@ -99,8 +99,12 @@ def render(items, plan, output):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
-    a = sub.add_parser('measure'); a.add_argument('svg')
-    r = sub.add_parser('render'); r.add_argument('svg'); r.add_argument('plan'); r.add_argument('output')
+    a = sub.add_parser('measure')
+    a.add_argument('svg')
+    r = sub.add_parser('render')
+    r.add_argument('svg')
+    r.add_argument('plan')
+    r.add_argument('output')
     args = parser.parse_args()
     items = shapes(args.svg)
     if args.command == 'measure':
