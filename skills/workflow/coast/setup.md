@@ -8,7 +8,8 @@ Without one, `coast` works as a plain away mode: everything goes to the log in `
 
 1. Ask whether the user wants phone notifications. If not, skip to step 3 of this section. If yes, offer Telegram, using [scripts/notify-telegram.sh](scripts/notify-telegram.sh).
 2. For Telegram: copy the script to `bin/notify` in the repo and make it executable. The user creates a bot with @BotFather and stores `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in `.env` at the repo root. Have them write the token from the clipboard with a command you hand them, so it never appears in chat. The user must message the bot once before it can write to them.
-3. Confirm `.env` and `.coast.md` are in `.gitignore`; add them if missing.
+   - Optional, one topic per origin: the user creates a group, turns on **Topics**, and adds the bot as admin with **Manage topics**. Add `TELEGRAM_GROUP_ID=<-100...>` to `.env` (read it from the bot's `getUpdates` while no session is listening). Each origin then posts to its own topic, created on first use.
+3. Confirm `.env`, `.coast.md`, and `.telegram-topics` are in `.gitignore`; add them if missing.
 4. If a notify command was set up, run `bin/notify "coast setup test"`. **Done when** the user confirms the message arrived, or declined notifications.
 
 ## 2. Decisions
@@ -56,13 +57,27 @@ Merge into existing `hooks` arrays rather than replacing them. Requires `jq`.
 
 ## 5. Two-way channel (Claude Code, optional)
 
-To answer from the phone, run the session with the official Telegram channel plugin, on the same bot:
+To answer from the phone. Two plugin choices, both on the same bot as `bin/notify`:
 
-1. `claude plugin install telegram@claude-plugins-official --scope project` (run inside the repo).
-2. Write the bot token to `<state dir>/.env` as `TELEGRAM_BOT_TOKEN=...`, with `TELEGRAM_STATE_DIR` pointing at a directory for this repo.
-3. Start sessions with `TELEGRAM_STATE_DIR=<state dir> claude --channels plugin:telegram@claude-plugins-official`; a shell alias keeps it to one word.
-4. Message the bot, then `/telegram:access pair <code>` and `/telegram:access policy allowlist`.
+- **Official** `telegram@claude-plugins-official`: direct messages, or a group where every reply lands in General.
+- **Topics fork** in [plugin/](plugin/) (`telegram@itsmistermoon-skills`): with the topics group, each repo's sessions read and answer in that repo's topic, and the home repo takes General plus topics with no open session. See [plugin/CHANGES.md](plugin/CHANGES.md).
 
-One bot serves one listening session at a time.
+Steps for the topics fork:
+
+1. `claude plugin marketplace add itsmistermoon/skills`, then `claude plugin install telegram@itsmistermoon-skills --scope user`, and set `"telegram@itsmistermoon-skills": false` under `enabledPlugins` in `~/.claude/settings.json` so it loads only when asked.
+2. Pick a state dir (e.g. `~/.claude/channels/telegram-home`). Write `TELEGRAM_BOT_TOKEN=...` to `<state dir>/.env` from the clipboard, never through chat. Point `notify` at the shared topic registry: add `TELEGRAM_TOPICS_FILE=<state dir>/topics.tsv` to the repo's `.env`.
+3. Add a launcher to the user's shell config; it works in any repo:
+
+   ```sh
+   cct() { TELEGRAM_STATE_DIR="<state dir>" TELEGRAM_TOPICS_FILE="<state dir>/topics.tsv" TELEGRAM_HOME_KEY="<home repo name>" \
+     claude --settings '{"enabledPlugins":{"telegram@itsmistermoon-skills":true}}' \
+     --dangerously-load-development-channels plugin:telegram@itsmistermoon-skills "$@"; }
+   ```
+
+   Non-official channels need `--dangerously-load-development-channels`; Claude Code asks to confirm it.
+4. Start `cct` in the home repo, message the bot, then `/telegram:access pair <code>` and `/telegram:access policy allowlist`.
+5. Add the group to `<state dir>/access.json` under `groups` as `{"requireMention": false, "allowFrom": [<user id>]}`.
+
+**Done when** a reply in a repo's topic reaches the `cct` session open in that repo, and its answer lands in the same topic.
 
 **Setup is complete when** the `## Coast` section is in `AGENTS.md` and, if notifications were chosen, the test notification arrived.
