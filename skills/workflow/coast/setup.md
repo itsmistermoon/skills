@@ -2,14 +2,14 @@
 
 One-time setup for `coast` and `sitrep` in a home repo. Ask before each write to a file that already exists; preserve its other content.
 
-## 1. Notify command
+## 1. Notify command (optional)
 
-`coast` needs one shell command that sends a short text to the user's phone.
+Without one, `coast` works as a plain away mode: everything goes to the log in `.coast.md` and `sitrep` reports it on return. With one, the same lines also reach the user's phone.
 
-1. Ask which channel to use. Offer Telegram, using [scripts/notify-telegram.sh](scripts/notify-telegram.sh).
+1. Ask whether the user wants phone notifications. If not, skip to step 3 of this section. If yes, offer Telegram, using [scripts/notify-telegram.sh](scripts/notify-telegram.sh).
 2. For Telegram: copy the script to `bin/notify` in the repo and make it executable. The user creates a bot with @BotFather and stores `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in `.env` at the repo root. Have them write the token from the clipboard with a command you hand them, so it never appears in chat. The user must message the bot once before it can write to them.
 3. Confirm `.env` and `.coast.md` are in `.gitignore`; add them if missing.
-4. Run `bin/notify "coast setup test"`. **Done when** the user confirms the message arrived.
+4. If a notify command was set up, run `bin/notify "coast setup test"`. **Done when** the user confirms the message arrived, or declined notifications.
 
 ## 2. Decisions
 
@@ -23,7 +23,7 @@ Add this section to the repo's `AGENTS.md`, filled in:
 ```markdown
 ## Coast
 
-- Notify command: `bin/notify "<text>"` (prefix: `[<repo>]`; set `NOTIFY_ORIGIN=<role>` to override).
+- Notify command: `bin/notify "<text>"` (prefix: `[<repo>]`; set `NOTIFY_ORIGIN=<role>` to override). Write `none` when notifications were declined.
 - Decision label: `decision`, in repos of: <owner>, <owner>.
 - If `.coast.md` exists, the user is away: follow the `coast` skill from step 3. Their first message typed in the terminal is the return: run the `sitrep` skill.
 ```
@@ -31,6 +31,8 @@ Add this section to the repo's `AGENTS.md`, filled in:
 The last line is what lets any session, and any harness that reads `AGENTS.md`, notice away mode.
 
 ## 4. Hooks (Claude Code, optional)
+
+The notification hooks act only when `bin/notify` exists; the return reminder works without it.
 
 [scripts/claude-hook.sh](scripts/claude-hook.sh) adds three behaviours:
 
@@ -63,4 +65,4 @@ To answer from the phone, run the session with the official Telegram channel plu
 
 One bot serves one listening session at a time.
 
-**Setup is complete when** the test notification arrived and the `## Coast` section is in `AGENTS.md`.
+**Setup is complete when** the `## Coast` section is in `AGENTS.md` and, if notifications were chosen, the test notification arrived.

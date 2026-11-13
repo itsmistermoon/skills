@@ -4,6 +4,7 @@ root="${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "$0")/../.." && pwd)}"
 notify="$root/bin/notify"
 input="$(cat)"
 event="$(jq -r '.hook_event_name // empty' <<<"$input")"
+[[ "$event" == Notification || "$event" == Stop ]] && [[ ! -x "$notify" ]] && exit 0
 case "$event" in
   Notification)
     msg="$(jq -r '.message // "The session is waiting for you."' <<<"$input")"
