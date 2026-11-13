@@ -1,6 +1,6 @@
 #!/bin/bash
 # notify "text": sends text to the user on Telegram, prefixed with its origin.
-# Origin: $NOTIFY_ORIGIN, else the current git repo's name, else "home".
+# Origin: $NOTIFY_ORIGIN, else the name of the current main git repo (worktrees included), else "home".
 # Reads TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID from .env at the repo root (one level above this script).
 # With TELEGRAM_GROUP_ID (a forum supergroup where the bot can manage topics), each origin
 # gets its own topic, created on first use and cached in .telegram-topics ("origin<TAB>thread_id").
@@ -8,7 +8,9 @@
 set -euo pipefail
 [[ $# -ge 1 ]] || { echo 'usage: notify "text"' >&2; exit 2; }
 root="$(cd "$(dirname "$0")/.." && pwd)"
-origin="${NOTIFY_ORIGIN:-$(basename "$(git rev-parse --show-toplevel 2>/dev/null || echo home)")}"
+# Main repo of the current directory: worktrees resolve to the repo they belong to.
+repo_root() { local c; c="$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null)" || return 1; dirname "$c"; }
+origin="${NOTIFY_ORIGIN:-$(basename "$(repo_root || echo home)")}"
 . "$root/.env"
 
 api() { # api <method> [curl args...]: calls the Bot API, prints the JSON result
