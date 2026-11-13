@@ -25,10 +25,13 @@ if [[ -n "${TELEGRAM_GROUP_ID:-}" ]]; then
   if [[ -z "$thread" ]]; then
     thread="$(api createForumTopic --data-urlencode "chat_id=$TELEGRAM_GROUP_ID" --data-urlencode "name=$origin" \
       | sed -n 's/.*"message_thread_id":\([0-9]*\).*/\1/p')"
-    [[ -n "$thread" ]] && printf '%s\t%s\n' "$origin" "$thread" >> "$cache"
+    [[ -n "$thread" ]] && printf '%s\t%s\n' "$origin" "$thread" >> "$cache" && new_topic=1
   fi
   api sendMessage --data-urlencode "chat_id=$TELEGRAM_GROUP_ID" ${thread:+--data-urlencode "message_thread_id=$thread"} \
     --data-urlencode "text=[$origin] $*" -o /dev/null
+  # Telegram pins the first message of a new topic; keep topics unpinned.
+  [[ -n "${new_topic:-}" ]] && api unpinAllForumTopicMessages --data-urlencode "chat_id=$TELEGRAM_GROUP_ID" \
+    --data-urlencode "message_thread_id=$thread" -o /dev/null || true
 else
   api sendMessage --data-urlencode "chat_id=$TELEGRAM_CHAT_ID" --data-urlencode "text=[$origin] $*" -o /dev/null
 fi
