@@ -20,7 +20,7 @@ api() { # api <method> [curl args...]: calls the Bot API, prints the JSON result
 }
 
 if [[ -n "${TELEGRAM_GROUP_ID:-}" ]]; then
-  cache="$root/.telegram-topics"; touch "$cache"
+  cache="${TELEGRAM_TOPICS_FILE:-$root/.telegram-topics}"; touch "$cache"
   thread="$(awk -F'\t' -v o="$origin" '$1==o{print $2; exit}' "$cache")"
   if [[ -z "$thread" ]]; then
     thread="$(api createForumTopic --data-urlencode "chat_id=$TELEGRAM_GROUP_ID" --data-urlencode "name=$origin" \

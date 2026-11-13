@@ -1,0 +1,11 @@
+{
+  "name": "telegram",
+  "description": "Telegram channel for Claude Code with forum-topic routing by repo. Fork of claude-plugins-official/telegram 0.0.7 (Apache-2.0).",
+  "version": "0.0.7-topics.3",
+  "keywords": [
+    "telegram",
+    "messaging",
+    "channel",
+    "mcp"
+  ]
+}
