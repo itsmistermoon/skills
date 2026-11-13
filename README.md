@@ -6,4 +6,5 @@ Claude skills for the captain, versioned in this repo and organized into groups.
 
 - **[branding](skills/branding/README.md)**: brand identity and logo construction.
 - **[misc](skills/misc/README.md)**: general-purpose skills without a dedicated theme.
+- **[workflow](skills/workflow/README.md)**: away mode and situation reports for agent work in a home repo.
 - **[wiki-radiant](skills/wiki-radiant/README.md)**: personal knowledge base (ingest, query, lint) and session memory.
