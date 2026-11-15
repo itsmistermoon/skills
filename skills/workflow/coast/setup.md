@@ -37,7 +37,7 @@ The notification hooks act only when `bin/notify` exists; the return reminder wo
 
 [scripts/claude-hook.sh](scripts/claude-hook.sh) adds three behaviours:
 
-- `Notification`: notifies whenever the session waits for input or a permission.
+- `Notification`: while `.coast.md` exists, notifies whenever the session waits for input or a permission.
 - `Stop`: while `.coast.md` exists, notifies each finished turn with its last message.
 - `UserPromptSubmit`: while `.coast.md` exists, a prompt typed in the terminal gets a reminder to run `sitrep` first. Prompts arriving from a channel (`<channel source=...>`) are skipped.
 
