@@ -3,14 +3,14 @@ name: hot-handoff
 license: MIT
 description: "Save pending work, decisions, operational lessons, and session history in the active repository."
 disable-model-invocation: true
-argument-hint: "[vault-name] [project-name] [next: <focus>]"
+argument-hint: "[vault-name] [project-name] [repo: <path or name>] [next: <focus>]"
 ---
 
-Start with `Handing off session...` in the user's language. Use that language for confirmations. Save session state in the nearest Git repository, including worktrees; no registered vault or machine-global reference files are required.
+Start with `Handing off session...` in the user's language. Use that language for confirmations. Save session state in the nearest Git repository, including worktrees, or in the repository named by `repo:`; no registered vault or machine-global reference files are required.
 
 ## Steps
 
-1. **Resolve context.** Find the repository root from CWD; ask for a repository if none exists. Identify the invoking agent and model when known, otherwise use `Unknown agent`. Use the registered locale if this repo is inside a vault listed in `~/.config/radiant/config.yml`; otherwise use the conversation language. If the config is absent, continue locally. Parse `next: <focus>` separately from any vault/project arguments. **Done when:** the local target, language, agent, and next focus are known.
+1. **Resolve context.** With `repo: <path or name>`, the target is the Git root of that path, or of the repository with that name listed in the current repo's `AGENTS.md`; if it does not resolve to a Git repository, stop and ask. Record only that repository's work, decisions, and lessons; the rest of the session counts as uncaptured. Without `repo:`, find the repository root from CWD; ask for a repository if none exists. Identify the invoking agent and model when known, otherwise use `Unknown agent`. Use the registered locale if this repo is inside a vault listed in `~/.config/radiant/config.yml`; otherwise use the conversation language. If the config is absent, continue locally. Parse `repo:` and `next: <focus>` separately from any vault/project arguments. **Done when:** the local target, language, agent, and next focus are known.
 
 2. **Prepare state.** Read `references/HANDOFF-FORMAT.md` beside this skill and the existing `.hot/HANDOFF.md`, if present. Validate existing state against that format before editing; if it is unreadable or malformed, leave it intact and report the problem. Create `.hot/` when needed and add it to `.gitignore`. Remember whether `.hot/` existed before this run. Rotate History entries older than 15 days: append each verbatim, oldest-first, to `.hot/HISTORY.md`, then remove the successfully archived entries from HANDOFF. Create HISTORY with a `# {repo-name}: history` header if needed. Preserve the order of all remaining entries. **Done when:** no History entry older than 15 days remains in HANDOFF, or a write failure has been reported with the original state preserved.
 
@@ -27,4 +27,4 @@ Start with `Handing off session...` in the user's language. Use that language fo
 
 ## Confirmation
 
-Report changes to Pending, a one-line History summary, and any project page updated. State either `Safe to end: everything durable from this session is captured` or `Not fully captured: {what is missing and why}`. Give a resume pointer starting with `.hot/HANDOFF.md` Current state, adding PLAYBOOK only when relevant. Older history is read only when needed.
+Start with the absolute path of the `.hot/HANDOFF.md` written. Report changes to Pending, a one-line History summary, and any project page updated. State either `Safe to end: everything durable from this session is captured` or `Not fully captured: {what is missing and why}`. Give a resume pointer starting with `.hot/HANDOFF.md` Current state, adding PLAYBOOK only when relevant. Older history is read only when needed.
