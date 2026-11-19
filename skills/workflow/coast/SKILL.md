@@ -13,7 +13,7 @@ Read the `## Coast` section of the repo's `AGENTS.md`. If it is missing, run [se
 
 ## 2. Enter
 
-1. Write `.coast.md` at the repo root:
+1. If `.coast.md` already exists, away mode is still on: keep its `since:` and `## Log`, replace `return:` and `instructions:`, and log the new instructions. Otherwise write it at the repo root:
 
    ```
    since: <ISO 8601 timestamp with offset>

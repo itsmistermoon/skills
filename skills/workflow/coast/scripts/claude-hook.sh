@@ -12,7 +12,7 @@ case "$event" in
     NOTIFY_ORIGIN="$(basename "$root")" "$notify" "$msg" >/dev/null 2>&1 || true ;;
   Stop)
     [[ -f "$root/.coast.md" ]] || exit 0
-    last="$(jq -r '.last_assistant_message // empty' <<<"$input" | head -c 600)"
+    last="$(jq -r '(.last_assistant_message // "")[0:600]' <<<"$input")"
     NOTIFY_ORIGIN="$(basename "$root")" "$notify" "Turn finished.${last:+ $last}" >/dev/null 2>&1 || true ;;
   UserPromptSubmit)
     [[ -f "$root/.coast.md" ]] || exit 0
