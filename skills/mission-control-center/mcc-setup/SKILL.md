@@ -9,6 +9,18 @@ Reply in the user's language. One-time setup, safe to rerun: each step checks wh
 
 The other mcc skills read their configuration from the `## Mission control` section of `AGENTS.md` and run this skill when it is missing.
 
+## Defaults
+
+`~/.config/mcc/config.yml` holds the user's answers to steps 3 to 5, shared by every repo:
+
+```yaml
+task_tracker: handover   # or the path of a docs/agents/task-tracker.md to copy
+notify: none             # or the notify command
+decision_owners: []      # GitHub users or orgs
+```
+
+With the file present, show its values and ask for one confirmation in place of the questions in steps 3 to 5; with no user present (you run as a subagent), apply them and list them in your report. With the file missing, ask as each step says, then write the file with the answers. A copied task tracker keeps its commands and takes this repo's channel and names.
+
 ## 1. State folder
 
 `.mcc/` at the repo root holds the session state: `HANDOVER.md`, `PLAYBOOK.md`, `HISTORY.md`, and `COAST.md` while away mode is on. Confirm `.mcc/`, `.env`, and `.telegram-topics` are in `.gitignore`; add them if missing.
