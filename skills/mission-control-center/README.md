@@ -16,7 +16,11 @@ In Claude Code:
 /plugin install mission-control-center --marketplace itsmistermoon/skills
 ```
 
-The plugin exposes the skills as `/mission-control-center:mcc-handover` and so on. For other agents, or for the short `/mcc-handover` names, install the skills directly with `npx skills add itsmistermoon/skills --skill mcc-handover`. Use one installation method per agent.
+Codex reads the same marketplace: `codex plugin marketplace add itsmistermoon/skills`, then `codex plugin add mission-control-center@itsmistermoon-skills`.
+
+In OpenCode, add the plugin to `plugins` in `~/.config/opencode/opencode.jsonc`, as `github:itsmistermoon/skills#main::path:skills/mission-control-center` or a local clone's path.
+
+The Claude Code plugin exposes the skills as `/mission-control-center:mcc-handover` and so on. For other agents, or for the short `/mcc-handover` names, install the skills directly with `npx skills add itsmistermoon/skills --skill mcc-handover`. Use one installation method per agent.
 
 ## Task tracker
 

@@ -1,0 +1,9 @@
+{
+  "name": "wiki-radiant",
+  "version": "0.1.0",
+  "description": "OpenCode plugin for the wiki-radiant skills.",
+  "type": "module",
+  "license": "MIT",
+  "exports": { ".": "./opencode.js" },
+  "dependencies": { "@opencode/plugin": "^2.3.2" }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "mission-control-center",
+  "version": "0.1.0",
+  "description": "OpenCode plugin for the Mission Control Center skills.",
+  "type": "module",
+  "license": "MIT",
+  "exports": { ".": "./opencode.js" },
+  "dependencies": { "@opencode/plugin": "^2.3.2" }
+}

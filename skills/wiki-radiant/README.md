@@ -19,6 +19,8 @@ Claude Code also supports the plugin distribution:
 /plugin install wiki-radiant@itsmistermoon-skills
 ```
 
+Codex reads the same marketplace: `codex plugin marketplace add itsmistermoon/skills`, then `codex plugin add wiki-radiant@itsmistermoon-skills`. In OpenCode, add `github:itsmistermoon/skills` (or a local clone's path) to `plugins` in `~/.config/opencode/opencode.jsonc`.
+
 The flat install exposes `/wiki-ingest`, `/wiki-query`, and the other names below. The plugin exposes `/wiki-radiant:wiki-ingest`, `/wiki-radiant:wiki-query`, and so on. Use one installation method per agent.
 
 ## Start with a vault
