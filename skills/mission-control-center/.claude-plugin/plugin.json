@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "mission-control-center",
+  "displayName": "mission-control-center",
+  "version": "0.1.0",
+  "description": "Session memory for agent work in a repo: handover, debrief, away mode, sitrep, and a pluggable task tracker.",
+  "author": {
+    "name": "itsmistermoon"
+  },
+  "homepage": "https://github.com/itsmistermoon/skills",
+  "repository": "https://github.com/itsmistermoon/skills",
+  "license": "MIT",
+  "keywords": [
+    "session-memory",
+    "handover",
+    "away-mode",
+    "sitrep",
+    "task-tracker"
+  ],
+  "skills": [
+    "./mcc-setup",
+    "./mcc-handover",
+    "./mcc-debrief",
+    "./mcc-coast",
+    "./mcc-sitrep"
+  ]
+}

@@ -8,6 +8,16 @@ The names come from a NASA control room. Each skill applies that idea to agent s
 - [`mcc-coast`](mcc-coast/SKILL.md) is away mode. It records your instructions, opens an issue for each decision, and logs outcomes until you return. Phone notifications are optional.
 - [`mcc-sitrep`](mcc-sitrep/SKILL.md) reports what happened since a given time and presents open decisions one at a time.
 
+## Install
+
+In Claude Code:
+
+```text
+/plugin install mission-control-center --marketplace itsmistermoon/skills
+```
+
+The plugin exposes the skills as `/mission-control-center:mcc-handover` and so on. For other agents, or for the short `/mcc-handover` names, install the skills directly with `npx skills add itsmistermoon/skills --skill mcc-handover`. Use one installation method per agent.
+
 ## Task tracker
 
 `mcc-setup` asks where pending work lives. The default is the Pending list in `.mcc/HANDOVER.md`. Any other tool works if `docs/agents/task-tracker.md` lists its List, Add, and Close commands. The skills run only those commands, so switching tools means rewriting that one file. [`mcc-setup/references/TASK-TRACKER.md`](mcc-setup/references/TASK-TRACKER.md) has the rules.
