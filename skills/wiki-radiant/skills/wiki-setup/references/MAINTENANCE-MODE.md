@@ -10,7 +10,7 @@ Vault "{name}" is already registered. What would you like to do?
   1. Change locale      : update the vault's locale in config.yml
   2. Sync from upstream : pull updated templates from the upstream repo
   3. Check lint dependencies: verify Python, jq, and PyYAML are available
-  4. Check skills       : verify all 5 are installed; points to `npx skills add` if not (that's the only installer now)
+  4. Check skills       : verify all 5 are installed; points to the plugin or `npx skills add` if not
   5. Initialize semantic search: build .hot/db/vault.db for the first time (checks what's available, then offers accordingly)
   6. Add post-commit prune   : install the vault-report refresh git hook
   7. Add post-commit reindex : install the embedding reindex git hook (requires semantic search)

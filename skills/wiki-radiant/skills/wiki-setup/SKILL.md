@@ -83,12 +83,11 @@ Always end with the relevant subset of ## Output format.
    - **Vault templates**: if this is a new vault (scaffolded in step 1), proceed without asking (templates are part of the scaffolding the user already confirmed); if existing, ask before updating, per UPSTREAM-SYNC.md step 4.
    - **Global shared references** (`~/.config/radiant/references/`): always ask before writing, new vault or not. Confirming local vault scaffolding is not consent to write machine-global files that affect every other vault. See UPSTREAM-SYNC.md step 4.
 
-4. **Verify global skills are installed**: check each of the 5 skills (`wiki-setup`, `wiki-query`, `wiki-ingest`, `wiki-imprint`, `wiki-lint`) individually for presence under `~/.agents/skills/`: do not assume presence just because this skill is running.
+4. **Verify global skills are installed**: check each of the 5 skills (`wiki-setup`, `wiki-query`, `wiki-ingest`, `wiki-imprint`, `wiki-lint`) individually: present when it sits beside this skill (`../<name>/SKILL.md`, which covers the plugin install) or under `~/.agents/skills/`. Do not assume presence just because this skill is running.
    - **All present** → report which 5 skills are present and move on.
-   - **Some missing**: do not attempt to install them yourself. Tell the user:
-     > Missing skills: {list}. Install them with:
+   - **Some missing**: do not attempt to install them yourself. Tell the user to install the `wiki-radiant` plugin from the `itsmistermoon/skills` marketplace, or the flat skills with:
      > ```
-     > npx skills add itsmistermoon/radiant --all -g -y
+     > npx skills add itsmistermoon/skills --skill wiki-setup --skill wiki-query --skill wiki-ingest --skill wiki-imprint --skill wiki-lint -g -y
      > ```
 
 5. **Offer semantic search**: check dependencies *before* asking, so the offer itself is tailored to what's actually available. Run the detection procedure in `references/EMBEDDING-SETUP.md`, then ask using the tailored wording it returns (ready-to-go confirm, one-step-away confirm, or the full backend menu): never ask a generic "enable semantic search?" without having checked first. If the user accepts, install anything needed and run `index.py` (e.g. `python3 -B ~/.agents/skills/wiki-setup/scripts/index.py {vault}` or `python3 -B ~/.config/radiant/bin/index.py {vault}`) with `{vault}` as its argument; report chunks indexed. If declined or skipped, note in the final summary that semantic search is not active and can be enabled later via `/wiki-setup` (maintenance menu, option 5). Re-run this same detection procedure any time it's needed again: from 5a's reindex-hook fallback, or if `index.py` later fails with an import error after this check already passed (dependency became unavailable mid-session).
