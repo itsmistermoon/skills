@@ -60,7 +60,9 @@ Scripts live in `scripts/` inside this skill's directory (`<skill-dir>/scripts/`
    4. For each ENRICHABLE candidate, state exactly what to add and where: e.g., "Add OpenWiki to the comparison table in §Key mechanisms."
    5. Report all ENRICHABLE candidates to the user. Do not apply any changes without explicit confirmation per candidate.
 
-7. **Re-index embeddings**: runs last so it captures every page this run touched, including step 5/6 updates to existing pages: if `{vault}/.wiki/db/vault.db` exists, locate `index.py` (e.g. `~/.agents/skills/wiki-ingest/scripts/index.py` or `~/.config/radiant/bin/index.py`), run `python3 -B <path-to-index.py> {vault}` and report the result inline: "Indexed N new chunk(s)." If the db does not exist, skip silently: the vault may not have semantic search enabled.
+7. **Re-index embeddings** after all page updates.
+   - If the old database or its config remains in `{vault}/.hot/db/`, report that reindexing needs `/wiki-setup embeddings` to finish relocation.
+   - Otherwise, if `{vault}/.wiki/db/vault.db` exists, run `python3 -B <skill-dir>/scripts/index.py {vault}` and report the result inline: "Indexed N new chunk(s)." Skip silently if the database is absent.
 
 ## --research mode
 

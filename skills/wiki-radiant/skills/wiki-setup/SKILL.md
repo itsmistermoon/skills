@@ -90,9 +90,10 @@ Always end with the relevant subset of ## Output format.
      > npx skills add itsmistermoon/skills --skill wiki-setup --skill wiki-query --skill wiki-ingest --skill wiki-imprint --skill wiki-lint -g -y
      > ```
 
-5. **Offer semantic search**: check dependencies *before* asking, so the offer itself is tailored to what's actually available. Run the detection procedure in `references/EMBEDDING-SETUP.md`, then ask using the tailored wording it returns (ready-to-go confirm, one-step-away confirm, or the full backend menu): never ask a generic "enable semantic search?" without having checked first. If the user accepts, install anything needed and run `index.py` (e.g. `python3 -B ~/.agents/skills/wiki-setup/scripts/index.py {vault}` or `python3 -B ~/.config/radiant/bin/index.py {vault}`) with `{vault}` as its argument; report chunks indexed. If declined or skipped, note in the final summary that semantic search is not active and can be enabled later via `/wiki-setup` (maintenance menu, option 5). Re-run this same detection procedure any time it's needed again: from 5a's reindex-hook fallback, or if `index.py` later fails with an import error after this check already passed (dependency became unavailable mid-session).
-
-   Before running `index.py`, ensure `.wiki/` is listed in the vault's `.gitignore` so the database stays local.
+5. **Set up semantic search**:
+   - If `.hot/db/` still contains the database or its config, follow [Index relocation](references/POST-COMMIT-HOOKS.md#index-relocation). Relocation preserves the existing index and completes this step.
+   - For a new index, run the detection procedure in `references/EMBEDDING-SETUP.md` before offering semantic search. Use its tailored offer. If declined, report that it can be enabled later via maintenance option 5.
+   - If accepted, install the dependencies and ensure Git ignores `.wiki/` and tracks no files there. For a local-only rule, add `/.wiki/` to the file returned by `git rev-parse --git-path info/exclude`. Run `python3 -B <skill-dir>/scripts/index.py {vault}` and report the number of chunks indexed. If the indexer reports an import error, repeat dependency detection.
 
 5a. **Post-commit hooks (opt-in, separate questions)**: see `references/POST-COMMIT-HOOKS.md` for the exact install mechanics of both:
    - **Prune**: refresh `vault-report.json` after each commit.

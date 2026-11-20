@@ -27,12 +27,17 @@ DEFAULT_TOP_K = 5
 DEFAULT_THRESHOLD = 0.5
 
 
-def find_vault(start: Path) -> Path:
-    for candidate in [start, *start.parents]:
-        if (candidate / ".wiki" / "db" / "vault.db").exists():
-            return candidate
-    print("ERROR: vault.db not found. Run radiant-index first.", file=sys.stderr)
-    sys.exit(1)
+def find_db(vault: Path | None) -> Path:
+    start = vault if vault is not None else Path.cwd()
+    candidates = [start] if vault is not None else [start, *start.parents]
+    for candidate in candidates:
+        old_dir = candidate / ".hot" / "db"
+        if (old_dir / "vault.db").exists() or (old_dir / "config.json").exists():
+            sys.exit("ERROR: Move the existing semantic index via /wiki-setup embeddings first.")
+        db_path = candidate / ".wiki" / "db" / "vault.db"
+        if db_path.exists():
+            return db_path
+    sys.exit("ERROR: vault.db not found. Run radiant-index first.")
 
 
 def load_threshold(db_dir: Path) -> float:
@@ -56,7 +61,7 @@ def open_db(db_path: Path) -> sqlite3.Connection:
             sqlite_vec_path = str(candidates[0])
             break
 
-    conn = sqlite3.connect(str(db_path))
+    conn = sqlite3.connect(f"{db_path.as_uri()}?mode=ro", uri=True)
     conn.enable_load_extension(True)
     loaded = False
     if sqlite_vec_path:
@@ -113,13 +118,8 @@ def main():
                         help="Distance threshold override (default: from config.json)")
     args = parser.parse_args()
 
-    vault = Path(args.vault).resolve() if args.vault else find_vault(Path.cwd())
-    db_dir = vault / ".wiki" / "db"
-    db_path = db_dir / "vault.db"
-    if not db_path.exists():
-        print("ERROR: vault.db not found. Run radiant-index first.", file=sys.stderr)
-        sys.exit(1)
-    threshold = args.threshold if args.threshold is not None else load_threshold(db_dir)
+    db_path = find_db(Path(args.vault).resolve() if args.vault else None)
+    threshold = args.threshold if args.threshold is not None else load_threshold(db_path.parent)
 
     emb.load_embedding_model()
     try:

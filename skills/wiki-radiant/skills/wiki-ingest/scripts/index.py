@@ -7,6 +7,7 @@ import hashlib
 import json
 import re
 import sqlite3
+import subprocess
 import sys
 from pathlib import Path
 
@@ -270,10 +271,20 @@ def main():
     vault = get_vault(sys.argv)
     wiki_dir = vault / "wiki"
     db_dir = vault / ".wiki" / "db"
-    db_dir.mkdir(parents=True, exist_ok=True)
     db_path = db_dir / "vault.db"
     config_path = db_dir / "config.json"
 
+    old_dir = vault / ".hot" / "db"
+    if (old_dir / "vault.db").exists() or (old_dir / "config.json").exists():
+        sys.exit("ERROR: Move the existing semantic index via /wiki-setup embeddings first.")
+
+    git = ["git", "-C", str(vault)]
+    ignored = subprocess.run([*git, "check-ignore", "-q", "--", ".wiki/"])
+    tracked = subprocess.run([*git, "ls-files", "--", ".wiki/"], capture_output=True)
+    if ignored.returncode != 0 or tracked.returncode != 0 or tracked.stdout:
+        sys.exit("ERROR: Git must ignore .wiki/ and have no tracked files there.")
+
+    db_dir.mkdir(parents=True, exist_ok=True)
     emb.load_embedding_model()
     conn = init_db(db_path)
 
