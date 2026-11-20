@@ -18,7 +18,7 @@ A handover is the shift change in a mission control room: the incoming shift get
 
 4. **Write the snapshot.** Update Current state and append a History entry using the format from step 2. Reconcile duplicates and resolved or superseded items in Current state; preserve previous History entries. Keep at most three active decisions. Tailor pending work to `next:` when supplied.
 
-   - **Pending work:** List the tracker's open tasks, then Add each new one with its owner (agent or human) and Close each one this session finished or dropped.
+   - **Pending work:** List the tracker's open tasks, then Add each new one with its triage label (`ready-for-agent` or `ready-for-human`) and Close each one this session finished or dropped.
    - **Imprint candidate:** when the session produced a durable insight, design decision, or analysis worth a permanent wiki page, Add one task titled `Imprint: {what} (/wiki-imprint, {suggested type})`.
    - **Local vault health:** if `{repo}/meta/vault-report.json` exists, read `health.dead_links`, `health.raw_without_source_page`, `health.missing_confidence`, `health.orphan_pages`, `health.missing_raw`, `health.unindexed_pages`, and `health.duplicate_sources`. Keep one dated pending task with the finding count and report path while the report is nonempty, and Close it when the report is empty. Mention unresolved findings explicitly in the confirmation.
    - **Maintenance nudge:** if the oldest Working-context date in PLAYBOOK is over 30 days old, add a single pending task to run `/mcc-debrief` for overdue pruning. On the first handover only, if AGENTS.md lacks `<!-- mcc:session-start -->` or the `## Mission control` section, suggest `/mcc-setup`. This skill does not edit AGENTS.md.
