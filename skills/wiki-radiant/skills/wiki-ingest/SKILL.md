@@ -62,7 +62,7 @@ Scripts live in `scripts/` inside this skill's directory (`<skill-dir>/scripts/`
 
 7. **Re-index embeddings** after all page updates.
    - If the old database or its config remains in `{vault}/.hot/db/`, report that reindexing needs `/wiki-setup embeddings` to finish relocation.
-   - Otherwise, if `{vault}/.wiki/db/vault.db` exists, run `python3 -B <skill-dir>/scripts/index.py {vault}` and report the result inline: "Indexed N new chunk(s)." Skip silently if the database is absent.
+   - Otherwise, if `{vault}/.wiki/db/vault.db` exists, run `python3 -B <skill-dir>/scripts/index.py {vault}` and report how many files were indexed or any error. Skip silently if the database is absent.
 
 ## --research mode
 

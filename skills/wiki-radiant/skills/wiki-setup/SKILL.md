@@ -93,7 +93,7 @@ Always end with the relevant subset of ## Output format.
 5. **Set up semantic search**:
    - If `.hot/db/` still contains the database or its config, follow [Index relocation](references/POST-COMMIT-HOOKS.md#index-relocation). Relocation preserves the existing index and completes this step.
    - For a new index, run the detection procedure in `references/EMBEDDING-SETUP.md` before offering semantic search. Use its tailored offer. If declined, report that it can be enabled later via maintenance option 5.
-   - If accepted, install the dependencies and ensure Git ignores `.wiki/` and tracks no files there. For a local-only rule, add `/.wiki/` to the file returned by `git rev-parse --git-path info/exclude`. Run `python3 -B <skill-dir>/scripts/index.py {vault}` and report the number of chunks indexed. If the indexer reports an import error, repeat dependency detection.
+   - If accepted, install the dependencies and verify the [Git exclusion for the index](references/EMBEDDING-SETUP.md#git-exclusion-for-the-index). Run `python3 -B <skill-dir>/scripts/index.py {vault}` and report how many files were indexed. If the indexer reports an import error, repeat dependency detection.
 
 5a. **Post-commit hooks (opt-in, separate questions)**: see `references/POST-COMMIT-HOOKS.md` for the exact install mechanics of both:
    - **Prune**: refresh `vault-report.json` after each commit.
@@ -111,7 +111,7 @@ Confirm:
 - AGENTS.md Radiant block (if offered on an existing file): appended / declined
 - Registered vaults: list all entries in `vaults:` with their paths and locales, marking the default
 - Skills: all 5 present / missing {list} (with the `npx skills add` command to fix it)
-- Semantic search: active (backend: Ollama/mlx-embeddings/sentence-transformers, N chunks indexed) / not active (declined or skipped: how to enable later)
+- Semantic search: active (backend: Ollama/mlx-embeddings/sentence-transformers, include indexing results when run) / not active (declined or skipped: how to enable later)
 - Sync (if run): upstream used, files updated (list), files skipped (count), deletions pending user confirmation
 - Next step: run `/mcc-setup` if session memory is not set up, then `/mcc-handover` at the end of any project session
 
