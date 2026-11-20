@@ -1,6 +1,6 @@
 # Mission Control Center (`mcc`)
 
-The names come from a NASA control room. A handover passes the state to the next shift, a debrief reviews past flights, coast is flight without engines, and a sitrep is a situation report. Each skill applies that idea to agent sessions in a repo. Session state lives in `.mcc/` at the repo root, which git ignores.
+The names come from a NASA control room. Each skill applies that idea to agent sessions in a repo. Session state lives in `.mcc/` at the repo root, which git ignores.
 
 - [`mcc-setup`](mcc-setup/SKILL.md) runs once per repo. It writes the session-start block and the `## Mission control` section in `AGENTS.md`, picks the task tracker, and sets up notifications and the decision label.
 - [`mcc-handover`](mcc-handover/SKILL.md) runs at the end of a session. It sends pending work to the task tracker and saves decisions, lessons, and history in `.mcc/`.
