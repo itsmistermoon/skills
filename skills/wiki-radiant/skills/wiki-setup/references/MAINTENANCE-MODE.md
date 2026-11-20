@@ -11,7 +11,7 @@ Vault "{name}" is already registered. What would you like to do?
   2. Sync from upstream : pull updated templates from the upstream repo
   3. Check lint dependencies: verify Python, jq, and PyYAML are available
   4. Check skills       : verify all 5 are installed; points to the plugin or `npx skills add` if not
-  5. Initialize semantic search: build .hot/db/vault.db for the first time (checks what's available, then offers accordingly)
+  5. Set up semantic search: relocate an existing index or check dependencies and offer to build a new one
   6. Add post-commit prune   : install the vault-report refresh git hook
   7. Add post-commit reindex : install the embedding reindex git hook (requires semantic search)
   8. Set as default     : make this vault the default
@@ -36,9 +36,9 @@ For each selected operation, run the corresponding step in sequence. Most steps 
 - 2 → step 3b
 - 3 → check Python 3.10+, `jq`, and `python3 -c "import yaml"`. If missing, identify the dependency and offer installation using wiki-lint's `scripts/requirements.txt` for PyYAML. Do not run lint or modify wiki content as part of this check.
 - 4 → step 4
-- 5 → step 5, same tailored dependency-check-then-offer procedure as the new-vault wizard. Skip indexing if `.hot/db/vault.db` already exists (ask user if they want to re-index instead).
+- 5 → step 5. If the index is already in the current location and neither old file remains, offer to reindex it.
 - 6 → step 5a (prune)
-- 7 → step 5a (reindex; gate still applies: if vault.db doesn't exist, offer option 5 first)
+- 7 → step 5a (reindex)
 - 8 → step 6
 - 9 → if any post-commit hooks are installed for this vault, offer to uninstall them first (see `references/POST-COMMIT-HOOKS.md`'s uninstall procedure); then remove vault from `vaults:`, update default if needed, save config. If combined with other selections, run option 9 last: the other operations may need the vault's entry to still exist.
 - 10 → run `python3 scripts/tags-audit.py {vault-path}` (paths relative to this skill's directory, per `SKILL.md`'s `## Available scripts`). Pass `--write-snapshot` only if the user wants a dated snapshot saved under `meta/`.

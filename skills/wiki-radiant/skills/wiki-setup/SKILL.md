@@ -15,7 +15,7 @@ Setup for Radiant. Run from inside a vault directory (one containing `.git/`, an
 
 Scripts live in `scripts/` inside this skill's directory (`<skill-dir>/scripts/`, e.g. `~/.agents/skills/wiki-setup/scripts/` or `~/.claude/skills/wiki-setup/scripts/` when installed globally, or `./skills/wiki-setup/scripts/` in this repo). When running from a vault, resolve `<skill-dir>` to locate co-located scripts.
 
-- **`scripts/index.py`**: Builds/refreshes `.hot/db/vault.db` when semantic search is enabled (step 5); also copied to `~/.config/radiant/bin/` for the post-commit reindex hook (step 5a)
+- **`scripts/index.py`**: Builds/refreshes `.wiki/db/vault.db` when semantic search is enabled (step 5); also copied to `~/.config/radiant/bin/` for the post-commit reindex hook (step 5a)
 - **`scripts/embeddings.py`**: Shared embedding backend, imported by `index.py`; not invoked directly
 - **`scripts/reindex-post-commit.sh`**: Copied to `~/.config/radiant/bin/hooks/` and wired into `{vault}/.git/hooks/post-commit` (step 5a)
 - **`scripts/tags-audit.py`**: Runs a tags audit on a vault (maintenance menu option 10); optionally writes a dated snapshot under `meta/`
@@ -90,7 +90,10 @@ Always end with the relevant subset of ## Output format.
      > npx skills add itsmistermoon/skills --skill wiki-setup --skill wiki-query --skill wiki-ingest --skill wiki-imprint --skill wiki-lint -g -y
      > ```
 
-5. **Offer semantic search**: check dependencies *before* asking, so the offer itself is tailored to what's actually available. Run the detection procedure in `references/EMBEDDING-SETUP.md`, then ask using the tailored wording it returns (ready-to-go confirm, one-step-away confirm, or the full backend menu): never ask a generic "enable semantic search?" without having checked first. If the user accepts, install anything needed and run `index.py` (e.g. `python3 -B ~/.agents/skills/wiki-setup/scripts/index.py {vault}` or `python3 -B ~/.config/radiant/bin/index.py {vault}`) with `{vault}` as its argument; report chunks indexed. If declined or skipped, note in the final summary that semantic search is not active and can be enabled later via `/wiki-setup` (maintenance menu, option 5). Re-run this same detection procedure any time it's needed again: from 5a's reindex-hook fallback, or if `index.py` later fails with an import error after this check already passed (dependency became unavailable mid-session).
+5. **Set up semantic search**:
+   - If `.hot/db/` still contains the database or its config, follow [Index relocation](references/POST-COMMIT-HOOKS.md#index-relocation). Relocation preserves the existing index and completes this step.
+   - For a new index, run the detection procedure in `references/EMBEDDING-SETUP.md` before offering semantic search. Use its tailored offer. If declined, report that it can be enabled later via maintenance option 5.
+   - If accepted, install the dependencies and verify the [Git exclusion for the index](references/EMBEDDING-SETUP.md#git-exclusion-for-the-index). Run `python3 -B <skill-dir>/scripts/index.py {vault}` and report how many files were indexed. If the indexer reports an import error, repeat dependency detection.
 
 5a. **Post-commit hooks (opt-in, separate questions)**: see `references/POST-COMMIT-HOOKS.md` for the exact install mechanics of both:
    - **Prune**: refresh `vault-report.json` after each commit.
@@ -108,7 +111,7 @@ Confirm:
 - AGENTS.md Radiant block (if offered on an existing file): appended / declined
 - Registered vaults: list all entries in `vaults:` with their paths and locales, marking the default
 - Skills: all 5 present / missing {list} (with the `npx skills add` command to fix it)
-- Semantic search: active (backend: Ollama/mlx-embeddings/sentence-transformers, N chunks indexed) / not active (declined or skipped: how to enable later)
+- Semantic search: active (backend: Ollama/mlx-embeddings/sentence-transformers, include indexing results when run) / not active (declined or skipped: how to enable later)
 - Sync (if run): upstream used, files updated (list), files skipped (count), deletions pending user confirmation
 - Next step: run `/mcc-setup` if session memory is not set up, then `/mcc-handover` at the end of any project session
 
@@ -117,6 +120,6 @@ For a maintenance-menu run, confirm only the items for operations that actually 
 ## Rules
 
 - Always run from inside the vault directory: never ask for a path manually
-- Never write to an *existing* `wiki/`, `.raw/`, or `AGENTS.md`: those are vault content, not this skill's to touch once they exist. Two exceptions, both in `references/NEW-VAULT-SCAFFOLD.md` and both confirmation-gated: step 1's new-vault scaffold, which creates them from nothing and never overwrites; and the append-only Radiant block added at the end of an existing `AGENTS.md` that lacks the vault-rules marker: nothing above the appended block is ever edited. Everything else this skill writes (global config, `templates/`, `.hot/db/`, git hooks) is infrastructure
+- Never write to an *existing* `wiki/`, `.raw/`, or `AGENTS.md`: those are vault content, not this skill's to touch once they exist. Two exceptions, both in `references/NEW-VAULT-SCAFFOLD.md` and both confirmation-gated: step 1's new-vault scaffold, which creates them from nothing and never overwrites; and the append-only Radiant block added at the end of an existing `AGENTS.md` that lacks the vault-rules marker: nothing above the appended block is ever edited. Everything else this skill writes (global config, `templates/`, `.wiki/db/`, git hooks) is infrastructure
 - Never hand-roll skill installation or agent-specific symlinks: `npx skills add` is the sole installer, for every agent it supports
 - Post-commit git hooks (prune, reindex: step 5a) are the only hooks this skill installs

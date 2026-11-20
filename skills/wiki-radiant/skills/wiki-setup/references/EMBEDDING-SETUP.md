@@ -79,6 +79,10 @@ Semantic search needs one of these to generate embeddings locally. Choose:
 Choose [1-4]:
 ```
 
+## Git exclusion for the index
+
+Before creating or relocating the index, ensure `git check-ignore -q -- .wiki/` succeeds and `git ls-files -- .wiki/` succeeds with empty output. For a local-only rule, add `/.wiki/` to the file returned by `git rev-parse --git-path info/exclude`. The database stores excerpts from wiki pages, including pages Git may not track yet.
+
 ## Installation, by choice
 
 - **Ollama, not yet installed**: point the user to https://ollama.com/download (installing Ollama itself is a system-level action this skill does not perform automatically: ask the user to confirm it's installed and running before proceeding). Once running, `ollama pull nomic-embed-text`.

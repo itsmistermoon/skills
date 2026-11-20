@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 """
 radiant-search: Semantic search over the vault index.
-Usage: python {vault}/.hot/db/search.py "query" [--top-k N] [--vault PATH]
-Installed to {vault}/.hot/db/ by wiki-setup. Source co-located with the
-wiki-query skill (skills/wiki-query/scripts/).
+Usage: python search.py "query" [--top-k N] [--vault PATH]
 """
 import argparse
 import json
@@ -14,8 +12,7 @@ from pathlib import Path
 
 def _resolve_embeddings_dir() -> Path:
     """Find the directory containing embeddings.py: always a sibling of this
-    script (co-located with the skill, or copied alongside it into a vault's
-    .hot/db/ or ~/.config/radiant/bin/: either way, always a sibling)."""
+    script (co-located with the skill or in ~/.config/radiant/bin/)."""
     here = Path(__file__).parent
     if (here / "embeddings.py").exists():
         return here
@@ -30,16 +27,21 @@ DEFAULT_TOP_K = 5
 DEFAULT_THRESHOLD = 0.5
 
 
-def find_vault(start: Path) -> Path:
-    for candidate in [start, *start.parents]:
-        if (candidate / ".hot" / "db" / "vault.db").exists():
-            return candidate
-    print("ERROR: vault.db not found. Run radiant-index first.", file=sys.stderr)
-    sys.exit(1)
+def find_db(vault: Path | None) -> Path:
+    start = vault if vault is not None else Path.cwd()
+    candidates = [start] if vault is not None else [start, *start.parents]
+    for candidate in candidates:
+        old_dir = candidate / ".hot" / "db"
+        if (old_dir / "vault.db").exists() or (old_dir / "config.json").exists():
+            sys.exit("ERROR: Move the existing semantic index via /wiki-setup embeddings first.")
+        db_path = candidate / ".wiki" / "db" / "vault.db"
+        if db_path.exists():
+            return db_path
+    sys.exit("ERROR: vault.db not found. Run radiant-index first.")
 
 
-def load_threshold(hot_dir: Path) -> float:
-    config_path = hot_dir / "config.json"
+def load_threshold(db_dir: Path) -> float:
+    config_path = db_dir / "config.json"
     if config_path.exists():
         cfg = json.loads(config_path.read_text())
         return cfg.get("distance_threshold", DEFAULT_THRESHOLD)
@@ -59,7 +61,7 @@ def open_db(db_path: Path) -> sqlite3.Connection:
             sqlite_vec_path = str(candidates[0])
             break
 
-    conn = sqlite3.connect(str(db_path))
+    conn = sqlite3.connect(f"{db_path.as_uri()}?mode=ro", uri=True)
     conn.enable_load_extension(True)
     loaded = False
     if sqlite_vec_path:
@@ -116,13 +118,8 @@ def main():
                         help="Distance threshold override (default: from config.json)")
     args = parser.parse_args()
 
-    vault = Path(args.vault).resolve() if args.vault else find_vault(Path.cwd())
-    hot_dir = vault / ".hot" / "db"
-    db_path = hot_dir / "vault.db"
-    if not db_path.exists():
-        print("ERROR: vault.db not found. Run radiant-index first.", file=sys.stderr)
-        sys.exit(1)
-    threshold = args.threshold if args.threshold is not None else load_threshold(hot_dir)
+    db_path = find_db(Path(args.vault).resolve() if args.vault else None)
+    threshold = args.threshold if args.threshold is not None else load_threshold(db_path.parent)
 
     emb.load_embedding_model()
     try:

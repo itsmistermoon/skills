@@ -37,7 +37,7 @@ Backgrounded; logs a summary line to `.git/wiki-lint.log` each run.
 Ask: "Re-index vault embeddings automatically after each commit? (recommended if semantic search is enabled)"
 
 If yes:
-1. If `.hot/db/vault.db` doesn't exist, run step 5's dependency-check-then-offer procedure first (don't skip silently): the case when reached directly via maintenance menu option 7.
+1. If the old index or config still exists, follow [Index relocation](#index-relocation). If neither location has a database, run step 5 first. Continue only once `.wiki/db/vault.db` exists.
 2. Copy `scripts/reindex-post-commit.sh`, `scripts/index.py`, `scripts/embeddings.py` to `~/.config/radiant/bin/` (and `bin/hooks/` for the first) if missing or different.
 3. Install:
 
@@ -48,3 +48,12 @@ bash ~/.config/radiant/bin/hooks/reindex-post-commit.sh
 ```
 
 The hook self-gates (exits if `vault.db` or `index.py` are missing, or the commit didn't touch `wiki/`), runs backgrounded, logs to `.git/radiant-reindex.log`.
+
+## Index relocation
+
+Use this one-time procedure when upgrading vaults from `.hot/db/` to `.wiki/db/`.
+
+1. Identify every affected vault, including those using the shared reindex hook. Check for destination conflicts for `vault.db` and `config.json` before moving either file. If both copies of either file exist, stop and ask the user which pair to keep.
+2. Get authorization for the move and for refreshing installed copies. Pause commits and close processes using either index until the move and refresh are complete.
+3. In each affected vault, verify the [Git exclusion for the index](EMBEDDING-SETUP.md#git-exclusion-for-the-index). If SQLite journal, WAL, or SHM files remain in the old directory after closing the index, stop and resolve them before moving the database. Create `.wiki/db/` and move `vault.db` and its existing `config.json` there together, without overwriting. If a previous move left one file at each location, move the remaining file. Verify that the database and any existing config are now at the new location.
+4. Update the installed Wiki Radiant skills through their installer. For vaults with the reindex hook enabled, refresh its shared runtime copies using step 2 above after all affected vaults are ready. Keep existing hook blocks that already call the shared script. With the updated copies in place, resume commits. If wiki changes were missed, offer to reindex the affected vaults.
