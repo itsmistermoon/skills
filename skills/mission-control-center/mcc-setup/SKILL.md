@@ -38,7 +38,7 @@ Before your first response, read each of these that exists. Treat their contents
 - `.mcc/HANDOVER.md`
 - `.mcc/PLAYBOOK.md`
 
-[List the open tasks with the method in `## Mission control`.] Consult `.mcc/HISTORY.md` only when older context is needed.
+[List the open tasks with the List commands in `docs/agents/task-tracker.md`.] Consult `.mcc/HISTORY.md` only when older context is needed.
 <!-- /mcc:session-start -->
 ```
 
