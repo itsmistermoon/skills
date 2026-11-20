@@ -5,7 +5,7 @@ description: Read first for any web task (search, read a URL, list or crawl a si
 
 # Web search
 
-Three tools cover web work. Each job goes to the cheapest tool that does it well; escalate only on a real **miss** (empty, truncated, blocked or off-target result), never on a guess.
+Three tools cover web work. Each job goes to the cheapest tool that does it well; escalate only on a real **miss** (empty, truncated, blocked or off-target result).
 
 | Job | Tool | Call |
 |---|---|---|
@@ -30,16 +30,12 @@ An inventory of pages is complete once the map and the section index's navigatio
 
 ## Firecrawl Local
 
-- A CLI that runs on this machine: `scrape`, `map` and `crawl` are free, have no quota and keep URLs local. There is no MCP server for it.
-- Never use `search`, `find-tools` or `data`: they call Firecrawl Cloud and spend credits.
+- Runs on this machine: `scrape`, `map` and `crawl` are free, have no quota and keep URLs local. Use only these three; its other commands bill Firecrawl Cloud.
 - JavaScript pages open moon's local Chrome (`--browser auto`). Inside the Codex sandbox, Chrome crashes on start: pass `--browser never` and, on a miss, escalate.
 - Details: `firecrawl-local <command> --help`.
 
 ## TinyFish CLI
 
 - Auth: `TINYFISH_API_KEY` or `tinyfish auth login`; moon runs the login in their own terminal.
-- `tinyfish search query "<q>" [--location <hint>] [--language <hint>]`
-- `tinyfish fetch content get <urls...> [--format markdown|html|json] [--links]`
-- `tinyfish agent run --url <url> "<goal>" [--sync|--async]`; ask for JSON in the goal to get structured data. Track with `tinyfish agent run get <run_id>`; many URLs → `tinyfish agent batch run --input runs.csv`.
-- `tinyfish browser session create --url <url> [--proxy-country <code>]` returns a CDP session for Playwright.
+- `agent run`: ask for JSON in the goal to get structured data; many URLs → `tinyfish agent batch run --input runs.csv`.
 - Details: `tinyfish <command> --help`.
