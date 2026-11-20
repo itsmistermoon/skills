@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 radiant-index: Incremental wiki indexer with semantic embeddings.
-Usage: python {vault}/.hot/db/index.py [vault_path]
+Usage: python index.py [vault_path]
 """
 import hashlib
 import json
@@ -13,8 +13,7 @@ from pathlib import Path
 
 def _resolve_embeddings_dir() -> Path:
     """Find the directory containing embeddings.py: always a sibling of this
-    script (co-located with the skill, or copied alongside it into a vault's
-    .hot/db/ or ~/.config/radiant/bin/: either way, always a sibling)."""
+    script (co-located with the skill or in ~/.config/radiant/bin/)."""
     here = Path(__file__).parent
     if (here / "embeddings.py").exists():
         return here
@@ -204,7 +203,7 @@ def calibrate(conn: sqlite3.Connection, vault: Path, config_path: Path) -> None:
     """
     Sample intra-file pairs (similar) and inter-file pairs (dissimilar).
     Re-embeds text directly to avoid sqlite-vec blob format issues.
-    Sets threshold at p75 of dissimilar distances, saves to .hot/db/config.json.
+    Sets threshold at p75 of dissimilar distances, saves to .wiki/db/config.json.
     """
     rows = conn.execute("""
         SELECT path, content FROM documents ORDER BY RANDOM() LIMIT 100
@@ -270,10 +269,10 @@ def calibrate(conn: sqlite3.Connection, vault: Path, config_path: Path) -> None:
 def main():
     vault = get_vault(sys.argv)
     wiki_dir = vault / "wiki"
-    hot_dir = vault / ".hot" / "db"
-    hot_dir.mkdir(parents=True, exist_ok=True)
-    db_path = hot_dir / "vault.db"
-    config_path = hot_dir / "config.json"
+    db_dir = vault / ".wiki" / "db"
+    db_dir.mkdir(parents=True, exist_ok=True)
+    db_path = db_dir / "vault.db"
+    config_path = db_dir / "config.json"
 
     emb.load_embedding_model()
     conn = init_db(db_path)

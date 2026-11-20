@@ -16,7 +16,7 @@ Answer a question using the vault's wiki content as the source.
 
 Scripts live in `scripts/` inside this skill's directory (`<skill-dir>/scripts/`, e.g. `~/.agents/skills/wiki-query/scripts/` or `~/.claude/skills/wiki-query/scripts/` when installed globally, or `./skills/wiki-query/scripts/` in this repo). When running from a vault, resolve `<skill-dir>` to locate co-located scripts.
 
-- **`scripts/search.py`**: Semantic search over `.hot/db/vault.db` (step 2)
+- **`scripts/search.py`**: Semantic search over `.wiki/db/vault.db` (step 2)
 - **`scripts/embeddings.py`**: Shared embedding backend, imported by `search.py`; not invoked directly
 
 ## Steps
@@ -24,7 +24,7 @@ Scripts live in `scripts/` inside this skill's directory (`<skill-dir>/scripts/`
 1. **Resolve vault**: per `~/.config/radiant/references/VAULT-RESOLUTION.md` (synced by `/wiki-setup`: if missing, run `/wiki-setup` first). If the first argument matches a registered vault name (e.g., `/wiki-query second-brain <query>`), use that vault; treat the remaining text as the query.
 
 2. **Identify relevant pages**: prefer semantic search if the index is available:
-   - If `{vault}/.hot/db/vault.db` exists: locate `search.py` under `<skill-dir>/scripts/` (e.g. `python3 ~/.agents/skills/wiki-query/scripts/search.py`), run `<path-to-search.py> --vault {vault} "{query}" --top-k 8 --json`, and use the returned chunks (path + heading + content) as the primary source set.
+   - If `{vault}/.wiki/db/vault.db` exists: locate `search.py` under `<skill-dir>/scripts/` (e.g. `python3 ~/.agents/skills/wiki-query/scripts/search.py`), run `<path-to-search.py> --vault {vault} "{query}" --top-k 8 --json`, and use the returned chunks (path + heading + content) as the primary source set.
    - Without an index, or when semantic results do not cover the question, search filenames and text in `wiki/concepts/`, `wiki/entities/`, `wiki/sources/`, and `wiki/projects/`. Use `rg --files` for filenames and `rg -l -i -F -e '<term>' ...` for distinctive query terms across titles, aliases, descriptions, and body text. Read index.md for navigation, not as the only evidence of what exists. Missing optional directories can be skipped.
    - Read at most 8 candidate pages initially, ranked by exact title/alias match, then relevant body matches. Expand only for a specific unresolved part of the question or a contradiction. Before declaring a miss, complete a textual search for the question's distinctive terms. A failed search tool is an error, not evidence that the vault has no answer. **Done when:** supporting pages are identified or the completed searches found no relevant evidence.
 

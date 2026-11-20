@@ -11,7 +11,7 @@ Vault "{name}" is already registered. What would you like to do?
   2. Sync from upstream : pull updated templates from the upstream repo
   3. Check lint dependencies: verify Python, jq, and PyYAML are available
   4. Check skills       : verify all 5 are installed; points to the plugin or `npx skills add` if not
-  5. Initialize semantic search: build .hot/db/vault.db for the first time (checks what's available, then offers accordingly)
+  5. Initialize semantic search: build .wiki/db/vault.db for the first time (checks what's available, then offers accordingly)
   6. Add post-commit prune   : install the vault-report refresh git hook
   7. Add post-commit reindex : install the embedding reindex git hook (requires semantic search)
   8. Set as default     : make this vault the default
@@ -36,7 +36,7 @@ For each selected operation, run the corresponding step in sequence. Most steps 
 - 2 → step 3b
 - 3 → check Python 3.10+, `jq`, and `python3 -c "import yaml"`. If missing, identify the dependency and offer installation using wiki-lint's `scripts/requirements.txt` for PyYAML. Do not run lint or modify wiki content as part of this check.
 - 4 → step 4
-- 5 → step 5, same tailored dependency-check-then-offer procedure as the new-vault wizard. Skip indexing if `.hot/db/vault.db` already exists (ask user if they want to re-index instead).
+- 5 → step 5, same tailored dependency-check-then-offer procedure as the new-vault wizard. Skip indexing if `.wiki/db/vault.db` already exists (ask user if they want to re-index instead).
 - 6 → step 5a (prune)
 - 7 → step 5a (reindex; gate still applies: if vault.db doesn't exist, offer option 5 first)
 - 8 → step 6

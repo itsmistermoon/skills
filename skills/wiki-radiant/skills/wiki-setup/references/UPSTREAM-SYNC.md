@@ -8,7 +8,7 @@ Reference for `wiki-setup` (step 3b, maintenance menu option 2). Pulls updated t
 |---|---|
 | Upstream | `upstream:` in `~/.config/radiant/config.yml` (default `itsmistermoon/radiant`), ref `upstream_ref:` (default `main`) |
 | Synced | `templates/*.md` → `{vault}/templates/` (per-vault); `references/*.md` → `~/.config/radiant/references/` (global: once per machine, not per-vault) |
-| Never touched | `wiki/`, `.raw/`, `.hot/`, `.mcc/`, `AGENTS.md` |
+| Never touched | `wiki/`, `.raw/`, `.hot/`, `.wiki/`, `.mcc/`, `AGENTS.md` |
 
 `references/*.md` holds skill-internal documentation shared across multiple Radiant skills (e.g. `VAULT-RESOLUTION.md`): moved out of individual skill folders so each skill has one canonical copy to read instead of a duplicate each skill maintainer must keep in sync by hand. Global rather than per-vault because it's consulted by skill logic, not vault content.
 
