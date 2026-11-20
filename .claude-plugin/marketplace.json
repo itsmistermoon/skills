@@ -1,11 +1,18 @@
 {
   "name": "itsmistermoon-skills",
-  "owner": { "name": "itsmistermoon" },
+  "owner": {
+    "name": "itsmistermoon"
+  },
   "plugins": [
     {
       "name": "telegram",
       "source": "./skills/workflow/coast/plugin",
       "description": "Telegram channel with forum-topic routing by repo (fork of claude-plugins-official/telegram)."
+    },
+    {
+      "name": "radiant",
+      "source": "./",
+      "description": "LLM-native personal wiki: ingest sources, synthesize wiki pages, and recall knowledge across sessions."
     }
   ]
 }
