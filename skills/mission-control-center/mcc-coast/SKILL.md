@@ -1,6 +1,6 @@
 ---
 name: mcc-coast
-description: "Away mode: record your instructions, keep work moving, route decisions to issues, and log outcomes (optionally notifying your phone) until you return."
+description: "Away mode: the mission keeps flying while you are gone. Records your instructions, routes decisions to issues, and logs outcomes until you return. Use when you step away."
 disable-model-invocation: true
 argument-hint: "{instructions while away}"
 ---
@@ -34,7 +34,7 @@ Every decision and outcome below gets one **log** line under `## Log` in `.mcc/C
 
 - **Scope.** Act on the instructions and on authority the user already gave. Everything else waits for their return.
 - **Decisions.** Open an issue labeled with the configured decision label in the repo the decision belongs to (the home repo when none fits). Title: the question. Body: context, options, your recommendation, links. Log it with the title and full URL, then continue the unblocked work.
-- **Outcomes.** Log each result the user would want: a PR ready for review (full URL), a real failure, a long task finished. Work that stays pending for after the return goes to the task tracker, with its Add commands.
+- **Outcomes.** Log each result the user would want: a PR ready for review (full URL), a real failure, a long task finished. Work that stays pending for after the return goes to the task tracker (`../mcc-setup/references/TASK-TRACKER.md`) with its Add.
 - **Reserved.** Merges, irreversible deletions, credentials, and security changes wait for the user's return, whatever the instructions say.
 - **Replies from a channel.** With a two-way channel configured, a reply that arrives through it is the user's word on the decision it answers; away mode stays on.
 
