@@ -1,6 +1,6 @@
-# HANDOFF.md: format reference
+# HANDOVER.md: format reference
 
-File: `.mcc/HANDOFF.md` in the active repo root.
+File: `.mcc/HANDOVER.md` in the active repo root.
 Gitignored: local agent artifact, not versioned content.
 
 ---
@@ -16,7 +16,7 @@ agent: {agent-id}
 updated: {YYYY-MM-DD}
 ---
 
-# {project}: handoff
+# {project}: handover
 
 ## Current state
 

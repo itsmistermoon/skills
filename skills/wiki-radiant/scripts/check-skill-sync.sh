@@ -91,11 +91,11 @@ done < <(grep -lriE "creat(e|es|ing)? (a |the |new )*page|saved to \`\{?vault\}?
 # ---------------------------------------------------------------------------
 check "vault-report-schema"
 PRUNE_SCHEMA="$SKILLS_DIR/wiki-lint/references/VAULT-REPORT-SCHEMA.md"
-HANDOFF_FILE="$SKILLS_DIR/../../mission-control-center/mcc-handover/SKILL.md"
+HANDOVER_FILE="$SKILLS_DIR/../../mission-control-center/mcc-handover/SKILL.md"
 
 if [[ ! -f "$PRUNE_SCHEMA" ]]; then
   fail "wiki-lint/references/VAULT-REPORT-SCHEMA.md not found"
-elif [[ ! -f "$HANDOFF_FILE" ]]; then
+elif [[ ! -f "$HANDOVER_FILE" ]]; then
   fail "mcc-handover/SKILL.md not found: cannot verify vault-report.json consumer"
 else
   # Discover field names structurally from the "## Field definitions" bullet list
@@ -105,12 +105,12 @@ else
   if [[ -z "$prune_fields" ]]; then
     fail "no vault-report.json fields found in $PRUNE_SCHEMA: schema may have moved again"
   else
-    # Check each field is referenced in mcc-handover's vault-health triage
+    # Check each field is referenced in mcc-handover's vault-health
     # step: the actual consumer since AGENTS.md stopped reading vault-report.json
     # directly (2026-07-06) in favor of the Pending item crystallize already writes.
     all_ok=true
     while IFS= read -r field; do
-      if ! grep -q "$field" "$HANDOFF_FILE"; then
+      if ! grep -q "$field" "$HANDOVER_FILE"; then
         fail "vault-report field '$field' declared in wiki-lint schema but not referenced in mcc-handover/SKILL.md"
         all_ok=false
       fi
@@ -220,7 +220,7 @@ done
 # ---------------------------------------------------------------------------
 # skills.sh.json (npx skills add) and .claude-plugin/plugin.json (Claude Code
 # plugin marketplace) each list every skill in this suite independently.
-# nothing enforced they stay in sync, and hot-triage was missing from
+# nothing enforced they stay in sync, and a skill was once missing from
 # plugin.json for a while as a result. Compare both against the actual
 # skills/*/ directories on disk, the real source of truth.
 check "skill-list-manifests-agree"

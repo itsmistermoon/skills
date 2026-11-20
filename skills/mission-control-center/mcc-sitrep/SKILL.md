@@ -21,7 +21,7 @@ Gather what happened in the window, each item checked at its source:
 
 - PRs opened, merged, or with failing checks: `gh search prs --owner <owner> --updated ">=<date>"` for each owner in the `## Mission control` section of `AGENTS.md` (or the owners of repos this session touched, when that section is absent).
 - Commits on the branches of the repos this home repo points to, and any batch-run logs those repos keep.
-- `.mcc/HANDOFF.md` Current state, and the open tasks from the task tracker (resolve it with `../mcc-setup/references/TASK-TRACKER.md`).
+- `.mcc/HANDOVER.md` Current state, and the open tasks from the task tracker (resolve it with `../mcc-setup/references/TASK-TRACKER.md`).
 - When `.mcc/COAST.md` exists: every line of its `## Log`, and what was done under its instructions.
 
 **Done when** every event has its source checked. Write it as outcomes for the user: what finished, what failed, what is still running, what is still pending, with the full URL of every PR.

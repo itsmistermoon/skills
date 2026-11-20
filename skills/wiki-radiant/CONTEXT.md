@@ -1,16 +1,10 @@
 # Radiant
 
-Radiant is a set of agent skills for maintaining personal knowledge and session memory.
+Radiant is a set of agent skills for maintaining personal knowledge. Session memory belongs to the Mission Control Center suite.
 
 ## Language
 
 **Vault**: A repository of curated, connected knowledge built from sources and analysis.
-
-**Hot cache**: Local working context that lets the next session resume pending work and understand current decisions.
-
-**Handoff**: A snapshot of actionable state followed by a record of the session's significant work.
-
-**Playbook**: Operational lessons and conventions that remain useful beyond the session that discovered them.
 
 **Concept**: Reusable synthesized knowledge, such as a named principle, pattern, or framework.
 

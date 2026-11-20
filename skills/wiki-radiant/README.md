@@ -59,7 +59,7 @@ vaults:
 default: personal
 ```
 
-Wiki skills use an explicit vault name first, then a registered vault containing the current directory, then the default. For example, `/wiki-query work deployment decisions`. Handoff always writes session state in the active repository; an explicit vault argument can additionally target its project page.
+Wiki skills use an explicit vault name first, then a registered vault containing the current directory, then the default. For example, `/wiki-query work deployment decisions`. `mcc-handover` always writes session state in the active repository; an explicit vault argument can additionally target its project page.
 
 ## Dependencies
 

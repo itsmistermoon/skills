@@ -46,4 +46,4 @@ Write here for a single-session observation not yet confirmed: an untested worka
 
 - **`## Permanent`**: can be removed if the convention no longer applies; whoever deletes, explains.
 - **`## Working context`**: pruning is automatic, the agent does not ask.
-- **Not a session log**: neither section is a session log: that is what `HANDOFF.md` is for. PLAYBOOK captures learning that outlasts the session.
+- **Not a session log**: neither section is a session log: that is what `HANDOVER.md` is for. PLAYBOOK captures learning that outlasts the session.

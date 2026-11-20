@@ -10,9 +10,9 @@ A debrief reviews the flights so far and keeps only what the next one needs. Sta
 
 ## Steps
 
-1. **Resolve context.** Find the repo root and read `.mcc/HANDOFF.md`, `.mcc/PLAYBOOK.md`, and `.mcc/HISTORY.md`, whichever exist. If none exist, report that and stop. Read the format documents in `../mcc-handover/references/` relative to this installed skill; if mcc-handover is missing, report the incomplete installation. Resolve the task tracker with `../mcc-setup/references/TASK-TRACKER.md` and List its open tasks. **Done when:** state and its format are available.
+1. **Resolve context.** Find the repo root and read `.mcc/HANDOVER.md`, `.mcc/PLAYBOOK.md`, and `.mcc/HISTORY.md`, whichever exist. If none exist, report that and stop. Read the format documents in `../mcc-handover/references/` relative to this installed skill; if mcc-handover is missing, report the incomplete installation. Resolve the task tracker with `../mcc-setup/references/TASK-TRACKER.md` and List its open tasks. **Done when:** state and its format are available.
 
-2. **Prune temporary lessons.** Remove Working-context subsections older than 15 days from PLAYBOOK, per its format. Preserve Permanent. This mechanical expiry is part of the requested triage; no additional confirmation is needed. **Done when:** every expired Working-context entry has been removed, or no entries qualified.
+2. **Prune temporary lessons.** Remove Working-context subsections older than 15 days from PLAYBOOK, per its format. Preserve Permanent. This mechanical expiry is part of the requested debrief; no additional confirmation is needed. **Done when:** every expired Working-context entry has been removed, or no entries qualified.
 
 3. **Review recurring lessons.** Inspect the full archived history for repeated workarounds, conventions, or failure patterns. Propose each durable lesson with supporting session dates, checking PLAYBOOK for an existing match. **Done when:** each recurring candidate found is proposed or rejected with a reason. Apply additions only when authorized.
 

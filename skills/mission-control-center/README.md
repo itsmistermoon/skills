@@ -10,7 +10,7 @@ The names come from a NASA control room. A handover passes the state to the next
 
 ## Task tracker
 
-`mcc-setup` asks where pending work lives. The default is the Pending list in `.mcc/HANDOFF.md`. Any other tool works if `docs/agents/task-tracker.md` lists its List, Add, and Close commands. The skills run only those commands, so switching tools means rewriting that one file. [`mcc-setup/references/TASK-TRACKER.md`](mcc-setup/references/TASK-TRACKER.md) has the rules.
+`mcc-setup` asks where pending work lives. The default is the Pending list in `.mcc/HANDOVER.md`. Any other tool works if `docs/agents/task-tracker.md` lists its List, Add, and Close commands. The skills run only those commands, so switching tools means rewriting that one file. [`mcc-setup/references/TASK-TRACKER.md`](mcc-setup/references/TASK-TRACKER.md) has the rules.
 
 ## Telegram channel
 

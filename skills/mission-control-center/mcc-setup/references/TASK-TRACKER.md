@@ -4,11 +4,11 @@ The task tracker is where pending work lives between sessions: the flight's open
 
 ## Resolve
 
-Read the `Task tracker:` line in the `## Mission control` section of `AGENTS.md`. Without that line, the tracker is `handoff`.
+Read the `Task tracker:` line in the `## Mission control` section of `AGENTS.md`. Without that line, the tracker is `handover`.
 
-## handoff
+## handover
 
-The `### Pending` list in `.mcc/HANDOFF.md`, at most five items. List reads the list; Add appends an item; Close removes it. When a new item would make six, drop or merge the least live one and report the displaced action.
+The `### Pending` list in `.mcc/HANDOVER.md`, at most five items. List reads the list; Add appends an item; Close removes it. When a new item would make six, drop or merge the least live one and report the displaced action.
 
 ## External tracker
 
@@ -18,4 +18,4 @@ Any other tool. `docs/agents/task-tracker.md` holds the exact commands for this 
 - `## Add`: create a task, with its labels or links.
 - `## Close`: complete or drop a task, with a one-line result.
 
-Run those commands as written: they are the whole contract, so switching tools means rewriting only that file. `.mcc/HANDOFF.md` keeps a single Pending line, `- Task tracker: <tool> (docs/agents/task-tracker.md)`.
+Run those commands as written: they are the whole contract, so switching tools means rewriting only that file. `.mcc/HANDOVER.md` keeps a single Pending line, `- Task tracker: <tool> (docs/agents/task-tracker.md)`.

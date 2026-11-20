@@ -8,6 +8,7 @@ __pycache__/
 meta/vault-report.json
 .serena/
 .hot/
+.mcc/
 .firecrawl/
 .claude/
 .agents/
