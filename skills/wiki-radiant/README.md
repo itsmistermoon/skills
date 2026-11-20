@@ -16,10 +16,10 @@ Claude Code also supports the plugin distribution:
 
 ```text
 /plugin marketplace add itsmistermoon/skills
-/plugin install radiant@radiant
+/plugin install wiki-radiant@itsmistermoon-skills
 ```
 
-The flat install exposes `/wiki-ingest`, `/wiki-query`, and the other names below. The plugin exposes `/radiant:wiki-ingest`, `/radiant:wiki-query`, and so on. Use one installation method per agent.
+The flat install exposes `/wiki-ingest`, `/wiki-query`, and the other names below. The plugin exposes `/wiki-radiant:wiki-ingest`, `/wiki-radiant:wiki-query`, and so on. Use one installation method per agent.
 
 ## Start with a vault
 

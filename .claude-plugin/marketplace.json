@@ -10,7 +10,7 @@
       "description": "Telegram channel with forum-topic routing by repo (fork of claude-plugins-official/telegram)."
     },
     {
-      "name": "radiant",
+      "name": "wiki-radiant",
       "source": "./",
       "description": "LLM-native personal wiki: ingest sources, synthesize wiki pages, and recall knowledge across sessions."
     }
