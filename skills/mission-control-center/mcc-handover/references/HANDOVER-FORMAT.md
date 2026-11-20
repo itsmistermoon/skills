@@ -52,11 +52,9 @@ Never modify previous entries. Append at the end. `HISTORY.md` is never read aut
 #### Fragile context
 - {exact numbers, commands, paths, URLs, conventions a new agent can't infer from code}
 
-#### Imprint candidate
-- {only if the session produced a durable insight, design decision, or analysis worth a permanent wiki page. One line: what to imprint and suggested type. Omit if nothing qualifies.}
 ```
 
-Empty sections (Attempted and failed, Fragile context, Imprint candidate): omit entirely: never write `_(none)_`.
+Empty sections (Attempted and failed, Fragile context): omit entirely: never write `_(none)_`.
 
 Don't duplicate content already in ADRs, PRDs, issues, or commits: reference by path.
 

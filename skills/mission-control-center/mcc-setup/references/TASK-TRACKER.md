@@ -8,7 +8,9 @@ Read the `Task tracker:` line in the `## Mission control` section of `AGENTS.md`
 
 ## handover
 
-The `### Pending` list in `.mcc/HANDOVER.md`, at most five items. List reads the list; Add appends an item; Close removes it. When a new item would make six, drop or merge the least live one and report the displaced action.
+The `### Pending` list in `.mcc/HANDOVER.md`. List reads the list; Add appends an item; Close removes it.
+
+Limits: at most five tasks, plus at most two imprint candidates (items titled `Imprint:`). Candidates never take a task's place: when a new task would make six, drop or merge the least live task and report the displaced action; when a new candidate would make three, drop the oldest candidate and report it.
 
 ## External tracker
 
