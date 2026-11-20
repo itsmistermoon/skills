@@ -4,7 +4,7 @@ Agent skills for personal knowledge vaults. Turn sources into linked, cited wiki
 
 ## Install
 
-This group lives in [itsmistermoon/skills](../../README.md). Install an individual skill with `--skill wiki-query` or `--skill hot-handoff`:
+This group lives in [itsmistermoon/skills](../../README.md). Install an individual skill with `--skill wiki-query` or `--skill wiki-setup`:
 
 ```bash
 npx skills add itsmistermoon/skills --skill wiki-query
@@ -27,7 +27,7 @@ Create a Git repository for your knowledge and run `/wiki-setup` inside it. Setu
 
 Then ingest a source with `/wiki-ingest <url-or-file>` and ask a question with `/wiki-query <question>`. Answers cite the wiki pages used. Missing knowledge is reported explicitly.
 
-Session memory also works in an ordinary project repository: run `/hot-handoff` to save context locally. It needs no registered vault. Shared handoff references are bundled with the skill; `/hot-triage` maintains that state later.
+Session memory lives in the [Mission Control Center suite](../mission-control-center/README.md): run `/mcc-setup` once per repo, vault or not.
 
 ## Skills
 
@@ -38,14 +38,11 @@ Session memory also works in an ordinary project repository: run `/hot-handoff` 
 | `wiki-imprint` | Save a useful session analysis or decision as permanent knowledge |
 | `wiki-lint` | Check structure, provenance, duplication, contradictions, and source drift |
 | `wiki-setup` | Register vaults, synchronize templates, and configure optional search and hooks |
-| `hot-handoff` | Save pending work, decisions, history, and operational lessons in the active repo |
-| `hot-triage` | Prune temporary lessons and review session state for stale or recurring items |
 
-## Knowledge and session state
+## Knowledge
 
 `wiki/` contains permanent knowledge. Its four page types are concepts, entities, sources, and projects. Templates define the schema; [the format reference](docs/vault-format.md) defines links, citations, and the append-only operation log. `.raw/` preserves source artifacts outside the wiki.
 
-`.hot/` contains local, gitignored session state. `HANDOFF.md` has at most five pending items and three active decisions, followed by session history. History older than 15 days moves to `HISTORY.md`. `PLAYBOOK.md` stores permanent conventions and dated working observations. Agents read the handoff and playbook at session start; older history is consulted on demand.
 
 ## Multiple vaults
 

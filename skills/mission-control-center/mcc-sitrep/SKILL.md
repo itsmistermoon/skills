@@ -1,6 +1,6 @@
 ---
-name: sitrep
-description: "Situation report and decision clearing. Use when the user asks for a sitrep, a recap or catch-up (\"where were we?\"), or returns from coast away mode."
+name: mcc-sitrep
+description: "Situation report and decision clearing. Use when the user asks for a sitrep, a recap or catch-up (\"where were we?\"), or returns from mcc-coast away mode."
 argument-hint: "{since: date, time, or event}"
 ---
 
@@ -11,7 +11,7 @@ Reply in the user's language.
 The window starts at the first that applies:
 
 1. A start the user gave as argument.
-2. `since:` in `.coast.md`, when it exists (return from away mode).
+2. `since:` in `.mcc/COAST.md`, when it exists (return from away mode).
 3. The user's previous message in this session.
 4. 24 hours ago.
 
@@ -19,11 +19,12 @@ The window starts at the first that applies:
 
 Gather what happened in the window, each item checked at its source:
 
-- PRs opened, merged, or with failing checks: `gh search prs --owner <owner> --updated ">=<date>"` for each owner in the `## Coast` section of `AGENTS.md` (or the owners of repos this session touched, when that section is absent).
+- PRs opened, merged, or with failing checks: `gh search prs --owner <owner> --updated ">=<date>"` for each owner in the `## Mission control` section of `AGENTS.md` (or the owners of repos this session touched, when that section is absent).
 - Commits on the branches of the repos this home repo points to, and any batch-run logs those repos keep.
-- When `.coast.md` exists: every line of its `## Log`, and what was done under its instructions.
+- `.mcc/HANDOFF.md` Current state, and the open tasks: its Pending list, or the List commands of the external task tracker in `docs/agents/task-tracker.md`.
+- When `.mcc/COAST.md` exists: every line of its `## Log`, and what was done under its instructions.
 
-**Done when** every event has its source checked. Write it as outcomes for the user: what finished, what failed, what is still running, with the full URL of every PR.
+**Done when** every event has its source checked. Write it as outcomes for the user: what finished, what failed, what is still running, what is still pending, with the full URL of every PR.
 
 ## 3. Open decisions
 
@@ -43,4 +44,4 @@ Present only the highest-impact open decision, and say the ordering is your pick
 
 ## 5. Closing a return
 
-When `.coast.md` exists, delete it after the report: the user is back.
+When `.mcc/COAST.md` exists, delete it after the report: the user is back.

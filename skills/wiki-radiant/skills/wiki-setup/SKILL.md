@@ -39,7 +39,8 @@ Always end with the relevant subset of ## Output format.
    - Required: `.git/`.
    - If `.git/` is missing, report it and stop.
    - If `wiki/` and/or `AGENTS.md` are missing, don't stop: see `references/NEW-VAULT-SCAFFOLD.md` to disambiguate a new vault from a broken one, and scaffold on confirmation.
-   - If `AGENTS.md` exists but doesn't tell agents to read `.hot/HANDOFF.md` at session start (no `<!-- radiant:session-start -->` marker and no hand-written equivalent), offer to append the minimal Radiant block per the "Existing AGENTS.md without the Radiant block" section of `references/NEW-VAULT-SCAFFOLD.md`: append-only, never rewrite.
+   - If `AGENTS.md` exists but lacks the `<!-- radiant:vault-rules -->` block, offer to append it per the "Existing AGENTS.md without the Radiant block" section of `references/NEW-VAULT-SCAFFOLD.md`: append-only, never rewrite.
+   - If `AGENTS.md` lacks `<!-- mcc:session-start -->`, session memory is not set up: suggest `/mcc-setup` in the final summary.
    - Derive vault name from `basename` of CWD (e.g., `/Users/jp/second-brain` → `second-brain`).
 
 2. **Read existing config**: from `~/.config/radiant/config.yml`, if it exists.
@@ -52,7 +53,7 @@ Always end with the relevant subset of ## Output format.
    ```
    Detected you're writing in {detected-language}. Set this vault's locale to "{code}"?
 
-   This determines the language wiki-ingest, hot-handoff, and
+   This determines the language wiki-ingest, mcc-handover, and
    wiki-imprint use when writing new content to the vault (wiki pages,
    session snapshots, permanent knowledge pages).
 
@@ -82,8 +83,8 @@ Always end with the relevant subset of ## Output format.
    - **Vault templates**: if this is a new vault (scaffolded in step 1), proceed without asking (templates are part of the scaffolding the user already confirmed); if existing, ask before updating, per UPSTREAM-SYNC.md step 4.
    - **Global shared references** (`~/.config/radiant/references/`): always ask before writing, new vault or not. Confirming local vault scaffolding is not consent to write machine-global files that affect every other vault. See UPSTREAM-SYNC.md step 4.
 
-4. **Verify global skills are installed**: check each of the 7 skills (`hot-handoff`, `wiki-setup`, `wiki-query`, `wiki-ingest`, `wiki-imprint`, `wiki-lint`, `hot-triage`) individually for presence under `~/.agents/skills/`: do not assume presence just because this skill is running.
-   - **All present** → report which 7 skills are present and move on.
+4. **Verify global skills are installed**: check each of the 5 skills (`wiki-setup`, `wiki-query`, `wiki-ingest`, `wiki-imprint`, `wiki-lint`) individually for presence under `~/.agents/skills/`: do not assume presence just because this skill is running.
+   - **All present** → report which 5 skills are present and move on.
    - **Some missing**: do not attempt to install them yourself. Tell the user:
      > Missing skills: {list}. Install them with:
      > ```
@@ -105,18 +106,18 @@ Always end with the relevant subset of ## Output format.
 
 Confirm:
 - Scaffold (if run): what was created (`wiki/` structure, `AGENTS.md` stub from `templates/AGENTS-vault.md`, `meta/tags.md`): remind the user to fill in `AGENTS.md`'s "Vault identity" section themselves
-- AGENTS.md Radiant block (if offered on an existing file): appended / declined (handoff auto-loading stays off until the session-start instruction exists)
+- AGENTS.md Radiant block (if offered on an existing file): appended / declined
 - Registered vaults: list all entries in `vaults:` with their paths and locales, marking the default
-- Skills: all 7 present / missing {list} (with the `npx skills add` command to fix it)
+- Skills: all 5 present / missing {list} (with the `npx skills add` command to fix it)
 - Semantic search: active (backend: Ollama/mlx-embeddings/sentence-transformers, N chunks indexed) / not active (declined or skipped: how to enable later)
 - Sync (if run): upstream used, files updated (list), files skipped (count), deletions pending user confirmation
-- Next step: invoke `/hot-handoff` at the end of any project session
+- Next step: run `/mcc-setup` if session memory is not set up, then `/mcc-handover` at the end of any project session
 
 For a maintenance-menu run, confirm only the items for operations that actually ran.
 
 ## Rules
 
 - Always run from inside the vault directory: never ask for a path manually
-- Never write to an *existing* `wiki/`, `.raw/`, or `AGENTS.md`: those are vault content, not this skill's to touch once they exist. Two exceptions, both in `references/NEW-VAULT-SCAFFOLD.md` and both confirmation-gated: step 1's new-vault scaffold, which creates them from nothing and never overwrites; and the append-only Radiant block added at the end of an existing `AGENTS.md` that lacks the session-start marker: nothing above the appended block is ever edited. Everything else this skill writes (global config, `templates/`, `.hot/db/`, git hooks) is infrastructure
+- Never write to an *existing* `wiki/`, `.raw/`, or `AGENTS.md`: those are vault content, not this skill's to touch once they exist. Two exceptions, both in `references/NEW-VAULT-SCAFFOLD.md` and both confirmation-gated: step 1's new-vault scaffold, which creates them from nothing and never overwrites; and the append-only Radiant block added at the end of an existing `AGENTS.md` that lacks the vault-rules marker: nothing above the appended block is ever edited. Everything else this skill writes (global config, `templates/`, `.hot/db/`, git hooks) is infrastructure
 - Never hand-roll skill installation or agent-specific symlinks: `npx skills add` is the sole installer, for every agent it supports
 - Post-commit git hooks (prune, reindex: step 5a) are the only hooks this skill installs

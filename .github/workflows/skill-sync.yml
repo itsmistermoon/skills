@@ -4,11 +4,13 @@ on:
   push:
     paths:
       - "skills/wiki-radiant/**"
+      - "skills/mission-control-center/**"
       - ".claude-plugin/**"
       - ".github/workflows/skill-sync.yml"
   pull_request:
     paths:
       - "skills/wiki-radiant/**"
+      - "skills/mission-control-center/**"
       - ".claude-plugin/**"
       - ".github/workflows/skill-sync.yml"
 

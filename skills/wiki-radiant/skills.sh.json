@@ -5,8 +5,6 @@
       "title": "Radiant",
       "description": "LLM-native personal wiki: ingest sources, synthesize wiki pages, and recall knowledge across sessions.",
       "skills": [
-        "hot-handoff",
-        "hot-triage",
         "wiki-ingest",
         "wiki-query",
         "wiki-imprint",

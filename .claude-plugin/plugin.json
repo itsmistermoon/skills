@@ -18,8 +18,6 @@
     "rag"
   ],
   "skills": [
-    "./skills/wiki-radiant/skills/hot-handoff",
-    "./skills/wiki-radiant/skills/hot-triage",
     "./skills/wiki-radiant/skills/wiki-ingest",
     "./skills/wiki-radiant/skills/wiki-query",
     "./skills/wiki-radiant/skills/wiki-imprint",

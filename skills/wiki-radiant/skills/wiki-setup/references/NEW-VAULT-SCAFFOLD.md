@@ -23,26 +23,22 @@ Only what's missing: never overwrite an existing `wiki/` or `AGENTS.md`.
 1. **`wiki/` structure**: `mkdir -p wiki/{concepts,entities,sources,projects} meta`. Keep operational `meta/` outside the knowledge bundle.
 2. **`meta/tags.md`**: copy from `templates/tags.md` (fetched the same way step 3b fetches other templates: see `references/UPSTREAM-SYNC.md`) if missing.
 3. **`wiki/index.md`**: create with frontmatter declaring `okf_version: "0.1"` (the only frontmatter `index.md` is permitted, per OKF §11), followed by a minimal header (`# {vault-name}`, one line noting it's the master index) and empty `## Concepts` / `## Entities` / `## Sources` / `## Projects` sections: the first `/wiki-ingest` or `/wiki-imprint` run populates it further.
-4. **`AGENTS.md`**: copy from `templates/AGENTS-vault.md` (fetched the same way step 3b fetches other templates: see `references/UPSTREAM-SYNC.md`), replacing `{vault-name}` with the vault name. That template is the single definition of the minimal vault AGENTS.md: session-start block, vault working rules, and a "Vault identity" placeholder. Never substitute this repo's own root `AGENTS.md`: that one is production configuration for developing the suite, not for running it. Do not invent owner, locale, or vocabulary content for "Vault identity": those are personal to the vault; locale is asked and written separately in step 3/3a.
+4. **`AGENTS.md`**: copy from `templates/AGENTS-vault.md` (fetched the same way step 3b fetches other templates: see `references/UPSTREAM-SYNC.md`), replacing `{vault-name}` with the vault name. That template is the single definition of the minimal vault AGENTS.md: vault working rules and a "Vault identity" placeholder. Never substitute this repo's own root `AGENTS.md`: that one is production configuration for developing the suite, not for running it. Do not invent owner, locale, or vocabulary content for "Vault identity": those are personal to the vault; locale is asked and written separately in step 3/3a.
 
 5. Continue the normal new-vault flow from step 2 (read/write config) onward: step 3b then syncs `templates/*.md` (including `templates/tags.md`) the same way it would for any vault.
 
 ## Existing AGENTS.md without the Radiant block
 
-Read this section when step 1 finds an existing `AGENTS.md` that doesn't tell agents to read `.hot/HANDOFF.md` at session start: i.e. it lacks the `<!-- radiant:session-start -->` marker **and** has no equivalent instruction the user wrote in their own words (if either is present, skip silently: never double-append). Without that instruction, `.hot/HANDOFF.md` is written but never auto-loaded, so handoffs don't work as memory. The file is the user's: never rewrite or reorder it. Offer a single append:
+Read this section when step 1 finds an existing `AGENTS.md` without the `<!-- radiant:vault-rules -->` marker. The file is the user's: never rewrite or reorder it. Offer a single append:
 
 ```text
-Your AGENTS.md doesn't tell agents to read .hot/HANDOFF.md at session start,
-so handoffs won't be picked up automatically. Append the minimal Radiant block
-(session-start instruction + vault working rules) at the end?
+Your AGENTS.md doesn't carry the Radiant vault rules. Append them at the end?
 
   1. Yes, append it
   2. No, I'll manage AGENTS.md myself
 ```
 
-On confirmation, append verbatim from `templates/AGENTS-vault.md`: only the `<!-- radiant:session-start -->` and `<!-- radiant:vault-rules -->` blocks (markers included): no title line, no "Vault identity" placeholder. On decline, continue setup and note in the final summary that handoff auto-loading stays off until the instruction exists.
-
-If the marker (or an equivalent) is already present, skip silently: nothing to offer.
+On confirmation, append verbatim from `templates/AGENTS-vault.md` only the `<!-- radiant:vault-rules -->` block (markers included): no title line, no "Vault identity" placeholder. If the marker is already present, skip silently: nothing to offer.
 
 ## Rules
 

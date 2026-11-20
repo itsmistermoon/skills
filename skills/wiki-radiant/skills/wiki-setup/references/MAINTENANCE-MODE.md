@@ -10,14 +10,14 @@ Vault "{name}" is already registered. What would you like to do?
   1. Change locale      : update the vault's locale in config.yml
   2. Sync from upstream : pull updated templates from the upstream repo
   3. Check lint dependencies: verify Python, jq, and PyYAML are available
-  4. Check skills       : verify all 7 are installed; points to `npx skills add` if not (that's the only installer now)
+  4. Check skills       : verify all 5 are installed; points to `npx skills add` if not (that's the only installer now)
   5. Initialize semantic search: build .hot/db/vault.db for the first time (checks what's available, then offers accordingly)
   6. Add post-commit prune   : install the vault-report refresh git hook
   7. Add post-commit reindex : install the embedding reindex git hook (requires semantic search)
   8. Set as default     : make this vault the default
   9. Remove this vault  : deregister from config.yml
  10. Run tags audit     : invoke `scripts/tags-audit.py` on this vault and print the report
- 11. Add Radiant block to AGENTS.md: append the session-start + vault-rules block if missing
+ 11. Add Radiant block to AGENTS.md: append the vault-rules block if missing
 ```
 
 For each selected operation, run the corresponding step in sequence. Most steps behave identically to the new-vault wizard; where they don't, the difference is noted below:
@@ -42,6 +42,6 @@ For each selected operation, run the corresponding step in sequence. Most steps 
 - 8 → step 6
 - 9 → if any post-commit hooks are installed for this vault, offer to uninstall them first (see `references/POST-COMMIT-HOOKS.md`'s uninstall procedure); then remove vault from `vaults:`, update default if needed, save config. If combined with other selections, run option 9 last: the other operations may need the vault's entry to still exist.
 - 10 → run `python3 scripts/tags-audit.py {vault-path}` (paths relative to this skill's directory, per `SKILL.md`'s `## Available scripts`). Pass `--write-snapshot` only if the user wants a dated snapshot saved under `meta/`.
-- 11 → the "Existing AGENTS.md without the Radiant block" procedure in `references/NEW-VAULT-SCAFFOLD.md`. If the `<!-- radiant:session-start -->` marker (or a hand-written equivalent) is already present, report that and do nothing.
+- 11 → the "Existing AGENTS.md without the Radiant block" procedure in `references/NEW-VAULT-SCAFFOLD.md`. If the `<!-- radiant:vault-rules -->` marker is already present, report that and do nothing.
 
 After all selected operations complete, follow SKILL.md's ## Output format: regardless of which combination of options ran, including option 9.

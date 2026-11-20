@@ -21,4 +21,4 @@ The root index declares `okf_version: "0.1"`. Every content page must appear in 
 
 Log entries use `**[YYYY-MM-DD] operation** | detail`. Record ingests, imprints, actual lint corrections, and unanswered queries. Successful queries do not produce log noise. Page changelog entries use `- YYYY-MM-DD: description`.
 
-Session state is a separate concern under `.hot/`, outside the knowledge bundle. Its format is defined by the references bundled with hot-handoff.
+Session state is a separate concern under `.mcc/`, outside the knowledge bundle, owned by the Mission Control Center suite (`mcc-handover`).

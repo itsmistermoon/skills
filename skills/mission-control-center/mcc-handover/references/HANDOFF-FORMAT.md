@@ -1,13 +1,13 @@
 # HANDOFF.md: format reference
 
-File: `.hot/HANDOFF.md` in the active repo root.
+File: `.mcc/HANDOFF.md` in the active repo root.
 Gitignored: local agent artifact, not versioned content.
 
 ---
 
 ## Zone 1: Current state (MUTABLE)
 
-Updated on every `/hot-handoff`. Hard limits: **max 5 pending, max 3 active decisions**.
+Updated on every `/mcc-handover`. Hard limits: **max 5 pending, max 3 active decisions**.
 When adding an item, evaluate whether an existing one is obsolete and remove it.
 
 ```markdown
@@ -29,7 +29,7 @@ updated: {YYYY-MM-DD}
 
 `agent:` identifies who last wrote Current state. Update it on every invocation.
 
-`### Pending`: only what requires action in a future session: if a next agent doesn't need to act on it, it belongs in History instead. If a specific skill would help resume, mention it inline in the relevant item rather than a dedicated section.
+`### Pending`: with an external task tracker, this section holds one line, `- Task tracker: <tool> (docs/agents/task-tracker.md)`, and the tasks live there. With `handoff`: only what requires action in a future session: if a next agent doesn't need to act on it, it belongs in History instead. If a specific skill would help resume, mention it inline in the relevant item rather than a dedicated section.
 
 ---
 

@@ -1,6 +1,6 @@
 # PLAYBOOK.md format
 
-File: `.hot/PLAYBOOK.md` in the active repo root.
+File: `.mcc/PLAYBOOK.md` in the active repo root.
 Gitignored: local agent artifact, not versioned content.
 
 ---
@@ -29,7 +29,7 @@ updated: YYYY-MM-DD
 
 ## Zone 2: Working context (15-DAY TTL)
 
-Active context with a date. Pruned by `/hot-triage` when older than 15 days.
+Active context with a date. Pruned by `/mcc-debrief` when older than 15 days.
 
 Write here for a single-session observation not yet confirmed: an untested workaround, a first-seen failure pattern, an inferred convention. If genuinely ambiguous whether it belongs in Permanent instead, ask once: "This looks like it might be a standing convention: write it to Permanent, or keep it as working context for now?" Default here unless the user approves Permanent.
 

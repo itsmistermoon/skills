@@ -44,7 +44,7 @@ _finding '(curl|wget|fetch|http.?get)\s+https?://' "egress_command" "Egress comm
 _finding 'ANTHROPIC_BASE_URL' "anthropic_base_url" "ANTHROPIC_BASE_URL: possible injection target"
 
 # ── Credentials: detected AND redacted in place, never just reported ────────
-# Patterns mirror hot-handoff/SKILL.md's own redaction rule (sk-*, Bearer *,
+# Patterns mirror mcc-handover/SKILL.md's own redaction rule (sk-*, Bearer *,
 # ghp_*, ?token=*) plus AWS access key IDs (AKIA...) and basic-auth-style
 # user:pass in URLs/flags: all common in scraped tech content.
 REDACTED=0

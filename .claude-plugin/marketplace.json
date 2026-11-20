@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "telegram",
-      "source": "./skills/workflow/coast/plugin",
+      "source": "./skills/mission-control-center/telegram-plugin",
       "description": "Telegram channel with forum-topic routing by repo (fork of claude-plugins-official/telegram)."
     },
     {

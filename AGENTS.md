@@ -6,7 +6,7 @@ Repository of Claude skills for the captain: the versioned source of truth, from
 
 - `skills/<group>/README.md`: lists the group's skills with links and short descriptions.
 - `skills/<group>/<name>/SKILL.md`: each skill.
-- Current groups: `branding` (Imaquinaria identity), `misc` (general use), and `wiki-radiant` (personal knowledge base and session memory).
+- Current groups: `branding` (Imaquinaria identity), `misc` (general use), `mission-control-center` (`mcc` session skills), and `wiki-radiant` (personal knowledge base).
 
 ## Conventions
 
