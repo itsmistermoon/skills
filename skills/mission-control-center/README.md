@@ -3,7 +3,7 @@
 The names come from a NASA control room. Each skill applies that idea to agent sessions in a repo. Session state lives in `.mcc/` at the repo root, which git ignores.
 
 - [`mcc-setup`](mcc-setup/SKILL.md) runs once per repo. It writes the session-start block and the `## Mission control` section in `AGENTS.md`, picks the task tracker, and sets up notifications and the decision label.
-- [`mcc-handover`](mcc-handover/SKILL.md) runs at the end of a session. It sends pending work to the task tracker and saves decisions, lessons, and history in `.mcc/`.
+- [`mcc-handover`](mcc-handover/SKILL.md) runs at the end of a session. It sends pending work to the task tracker and saves decisions, lessons, and history in `.mcc/`. A session insight worth a permanent wiki page becomes an `Imprint:` task for `/wiki-imprint`, from the [Radiant suite](../wiki-radiant/README.md).
 - [`mcc-debrief`](mcc-debrief/SKILL.md) runs on demand. It deletes lessons older than 15 days and closes tasks and decisions that no longer apply.
 - [`mcc-coast`](mcc-coast/SKILL.md) is away mode. It records your instructions, opens an issue for each decision, and logs outcomes until you return. Phone notifications are optional.
 - [`mcc-sitrep`](mcc-sitrep/SKILL.md) reports what happened since a given time and presents open decisions one at a time.
@@ -14,4 +14,4 @@ The names come from a NASA control room. Each skill applies that idea to agent s
 
 ## Telegram channel
 
-[`telegram-plugin/`](telegram-plugin/) is a fork of the official Telegram channel that gives each repo its own forum topic. `mcc-coast` uses it so you can reply from your phone. Setup steps are in [`mcc-setup/references/NOTIFICATIONS.md`](mcc-setup/references/NOTIFICATIONS.md).
+[`telegram-plugin/`](telegram-plugin/) is an optional fork of the official Telegram channel that gives each repo its own forum topic. With it, you can answer `mcc-coast` from your phone. Without it, `mcc-coast` still logs everything and can still send notifications through `bin/notify`. Setup steps are in [`mcc-setup/references/NOTIFICATIONS.md`](mcc-setup/references/NOTIFICATIONS.md).
