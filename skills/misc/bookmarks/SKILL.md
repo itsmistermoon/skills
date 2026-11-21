@@ -20,8 +20,15 @@ Reply in the user's language. Store titles, descriptions, notes, categories, and
 ## Ingest a URL
 
 1. Normalize the URL for duplicate checks: lowercase the host; remove default ports, fragments, and common tracking parameters (`utm_*`, `fbclid`, `gclid`); preserve other query parameters. Search all bookmark concepts for a matching `resource`; if found, report the existing item and stop.
-2. Open the URL in a browser. Read the page to identify its canonical URL, title, purpose, audience, and main topics or technologies. Store the canonical URL when available; otherwise store the input URL. Check both normalized URLs against existing `resource` values; if either matches, report the existing item and stop. If the page cannot be inspected or its identity is unclear, ask the user for context and stop before writing.
-3. After each navigation, set the browser viewport to 1440×1100, wait for the page to render, then capture its first viewport. Save WebP in the bundle's `assets/{slug}-{YYYY-MM-DD}.webp`, using the local capture date. Aim for a clear image under 400 KiB; if needed, reduce the viewport to 1280×900 and capture again. Record the actual viewport in `screenshot_viewport`; record `screenshot_captured_at` as an ISO 8601 timestamp with the local UTC offset. If the browser cannot capture the actual page, explain the issue and stop without adding an incomplete bookmark.
+2. Read the page with `firecrawl-local scrape <url> --markdown` (on a miss, follow the `web-search` skill's escalation) to identify its canonical URL, title, purpose, audience, and main topics or technologies. Store the canonical URL when available; otherwise store the input URL. Check both normalized URLs against existing `resource` values; if either matches, report the existing item and stop. If the page cannot be inspected or its identity is unclear, ask the user for context and stop before writing.
+3. Capture the first viewport with headless Playwright on the installed Chrome, then convert it to WebP:
+
+   ```sh
+   npx -y playwright screenshot --channel chrome --viewport-size "1440,1100" --wait-for-timeout 2000 <url> /tmp/{slug}.png
+   cwebp -quiet -q 80 /tmp/{slug}.png -o assets/{slug}-{YYYY-MM-DD}.webp
+   ```
+
+   Use the local capture date in the filename. Aim for a clear image under 400 KiB; if needed, capture again at `1280,900`. Record the actual viewport in `screenshot_viewport`; record `screenshot_captured_at` as an ISO 8601 timestamp with the local UTC offset. Look at the image: if it shows an error, a blank page or a bot challenge instead of the actual page, delete it, explain the issue and stop without adding an incomplete bookmark.
 4. Reconcile the existing categories and tags against `taxonomy.md`. Use one registered broad category and zero to five registered tags. Reuse values that fit. Add a category only when none describes a recurring class of resources. Add a tag only when no existing tag fits and the topic can recur. Keep names in English, lowercase, unaccented, and hyphenated. Omit generic, synonymous, repetitive, or category-duplicating tags. Update the taxonomy in the same operation when adding a value.
 5. Create `items/{slug}.md` with OKF YAML frontmatter. Derive a readable lowercase slug from the title; if that filename already exists for a different resource, add a short host suffix. Never overwrite an existing item. Use this field order:
 
