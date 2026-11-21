@@ -1,6 +1,6 @@
 ---
 name: web-search
-description: Read first for any web task (search, read a URL, list or crawl a site's pages, interact with a website): picks Exa, Firecrawl Local or TinyFish and the escalation order.
+description: Read first for any web task (search, read a URL, list or crawl a site's pages, interact with a website): picks Exa, Firecrawl Local, TinyFish or browse (logged-in sites) and the escalation order.
 ---
 
 # Web search
@@ -15,7 +15,7 @@ Three tools cover web work. Each job goes to the cheapest tool that does it well
 | **Map**: list every URL of a site or section | Firecrawl Local CLI | `firecrawl-local map <url> --search <section word>` to keep it on the section |
 | **Crawl**: many pages of one site → markdown | Firecrawl Local CLI | `firecrawl-local crawl <url> --limit 50 --out <dir>`; it returns when the crawl ends |
 | **Act**: click, fill forms, paginate, extract from a dynamic site | TinyFish CLI | `tinyfish agent run --url <url> "<goal>"`; raw CDP → `tinyfish browser` |
-| **Logged-in**: a site that needs moon's session | `browse` MCP | moon's real Chrome; changes on moon's accounts need moon's "dale" |
+| **Logged-in**: a site that needs the user's session | `browse` MCP | the user's real Chrome (see browse below); changes on the user's accounts need the user's explicit approval |
 | **Research**: multi-step, list-building, enrichment across sites | Exa MCP | `agent_run` |
 
 ## Escalation
@@ -31,11 +31,16 @@ An inventory of pages is complete once the map and the section index's navigatio
 ## Firecrawl Local
 
 - Runs on this machine: `scrape`, `map` and `crawl` are free, have no quota and keep URLs local. Use only these three; its other commands bill Firecrawl Cloud.
-- JavaScript pages open moon's local Chrome (`--browser auto`). Inside the Codex sandbox, Chrome crashes on start: pass `--browser never` and, on a miss, escalate.
+- JavaScript pages open the local Chrome (`--browser auto`). Inside the Codex sandbox, Chrome crashes on start: pass `--browser never` and, on a miss, escalate.
 - Details: `firecrawl-local <command> --help`.
 
 ## TinyFish CLI
 
-- Auth: `TINYFISH_API_KEY` or `tinyfish auth login`; moon runs the login in their own terminal.
+- Auth: `TINYFISH_API_KEY` or `tinyfish auth login`; the user runs the login in their own terminal.
 - `agent run`: ask for JSON in the goal to get structured data; many URLs → `tinyfish agent batch run --input runs.csv`.
 - Details: `tinyfish <command> --help`.
+
+## browse
+
+- `browse` reports `extension disconnected` when Chrome is closed. Open Chrome in the background (`open -g -j -a "Google Chrome"`), wait until `browse status` shows `Extension: connected`, then retry.
+- If `open` fails inside the Codex sandbox, report that the session must run without the sandbox.
