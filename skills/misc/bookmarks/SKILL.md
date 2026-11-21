@@ -5,7 +5,7 @@ disable-model-invocation: true
 argument-hint: "{url | search query}"
 ---
 
-Reply in the user's language. Store titles, descriptions, notes, categories, and tags in English; preserve product names and identifiers.
+Store titles, descriptions, notes, categories, and tags in English; preserve product names and identifiers.
 
 ## Start and first-run setup
 
@@ -52,7 +52,7 @@ Reply in the user's language. Store titles, descriptions, notes, categories, and
 
    Use `tags: []` when no tag fits. Use today's local date for `date_added`. Use `later` when the user gave no verdict; preserve `adopt` or `discard` when specified. Put useful extra context in a `## Note` body section. Embed the image with a standard Markdown link to the same relative path and an accessible description.
 6. Add the new concept to `index.md` under its category, including its description. Keep category order from `taxonomy.md`; put new categories at the end. Save the note, image, index, and any registry change together.
-7. Re-read the concept and changed files. Confirm the URL appears once and the frontmatter includes `type`, `title`, `description`, `resource`, `category`, `tags`, `verdict`, `date_added`, `screenshot`, `screenshot_captured_at`, `screenshot_viewport`, and `screenshot_format`. Confirm `date_added` is today's local date, the verdict is preserved or defaults to `later`, category and tags are registered, tag count is at most five, the screenshot exists and is embedded, its recorded viewport matches the capture, its timestamp includes an explicit offset, and the index links to it exactly once.
+7. Re-read the concept and changed files against steps 3–6: every field of the step 5 template present and in order, `date_added` today, classification registered, viewport and timestamp matching the capture, and one index link.
 8. Report the title, category, tags, capture date, and changed paths.
 
 **Complete when:** the bookmark concept is indexed exactly once, has valid OKF frontmatter, uses registered classification values, and embeds its dated screenshot of the live resource.
@@ -60,8 +60,8 @@ Reply in the user's language. Store titles, descriptions, notes, categories, and
 ## Search the collection
 
 1. Turn the request into the need, resource type, technologies, and explicit constraints.
-2. Search `index.md` and bookmark concepts across titles, `resource` URLs, categories, tags, descriptions, and notes. Try distinctive terms and useful Spanish and English synonyms; do not rely only on exact tag matches.
+2. Search `index.md` and bookmark concepts across titles, `resource` URLs, categories, tags, descriptions, and notes. Try distinctive terms and their Spanish and English synonyms.
 3. Read candidate concepts and rank them by fit, practical usefulness, and stated constraints. Return up to five results; include more only when each adds distinct value.
-4. For each result, show its title, URL, category, tags, verdict, and a specific reason supported by the concept. If no entries match after searching the relevant fields and synonyms, say the collection has no match. Never invent links or present outside knowledge as collection data.
+4. For each result, show its title, URL, category, tags, verdict, and a specific reason supported by the concept. If no entries match after searching the relevant fields and synonyms, say the collection has no match.
 
 **Complete when:** each result is supported by a saved concept and matches the user's need, or the relevant fields and synonyms have been searched with no match found.
