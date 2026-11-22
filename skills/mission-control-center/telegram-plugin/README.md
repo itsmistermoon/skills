@@ -39,6 +39,12 @@ Writes `TELEGRAM_BOT_TOKEN=...` to `~/.claude/channels/telegram/.env`. You can a
 
 > To run multiple bots on one machine (different tokens, separate allowlists), point `TELEGRAM_STATE_DIR` at a different directory per instance.
 
+Each session receiving the channel creates `${TELEGRAM_STATE_DIR:-${CLAUDE_CONFIG_DIR:-~/.claude}/channels/telegram}/claims/<repo-key>/<server-pid>`. A Claude hook can identify its own channel by finding a live claim whose server process shares the hook's Claude ancestor. A duplicate session has no claim and receives a warning on stderr and in the MCP instructions.
+
+Accepted messages and successful sends and edits are recorded in `log/YYYY-MM-DD.md` under the state directory, with local time, direction, topic and text. The bot token, recognizable credential assignments and pairing codes are redacted; treat the logs as private conversation data.
+
+Each repo home's `bin/notify` sends notifications through the same bot using a separate token path.
+
 **4. Relaunch with the channel flag.**
 
 The server won't connect without this — exit your session and start a new one:
@@ -87,11 +93,11 @@ local path is included in the `<channel>` notification so the assistant can
 `Read` it. Telegram compresses photos — if you need the original file, send it
 as a document instead (long-press → Send as File).
 
-## No history or search
+## Local history
 
 Telegram's Bot API exposes **neither** message history nor search. The bot
-only sees messages as they arrive — no `fetch_messages` tool exists. If the
-assistant needs earlier context, it will ask you to paste or summarize.
+only sees messages as they arrive — no `fetch_messages` tool exists. The local
+daily logs contain messages seen while the channel was running.
 
 This also means there's no `download_attachment` tool for historical messages
 — photos are downloaded eagerly on arrival since there's no way to fetch them
