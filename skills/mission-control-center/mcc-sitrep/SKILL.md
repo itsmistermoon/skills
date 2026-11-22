@@ -23,6 +23,7 @@ Gather what happened in the window, each item checked at its source:
 - Commits on the branches of the repos this home repo points to, and any batch-run logs those repos keep.
 - `.mcc/HANDOVER.md` Current state, and the open tasks from the task tracker (resolve it with `../mcc-setup/references/TASK-TRACKER.md`).
 - When `.mcc/COAST.md` exists: every line of its `## Log`, and what was done under its instructions.
+- On return from coast, read the Telegram daily logs in `${TELEGRAM_STATE_DIR:-${CLAUDE_CONFIG_DIR:-~/.claude}/channels/telegram}/log/` for the window and summarize the messages in the report.
 
 **Done when** every event has its source checked. Write it as outcomes for the user: what finished, what failed, what is still running, what is still pending, with the full URL of every PR.
 
