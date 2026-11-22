@@ -16,8 +16,8 @@ The notification hooks act only when `bin/notify` exists; the return reminder wo
 [../scripts/claude-hook.sh](../scripts/claude-hook.sh) adds three behaviours:
 
 - `Notification`: while `.mcc/COAST.md` exists, notifies whenever the session waits for input or a permission.
-- `Stop`: while `.mcc/COAST.md` exists, notifies each finished turn with its last message.
-- `UserPromptSubmit`: while `.mcc/COAST.md` exists, a prompt typed in the terminal gets a reminder to run `mcc-sitrep` first. Prompts arriving from a channel (`<channel source=...>`) are skipped.
+- `Stop`: while `.mcc/COAST.md` exists, sends the complete last message in parts of at most 4096 characters, preferring paragraph boundaries. It skips a session whose Claude process also owns a live Telegram plugin claim under `${TELEGRAM_STATE_DIR:-${CLAUDE_CONFIG_DIR:-~/.claude}/channels/telegram}/claims/<repo-key>/<pid>`.
+- `UserPromptSubmit`: while `.mcc/COAST.md` exists, a prompt typed in the terminal gets a reminder to run `mcc-sitrep` first. Channel messages, rex-fleet messages starting with `[from `, and `<task-notification>` events are skipped.
 
 Copy it to `.claude/hooks/mcc-coast.sh`, make it executable, and register it in `.claude/settings.json`:
 
@@ -32,6 +32,8 @@ Copy it to `.claude/hooks/mcc-coast.sh`, make it executable, and register it in 
 ```
 
 Merge into existing `hooks` arrays rather than replacing them. Requires `jq`.
+
+Run `bash skills/mission-control-center/mcc-setup/tests/claude-hook.sh` from the skills repository to check the hook.
 
 ## 3. Two-way channel (Claude Code, optional)
 
