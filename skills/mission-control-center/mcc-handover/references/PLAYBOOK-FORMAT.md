@@ -22,7 +22,7 @@ updated: YYYY-MM-DD
 ## Permanent
 
 - **{convention}**: {concise description of why it exists and what breaks if violated}
-- **{workaround}**: {unexpected behavior, cause, fix applied, date confirmed: YYYY-MM-DD}
+- **{workaround}**: {unexpected behavior, cause, fix applied, confirmed: YYYY-MM-DD, YYYY-MM-DD}
 ```
 
 ---
@@ -46,4 +46,5 @@ Write here for a single-session observation not yet confirmed: an untested worka
 
 - **`## Permanent`**: can be removed if the convention no longer applies; whoever deletes, explains.
 - **`## Working context`**: pruning is automatic, the agent does not ask.
+- **Evidence**: an entry accumulates evidence in either zone. When a later session confirms it, append that session's date, plus a link or commit when one exists.
 - **Not a session log**: neither section is a session log: that is what `HANDOVER.md` is for. PLAYBOOK captures learning that outlasts the session.
