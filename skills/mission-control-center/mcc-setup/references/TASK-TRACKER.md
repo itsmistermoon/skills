@@ -14,7 +14,7 @@ Read the `Task tracker:` line in the `## Mission control` section of `AGENTS.md`
 
 The `### Pending` list in `.mcc/HANDOVER.md`. List reads the list; Add appends an item, prefixed with its triage label in brackets (`[ready-for-agent]`); Close removes it.
 
-Limits: at most five tasks, plus at most two imprint candidates (items titled `Imprint:`). Candidates never take a task's place: when a new task would make six, drop or merge the least live task and report the displaced action; when a new candidate would make three, drop the oldest candidate and report it.
+Limit: at most five tasks. When a new task would make six, drop or merge the least live task and report the displaced action.
 
 ## External tracker
 
