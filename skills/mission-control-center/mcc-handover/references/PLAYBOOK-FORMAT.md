@@ -1,6 +1,6 @@
 # PLAYBOOK.md format
 
-File: `.mcc/PLAYBOOK.md` in the active repo root.
+File: `.mcc/PLAYBOOK.md` in the scoped repo named by the lesson's evidence.
 Gitignored: local agent artifact, not versioned content.
 
 ---

@@ -69,6 +69,7 @@ Add this section to `AGENTS.md`, filled in, or replace an older `## Coast` secti
 - Notify command: `bin/notify "<text>"` (prefix: `[<repo>]`; set `NOTIFY_ORIGIN=<role>` to override). Write `none` when notifications were declined.
 - Decision label: `decision`, in repos of: <owner>, <owner>.
 - Task tracker: `handover`, or the tool name and `docs/agents/task-tracker.md`.
+- Scope: `<repo-path>,<repo-path>` (optional; paths relative to this repo root or absolute). Omit for this repo alone; list every repo whose state this agent owns.
 - If `.mcc/COAST.md` exists, the user is away: follow the `mcc-coast` skill from step 3. Their first message typed in the terminal is the return: run the `mcc-sitrep` skill.
 ```
 
