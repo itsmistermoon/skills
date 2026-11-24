@@ -1,6 +1,6 @@
 ---
 name: ambitious-prompts
-description: Turn a simple request into a more ambitious task when the user wants to get more value from work with a model.
+description: Raise the ambition of a plan or prompt along speed, altitude, depth and range. Use when drafting or improving a plan, or when the user wants more value from a task given to a model.
 ---
 
 # Ambitious prompts
