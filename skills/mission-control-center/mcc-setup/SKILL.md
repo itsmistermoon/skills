@@ -19,7 +19,7 @@ notify: none             # or the notify command
 decision_owners: []      # GitHub users or orgs
 ```
 
-With the file present, show its values and ask for one confirmation in place of the questions in steps 3 to 5; with no user present (you run as a subagent), apply them and list them in your report. With the file missing, ask as each step says, then write the file with the answers. A copied task tracker keeps its commands and takes this repo's channel and names.
+With the file present, show its values and ask for one confirmation in place of the questions in steps 3 to 5; with no user present (you run as a subagent), apply them and list them in your report. With the file missing, ask as each step says, then write the file with the answers. Adapt a copied task tracker to the channel parameter contract in `references/TASK-TRACKER.md`.
 
 ## 1. State folder
 
@@ -61,7 +61,7 @@ Without a notify command, `mcc-coast` is a plain away mode: everything goes to t
 
 ## 6. Mission control section
 
-Add this section to `AGENTS.md`, filled in, or replace an older `## Coast` section:
+Ask which repos the agent owns in addition to the base repo. Resolve each supplied path to a Git root; ask again for invalid paths. With no user present, default to the base repo alone. Add this section to `AGENTS.md`, filled in, or replace an older `## Coast` section. For additional repos, add a `Scope:` line listing their real absolute paths or paths relative to the base root; omit the line for the base repo alone.
 
 ```markdown
 ## Mission control
@@ -69,7 +69,6 @@ Add this section to `AGENTS.md`, filled in, or replace an older `## Coast` secti
 - Notify command: `bin/notify "<text>"` (prefix: `[<repo>]`; set `NOTIFY_ORIGIN=<role>` to override). Write `none` when notifications were declined.
 - Decision label: `decision`, in repos of: <owner>, <owner>.
 - Task tracker: `handover`, or the tool name and `docs/agents/task-tracker.md`.
-- Scope: `<repo-path>,<repo-path>` (optional; paths relative to this repo root or absolute). Omit for this repo alone; list every repo whose state this agent owns.
 - If `.mcc/COAST.md` exists, the user is away: follow the `mcc-coast` skill from step 3. Their first message typed in the terminal is the return: run the `mcc-sitrep` skill.
 ```
 

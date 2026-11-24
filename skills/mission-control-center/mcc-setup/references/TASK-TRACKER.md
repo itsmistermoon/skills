@@ -12,16 +12,16 @@ Read the `Task tracker:` line in the `## Mission control` section of `AGENTS.md`
 
 ## handover
 
-The `### Pending` list in the base repo's `.mcc/HANDOVER.md`. List reads only items for repos in scope; Add appends an item, prefixed with its triage label in brackets (`[ready-for-agent]`) and the repo path; Close removes it. Legacy items without a repo path belong to the base repo. This tracker cannot route an item to an out-of-scope repo's channel: report it as uncaptured instead.
+The `### Pending` list in the base repo's `.mcc/HANDOVER.md`. List reads items for repos in scope and previously routed external items; Add appends an item, prefixed with its triage label in brackets (`[ready-for-agent]`) and destination repo path, including for an out-of-scope repo. This makes external work visible to the base repo's owner. Close removes it. Legacy items without a repo path belong to the base repo.
 
 Limit: at most five tasks. When a new task would make six, drop or merge the least live task and report the displaced action.
 
 ## External tracker
 
-Any other tool. `docs/agents/task-tracker.md` holds the exact commands for this repo under three headings:
+Any other tool. `docs/agents/task-tracker.md` holds commands under three headings. List and Add accept a `<channel>` parameter, mapped from the destination repo path to its channel by the document's instructions:
 
-- `## List`: show the open tasks, and the ready ones per triage label, filtered to the repos in the resolved scope.
-- `## Add`: create a task in the relevant repo or channel with its triage label, plus any other labels or links.
+- `## List`: show the open tasks, and the ready ones per triage label, for `<channel>`. Run once for each repo in the resolved scope.
+- `## Add`: create a task in `<channel>` with its triage label, plus any other labels or links. Run for each destination repo, including outside scope.
 - `## Close`: complete or drop a task, with a one-line result.
 
-Run those commands as written: they are the whole contract, so switching tools means rewriting only that file. `.mcc/HANDOVER.md` keeps a single Pending line, `- Task tracker: <tool> (docs/agents/task-tracker.md)`.
+Substitute the destination channel in those commands: they are the whole contract, so switching tools means rewriting only that file. `.mcc/HANDOVER.md` keeps a single Pending line, `- Task tracker: <tool> (docs/agents/task-tracker.md)`.
