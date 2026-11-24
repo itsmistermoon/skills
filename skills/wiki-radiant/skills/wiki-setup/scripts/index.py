@@ -103,6 +103,13 @@ def get_chunks(content: str) -> list[tuple[int, str | None, str]]:
 
 
 def init_db(db_path: Path) -> sqlite3.Connection:
+    if not db_path.exists():
+        config_path = db_path.parent / "config.json"
+        if config_path.exists():
+            config = json.loads(config_path.read_text())
+            config.pop("distance_threshold", None)
+            config.pop("calibration_sample", None)
+            config_path.write_text(json.dumps(config, indent=2))
     conn = sqlite3.connect(str(db_path))
     if conn.execute("SELECT 1 FROM sqlite_master WHERE name = 'vec_documents'").fetchone():
         conn.close()
@@ -150,17 +157,20 @@ def index_file(conn: sqlite3.Connection, vault: Path, md_path: Path) -> None:
     from datetime import datetime, timezone
     now = datetime.now(timezone.utc).isoformat()
 
+    chunks = [(i, h, t) for i, h, t in chunks if t.strip()]
+    rows = []
+    for start in range(0, len(chunks), 32):
+        batch = chunks[start:start + 32]
+        vectors = emb.embed_documents([text for _, _, text in batch])
+        rows.extend((rel_path, heading, chunk_index, text, file_hash, now, emb.vec_to_bytes(vec))
+                    for (chunk_index, heading, text), vec in zip(batch, vectors))
+
     with conn:
         delete_file(conn, rel_path)
-        chunks = [(i, h, t) for i, h, t in chunks if t.strip()]
-        for start in range(0, len(chunks), 32):
-            batch = chunks[start:start + 32]
-            vectors = emb.embed_documents([text for _, _, text in batch])
-            for (chunk_index, heading, text), vec in zip(batch, vectors):
-                conn.execute(
-                    "INSERT INTO documents (path, heading, chunk_index, content, file_hash, updated_at, embedding) VALUES (?,?,?,?,?,?,?)",
-                    (rel_path, heading, chunk_index, text, file_hash, now, emb.vec_to_bytes(vec))
-                )
+        conn.executemany(
+            "INSERT INTO documents (path, heading, chunk_index, content, file_hash, updated_at, embedding) VALUES (?,?,?,?,?,?,?)",
+            rows,
+        )
 
 
 

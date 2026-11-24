@@ -5,7 +5,10 @@ Semantic search uses Ollama and the `qwen3-embedding:0.6b` model. Python 3.10+ u
 Check the service and model:
 
 ```bash
-curl -fsS "${OLLAMA_HOST:-http://127.0.0.1:11434}/api/tags" | python3 -c 'import json, sys; print("\n".join(m["name"] for m in json.load(sys.stdin)["models"]))'
+host=${OLLAMA_HOST-http://127.0.0.1:11434}
+while [[ $host == */ ]]; do host=${host%/}; done
+if [[ $host != *://* ]]; then host="http://$host"; fi
+curl -fsS "$host/api/tags" | python3 -c 'import json, sys; print("\n".join(m["name"] for m in json.load(sys.stdin)["models"]))'
 ```
 
 If Ollama is not responding, run `brew services start ollama`. If the list does not contain `qwen3-embedding:0.6b`, run `ollama pull qwen3-embedding:0.6b`, then repeat the check.
