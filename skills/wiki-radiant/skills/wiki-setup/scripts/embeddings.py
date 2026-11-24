@@ -1,49 +1,63 @@
-"""Qwen3 embeddings for semantic retrieval."""
+"""Ollama Qwen3 embeddings for semantic retrieval."""
+import json
+import math
 import os
 import struct
-import sys
+import urllib.error
+import urllib.request
 
-MODEL_NAME = "Qwen/Qwen3-Embedding-0.6B"
+MODEL_NAME = "qwen3-embedding:0.6b"
 DIMENSIONS = 1024
 QUERY_INSTRUCTION = "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery: "
-_st_model = None
 
 
 class EmbeddingBackendError(RuntimeError):
-    """An embedding call returned an invalid vector."""
+    """The embedding service failed or returned an invalid vector."""
 
 
-def load_embedding_model() -> str:
-    global _st_model
-    if _st_model is None:
-        try:
-            from sentence_transformers import SentenceTransformer
-            _st_model = SentenceTransformer(
-                MODEL_NAME, device=os.environ.get("RADIANT_EMBED_DEVICE", "mps")
-            )
-        except Exception as exc:
-            sys.exit(f"ERROR: Cannot load {MODEL_NAME} with sentence-transformers: {exc}")
-    return "sentence-transformers"
-
-
-def embed(text: str) -> list[float]:
-    load_embedding_model()
+def embed_documents(texts: list[str]) -> list[list[float]]:
+    if not texts:
+        return []
+    host = os.environ.get("OLLAMA_HOST", "http://127.0.0.1:11434").rstrip("/")
+    if "://" not in host:
+        host = "http://" + host
+    request = urllib.request.Request(host + "/api/embed", data=json.dumps({
+        "model": MODEL_NAME, "input": texts,
+    }).encode(), headers={"Content-Type": "application/json"})
     try:
-        vec = _st_model.encode(text, normalize_embeddings=True).tolist()
-    except Exception as exc:
-        raise EmbeddingBackendError(f"Embedding failed: {exc}") from exc
-    if len(vec) != DIMENSIONS:
-        raise EmbeddingBackendError(f"Embedding has {len(vec)} dimensions, expected {DIMENSIONS}")
-    return vec
+        with urllib.request.urlopen(request, timeout=300) as response:
+            vectors = json.load(response)["embeddings"]
+    except urllib.error.HTTPError as exc:
+        if exc.code == 404:
+            raise EmbeddingBackendError(f"Ollama model missing. Run: ollama pull {MODEL_NAME}") from exc
+        raise EmbeddingBackendError(f"Ollama request failed: {exc}") from exc
+    except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        raise EmbeddingBackendError(f"Cannot connect to Ollama. Run: brew services start ollama ({exc})") from exc
+    except (ValueError, KeyError, TypeError) as exc:
+        raise EmbeddingBackendError(f"Invalid Ollama response: {exc}") from exc
+    if not isinstance(vectors, list) or len(vectors) != len(texts):
+        raise EmbeddingBackendError("Ollama returned an unexpected number of embeddings")
+    normalized = []
+    for vector in vectors:
+        try:
+            if len(vector) != DIMENSIONS:
+                raise EmbeddingBackendError(f"Embedding has {len(vector)} dimensions, expected {DIMENSIONS}")
+            norm = math.sqrt(sum(x * x for x in vector))
+            if not math.isfinite(norm) or norm == 0:
+                raise EmbeddingBackendError("Embedding has invalid norm")
+            normalized.append([x / norm for x in vector])
+        except (TypeError, ValueError) as exc:
+            raise EmbeddingBackendError(f"Invalid embedding: {exc}") from exc
+    return normalized
 
 
 def embed_document(text: str) -> list[float]:
-    return embed(text)
+    return embed_documents([text])[0]
 
 
 def embed_query(text: str) -> list[float]:
-    return embed(QUERY_INSTRUCTION + text)
+    return embed_documents([QUERY_INSTRUCTION + text])[0]
 
 
 def vec_to_bytes(vec: list[float]) -> bytes:
-    return struct.pack(f"{len(vec)}f", *vec)
+    return struct.pack(f"<{len(vec)}f", *vec)

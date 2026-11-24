@@ -111,7 +111,7 @@ Confirm:
 - AGENTS.md Radiant block (if offered on an existing file): appended / declined
 - Registered vaults: list all entries in `vaults:` with their paths and locales, marking the default
 - Skills: all 5 present / missing {list} (with the `npx skills add` command to fix it)
-- Semantic search: active (sentence-transformers with Qwen3, include indexing results when run) / not active (declined or skipped: how to enable later)
+- Semantic search: active (Ollama with qwen3-embedding:0.6b, include indexing results when run) / not active (declined or skipped: how to enable later)
 - Sync (if run): upstream used, files updated (list), files skipped (count), deletions pending user confirmation
 - Next step: run `/mcc-setup` if session memory is not set up, then `/mcc-handover` at the end of any project session
 
