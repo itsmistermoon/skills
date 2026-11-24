@@ -12,16 +12,16 @@ Read the `Task tracker:` line in the `## Mission control` section of `AGENTS.md`
 
 ## handover
 
-The `### Pending` list in `.mcc/HANDOVER.md`. List reads the list; Add appends an item, prefixed with its triage label in brackets (`[ready-for-agent]`); Close removes it.
+The `### Pending` list in the base repo's `.mcc/HANDOVER.md`. List reads items for repos in scope and previously routed external items; Add appends an item, prefixed with its triage label in brackets (`[ready-for-agent]`) and destination repo path, including for an out-of-scope repo. This makes external work visible to the base repo's owner. Close removes it. Legacy items without a repo path belong to the base repo.
 
 Limit: at most five tasks. When a new task would make six, drop or merge the least live task and report the displaced action.
 
 ## External tracker
 
-Any other tool. `docs/agents/task-tracker.md` holds the exact commands for this repo under three headings:
+Any other tool. `docs/agents/task-tracker.md` holds commands under three headings. List and Add accept a `<channel>` parameter, mapped from the destination repo path to its channel by the document's instructions:
 
-- `## List`: show the open tasks, and the ready ones per triage label.
-- `## Add`: create a task with its triage label, plus any other labels or links.
+- `## List`: show the open tasks, and the ready ones per triage label, for `<channel>`. Run once for each repo in the resolved scope.
+- `## Add`: create a task in `<channel>` with its triage label, plus any other labels or links. Run for each destination repo, including outside scope.
 - `## Close`: complete or drop a task, with a one-line result.
 
-Run those commands as written: they are the whole contract, so switching tools means rewriting only that file. `.mcc/HANDOVER.md` keeps a single Pending line, `- Task tracker: <tool> (docs/agents/task-tracker.md)`.
+Substitute the destination channel in those commands: they are the whole contract, so switching tools means rewriting only that file. `.mcc/HANDOVER.md` keeps a single Pending line, `- Task tracker: <tool> (docs/agents/task-tracker.md)`.
