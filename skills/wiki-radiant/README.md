@@ -67,7 +67,7 @@ Wiki skills use an explicit vault name first, then a registered vault containing
 
 The core skills are Markdown instructions executed by your coding agent. Text search uses `rg`. Ingestion's sanitization check uses `bash`, `rg`, and `jq`. Structural lint uses Bash, Python 3.10+, `jq`, and PyYAML. Install its Python requirement with `python3 -m pip install -r skills/wiki-lint/scripts/requirements.txt` in your chosen Python environment. Installation uses Node.js through `npx`.
 
-Semantic indexing is optional. Setup detects the available backend before offering it: Ollama, MLX embeddings, or sentence-transformers, with sqlite-vec for retrieval. A vault can ingest, query text, and maintain knowledge without these packages. When upgrading a vault with an existing semantic index, run `/wiki-setup embeddings` and follow [Index relocation](skills/wiki-setup/references/POST-COMMIT-HOOKS.md#index-relocation).
+Semantic indexing is optional. It uses Qwen3 embeddings through sentence-transformers on MPS and sqlite-vec for retrieval. A vault can ingest, query text, and maintain knowledge without these packages. Existing indexes built with another model must be rebuilt; run `/wiki-setup embeddings` and follow its instructions.
 
 Repository tools include `bin/radiant-embed.sh` for indexing, `bin/setup-vault.sh /path/to/vault-repo` for optional Obsidian scaffolding in an existing Git repository, and `bin/tags-audit.py` for tag audits. Run them by path from a checkout. The Obsidian helper refuses to modify Radiant itself or overwrite existing Obsidian settings.
 
