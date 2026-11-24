@@ -2,7 +2,10 @@
 # Check that a clean worktree's changes landed; cleanup remains with its owner.
 set -euo pipefail
 wt=$(cd "$1" && pwd -P)
-base=${2:-origin/main}
+branch=${2:-main}
+branch=${branch#origin/}
+base=origin/$branch
+git -C "$wt" fetch origin "$branch:refs/remotes/origin/$branch"
 if [ -n "$(git -C "$wt" status --porcelain)" ]; then
   echo "worktree has uncommitted changes; nothing touched" >&2; exit 1
 fi

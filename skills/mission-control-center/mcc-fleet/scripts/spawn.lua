@@ -4,7 +4,7 @@
 --
 -- command starts the agent CLI; its words are split on spaces. A {prompt}
 -- word is replaced with the agent's first prompt; without one, the prompt
--- goes last. depth is how many levels of subagents it may start below
+-- follows the executable. depth is how many levels of subagents it may start below
 -- itself (default 0). notify=file: the subagent only writes result.md and the
 -- parent watches for it, so no message is typed into the parent's terminal.
 local lib = dofile(debug.getinfo(1, "S").source:gsub("^@", ""):match("^(.*[/\\])") .. "lib.lua")
@@ -31,6 +31,26 @@ end
 local dir = lib.call("block.method", { session_id = session, block_id = me, method = "list_dir", args = { path = tostring(a.cwd), limit = 1 } })
 assert(dir.status == "ok", tostring(a.cwd) .. " isn't a folder")
 local worktree = lib.worktree(dir.path)
+if a.prepare then
+  local r = assert(rex.exec({ tostring(a.prepare), dir.path, tostring(a.base or "") }))
+  assert(r.ok, "backend prepare failed: " .. tostring(r.stderr or ""))
+end
+
+local roots = {}
+for path in tostring(a.writable or ""):gmatch("[^,]+") do
+  local probe = assert(rex.exec({ "test", "-e", path .. "/.git" }))
+  assert(not probe.ok, "writable=" .. path .. " contains .git")
+  roots[#roots + 1] = path
+end
+if worktree then
+  local function git_path(flag)
+    local r = assert(rex.exec({ "git", "-C", dir.path, "rev-parse", "--path-format=absolute", flag }))
+    assert(r.ok, "cannot resolve git metadata")
+    return r.stdout:gsub("%s+$", "")
+  end
+  local gitdir, common = git_path("--git-dir"), git_path("--git-common-dir")
+  for _, path in ipairs({ gitdir, common .. "/objects", common .. "/refs/heads", common .. "/logs/refs/heads" }) do roots[#roots + 1] = path end
+end
 
 -- Every parent shares the folder, so a random suffix keeps two subagents
 -- with the same name apart.
@@ -43,6 +63,12 @@ local prompt, result = lib.path("tasks", task_id, "prompt.md"), lib.path("tasks"
 local close_file = lib.path("tasks", task_id, "close.md")
 lib.mkdir(task_dir)
 lib.mkdir(lib.path("depth"))
+local tracker_instructions = ""
+if a.tracker then
+  local r = assert(rex.exec({ tostring(a.tracker), "init", task_dir, a.name, dir.path, a.task, result }))
+  assert(r.ok, "backend tracker init failed: " .. tostring(r.stderr or ""))
+  tracker_instructions = r.stdout or ""
+end
 
 local launch_prompt = "You are a subagent. " .. lib.rule .. " Read " .. prompt .. " and follow it."
 local argv, placed = {}, false
@@ -54,6 +80,12 @@ end
 -- last, so a flag that takes several values (claude's --add-dir) can't
 -- swallow it.
 if not placed then table.insert(argv, 2, launch_prompt) end
+if argv[1]:match("codex$") and #roots > 0 then
+  local quoted = {}
+  for _, path in ipairs(roots) do quoted[#quoted + 1] = '"' .. path:gsub('\\', '\\\\'):gsub('"', '\\"') .. '"' end
+  table.insert(argv, 2, "sandbox_workspace_write.writable_roots=[" .. table.concat(quoted, ",") .. "]")
+  table.insert(argv, 2, "-c")
+end
 -- Rex trims leading whitespace; a zero-width space preserves the indent.
 local indent_marker = "\226\128\139"
 local function level(label)
@@ -79,7 +111,7 @@ local report = lib.read(lib.dir .. "report.md"):gsub("{(%w+)}", {
   checkout = dir.path,
   worktree = worktree and ("Linked worktree: " .. worktree.path .. "\nBranch at launch: " .. worktree.branch) or "",
   notify = a.notify == "file"
-    and "Don't notify the parent: it watches " .. result .. " and wakes up when the file appears. Write that file last, in one step."
+    and "The parent watches for delivery; do not message it."
     or "Notify the parent by running this command (put your status in place of STATUS):\n   "
       .. lib.send_command(session, me, task_id .. " STATUS. Read " .. result
         .. ". If it's completed and checks out, run the close command in " .. close_file
@@ -90,7 +122,7 @@ local report = lib.read(lib.dir .. "report.md"):gsub("{(%w+)}", {
     or "Do this task yourself. You can't start subagents.",
 })
 -- A subagent can read immediately when new_window starts its command.
-lib.write(prompt, task .. "\n\n" .. report)
+lib.write(prompt, task .. "\n\n" .. report .. "\n\n" .. tracker_instructions)
 
 local created = lib.call("session.new_window", {
   session_id = session,
@@ -126,4 +158,4 @@ if worktree then
   print("worktree: " .. worktree.path)
 end
 print("message it: " .. lib.send_command(session, block, "MESSAGE"))
-print("watch: " .. lib.quote(lib.dir .. "watch.sh") .. " " .. lib.quote(session) .. " " .. lib.quote(block) .. " " .. lib.quote(result))
+print("watch: " .. lib.quote(lib.dir .. "watch.sh") .. " " .. lib.quote(session) .. " " .. lib.quote(block) .. " " .. lib.quote(result) .. " 900" .. (a.tracker and (" " .. lib.quote(a.tracker) .. " " .. lib.quote(task_dir)) or ""))

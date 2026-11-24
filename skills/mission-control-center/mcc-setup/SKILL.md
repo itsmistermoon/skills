@@ -17,7 +17,7 @@ The other mcc skills read their configuration from the `## Mission control` sect
 task_tracker: handover   # or the path of a docs/agents/task-tracker.md to copy
 notify: none             # or the notify command
 decision_owners: []      # GitHub users or orgs
-fleet: none              # or rex and a backend document
+fleet: none              # or { backend: rex, source: /absolute/path/to/fleet.md }
 ```
 
 With the file present, show its values and ask for one confirmation in place of the questions in steps 3 to 6; with no user present (you run as a subagent), apply them and list them in your report. With the file missing, ask as each step says, then write the file with the answers. Adapt a copied task tracker to the channel parameter contract in `references/TASK-TRACKER.md`. A saved Rex backend identifies a document to copy into this repo as `docs/agents/fleet.md`; adapt and verify it here.
@@ -62,7 +62,7 @@ Without a notify command, `mcc-coast` is a plain away mode: everything goes to t
 
 ## 6. Fleet backend (optional)
 
-Ask whether the repo uses a fleet. For Rex, write `docs/agents/fleet.md` with the owner map, launch preparation, permissions, tracker integration and cleanup procedure. Verify Rex is available and the document exists. Otherwise select `none`. Unattended, use the saved backend or `none` and report the choice.
+Ask whether the repo uses a fleet. For Rex, write `docs/agents/fleet.md` with the coordinator and how to identify the current session, owner map, executable launch preparation, permissions, optional tracker integration and cleanup procedure. Declare the command that lists work for every owner for fleet-wide coast; if absent, coast operates on this repo only. Otherwise select `none`. Unattended, use the saved backend or `none` and report the choice. **Done when** Rex and each declared read-only identification and listing command run successfully, the coordinator and every owner are identifiable, and the document specifies usable launch, tracker and cleanup commands and the coast capability or its absence.
 
 ## 7. Mission control section
 

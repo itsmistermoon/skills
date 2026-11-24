@@ -28,9 +28,9 @@ When Fleet is configured, read its backend document and stop unless this session
 2. If a notify command is configured, send: away mode is on, plus a one-line gist of the instructions.
 3. Read the instructions back in chat, sentence by sentence: what you will do under each, and what falls outside them.
 
-Entry is complete when `.mcc/COAST.md` exists, the notification (if configured) went out, and the read-back is in chat.
+When Fleet declares a command to list work for every owner, run it and assign work to the owners via `mcc-fleet`; collect linked results for the log. Each owner writes only its own `.mcc/`. Without that capability, continue with this repo alone.
 
-When Fleet is configured, follow the backend document: list all tracker channels, assign work to their owners via `mcc-fleet`, and collect linked results for the log. Each owner writes only its own `.mcc/`. Without Fleet, continue with this repo alone.
+Entry is complete when `.mcc/COAST.md` exists, the notification (if configured) went out, the read-back is in chat, and the applicable fleet work is listed and assigned.
 
 ## 3. While away
 
