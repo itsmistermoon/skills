@@ -22,6 +22,7 @@ Gather what happened in the window, each item checked at its source:
 - PRs opened, merged, or with failing checks: `gh search prs --owner <owner> --updated ">=<date>"` for each owner in the `## Mission control` section of `AGENTS.md` (or the owners of repos this session touched, when that section is absent).
 - Commits on the branches of the repos this home repo points to, and any batch-run logs those repos keep.
 - `.mcc/HANDOVER.md` Current state, and the open tasks from the task tracker (resolve it with `../mcc-setup/references/TASK-TRACKER.md`).
+- When Fleet is configured and returning from coast, use `mcc-fleet` and the backend document to collect each owner’s results and consolidate them with links, including work still running or blocked. Each owner writes only its own `.mcc/`.
 - When `.mcc/COAST.md` exists: every line of its `## Log`, and what was done under its instructions.
 - On return from coast, read the Telegram daily logs in `${TELEGRAM_STATE_DIR:-${CLAUDE_CONFIG_DIR:-~/.claude}/channels/telegram}/log/` for the window and summarize the messages in the report.
 

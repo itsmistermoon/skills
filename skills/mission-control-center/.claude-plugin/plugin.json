@@ -21,6 +21,7 @@
     "./mcc-handover",
     "./mcc-debrief",
     "./mcc-coast",
-    "./mcc-sitrep"
+    "./mcc-sitrep",
+    "./mcc-fleet"
   ]
 }
