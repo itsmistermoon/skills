@@ -17,7 +17,7 @@ The notification hooks act only when `bin/notify` exists; the return reminder wo
 
 - `Notification`: while `.mcc/COAST.md` exists, notifies whenever the session waits for input or a permission.
 - `Stop`: while `.mcc/COAST.md` exists, sends the complete last message in parts of at most 4096 characters, preferring paragraph boundaries. It skips a session whose Claude process also owns a live Telegram plugin claim under `${TELEGRAM_STATE_DIR:-${CLAUDE_CONFIG_DIR:-~/.claude}/channels/telegram}/claims/<repo-key>/<pid>`.
-- `UserPromptSubmit`: while `.mcc/COAST.md` exists, a prompt typed in the terminal gets a reminder to run `mcc-sitrep` first. Channel messages, rex-fleet messages starting with `[from `, and `<task-notification>` events are skipped.
+- `UserPromptSubmit`: while `.mcc/COAST.md` exists, a prompt typed in the terminal gets a reminder to run `mcc-sitrep` first. Channel messages and `<task-notification>` events are skipped; messages starting with `[from ` are skipped only when Fleet is configured as Rex.
 
 Copy it to `.claude/hooks/mcc-coast.sh`, make it executable, and register it in `.claude/settings.json`:
 

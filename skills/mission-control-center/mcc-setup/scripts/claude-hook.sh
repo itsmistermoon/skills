@@ -52,7 +52,8 @@ case "$event" in
   UserPromptSubmit)
     [[ -f "$root/.mcc/COAST.md" ]] || exit 0
     prompt="$(jq -r '.prompt // empty' <<<"$input")"
-    [[ "$prompt" == *'<channel source='* || "$prompt" == '[from '* || "$prompt" == *'<task-notification>'* ]] && exit 0
+    [[ "$prompt" == *'<channel source='* || "$prompt" == *'<task-notification>'* ]] && exit 0
+    if [[ "$prompt" == '[from '* ]] && sed -n '/^## Mission control/,/^## /p' "$root/AGENTS.md" 2>/dev/null | grep -Eq 'Fleet:.*rex'; then exit 0; fi
     echo "Away mode is on (.mcc/COAST.md exists) and the user just typed in the terminal: they are back. Run the mcc-sitrep skill before anything else." ;;
 esac
 exit 0

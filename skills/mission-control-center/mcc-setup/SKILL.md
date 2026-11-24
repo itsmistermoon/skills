@@ -11,15 +11,16 @@ The other mcc skills read their configuration from the `## Mission control` sect
 
 ## Defaults
 
-`~/.config/mcc/config.yml` holds the user's answers to steps 3 to 5, shared by every repo:
+`~/.config/mcc/config.yml` holds the user's answers to steps 3 to 6, shared by every repo:
 
 ```yaml
 task_tracker: handover   # or the path of a docs/agents/task-tracker.md to copy
 notify: none             # or the notify command
 decision_owners: []      # GitHub users or orgs
+fleet: none              # or { backend: rex, source: /absolute/path/to/fleet.md }
 ```
 
-With the file present, show its values and ask for one confirmation in place of the questions in steps 3 to 5; with no user present (you run as a subagent), apply them and list them in your report. With the file missing, ask as each step says, then write the file with the answers. Adapt a copied task tracker to the channel parameter contract in `references/TASK-TRACKER.md`.
+With the file present, show its values and ask for one confirmation in place of the questions in steps 3 to 6; with no user present (you run as a subagent), apply them and list them in your report. With the file missing, ask as each step says, then write the file with the answers. Adapt a copied task tracker to the channel parameter contract in `references/TASK-TRACKER.md`. A saved Rex backend identifies a document to copy into this repo as `docs/agents/fleet.md`; adapt and verify it here.
 
 ## 1. State folder
 
@@ -59,7 +60,11 @@ Without a notify command, `mcc-coast` is a plain away mode: everything goes to t
 1. Ask which GitHub owners (users or orgs) hold the repos where decisions can live.
 2. The decision label is `decision`. For each repo that receives a decision, create the label on first use: `gh label create decision -R <owner>/<repo>`.
 
-## 6. Mission control section
+## 6. Fleet backend (optional)
+
+Ask whether the repo uses a fleet. For Rex, write `docs/agents/fleet.md` with the coordinator and how to identify the current session, owner map, executable launch preparation, permissions, optional tracker integration and cleanup procedure. Declare the command that lists work for every owner for fleet-wide coast; if absent, coast operates on this repo only. Otherwise select `none`. Unattended, use the saved backend or `none` and report the choice. **Done when** Rex and each declared read-only identification and listing command run successfully, the coordinator and every owner are identifiable, and the document specifies usable launch, tracker and cleanup commands and the coast capability or its absence.
+
+## 7. Mission control section
 
 Ask which repos the agent owns in addition to the base repo. Resolve each supplied path to a Git root; ask again for invalid paths. With no user present, default to the base repo alone. Add this section to `AGENTS.md`, filled in, or replace an older `## Coast` section. For additional repos, add a `Scope:` line listing their real absolute paths or paths relative to the base root; omit the line for the base repo alone.
 
@@ -69,6 +74,7 @@ Ask which repos the agent owns in addition to the base repo. Resolve each suppli
 - Notify command: `bin/notify "<text>"` (prefix: `[<repo>]`; set `NOTIFY_ORIGIN=<role>` to override). Write `none` when notifications were declined.
 - Decision label: `decision`, in repos of: <owner>, <owner>.
 - Task tracker: `handover`, or the tool name and `docs/agents/task-tracker.md`.
+- Fleet: `none`, or `rex (docs/agents/fleet.md)`.
 - If `.mcc/COAST.md` exists, the user is away: follow the `mcc-coast` skill from step 3. Their first message typed in the terminal is the return: run the `mcc-sitrep` skill.
 ```
 

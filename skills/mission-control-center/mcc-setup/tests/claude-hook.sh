@@ -43,10 +43,15 @@ printf '%s' '{"hook_event_name":"Stop","last_assistant_message":"claim vencido"}
 python3 -c 'import os; assert open(os.environ["OUT"],"rb").read()==b"Turn finished. claim vencido\0"'
 echo 'OK: Stop ignora claims de procesos terminados'
 
-for prompt in '[from agent] hello' 'aviso <task-notification>terminó</task-notification>' '<channel source="telegram">hola'; do
+for prompt in 'aviso <task-notification>terminó</task-notification>' '<channel source="telegram">hola'; do
   result="$(jq -n --arg prompt "$prompt" '{hook_event_name:"UserPromptSubmit",prompt:$prompt}' | bash "$hook")"
   [[ -z "$result" ]]
 done
+result="$(printf '%s' '{"hook_event_name":"UserPromptSubmit","prompt":"[from agent] hello"}' | bash "$hook")"
+[[ "$result" == *mcc-sitrep* ]]
+printf '%s\n' '## Mission control' '- Fleet: `rex (docs/agents/fleet.md)`' > "$tmp/AGENTS.md"
+result="$(printf '%s' '{"hook_event_name":"UserPromptSubmit","prompt":"[from agent] hello"}' | bash "$hook")"
+[[ -z "$result" ]]
 result="$(printf '%s' '{"hook_event_name":"UserPromptSubmit","prompt":"volví"}' | bash "$hook")"
 [[ "$result" == *mcc-sitrep* ]]
 echo 'OK: solo un prompt de terminal indica el regreso'
