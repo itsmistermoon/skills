@@ -20,7 +20,6 @@ CHANGED=$(git diff-tree --no-commit-id -r --name-only HEAD | grep -c '^wiki/' ||
 
 # macOS ships no `timeout` by default (GNU coreutils only); use it if present
 # (Linux, or `brew install coreutils` → gtimeout on macOS), else run unwrapped.
-# the real timeout protection lives in embeddings.py's Ollama call.
 TIMEOUT_BIN=""
 command -v timeout >/dev/null 2>&1 && TIMEOUT_BIN="timeout 300"
 [ -z "$TIMEOUT_BIN" ] && command -v gtimeout >/dev/null 2>&1 && TIMEOUT_BIN="gtimeout 300"

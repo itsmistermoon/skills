@@ -133,6 +133,11 @@ def init_db(db_path: Path) -> sqlite3.Connection:
             sys.exit(1)
     conn.enable_load_extension(False)
 
+    existing = conn.execute("SELECT sql FROM sqlite_master WHERE name = 'vec_documents'").fetchone()
+    if existing and not re.search(rf"float\s*\[\s*{emb.DIMENSIONS}\s*\]", existing[0], re.I):
+        conn.close()
+        sys.exit("ERROR: Existing semantic index uses another embedding dimension. Rebuild it via /wiki-setup embeddings.")
+
     conn.executescript(f"""
         CREATE TABLE IF NOT EXISTS documents (
             rowid INTEGER PRIMARY KEY AUTOINCREMENT,
