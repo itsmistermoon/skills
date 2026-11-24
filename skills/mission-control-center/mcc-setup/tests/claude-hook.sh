@@ -9,6 +9,10 @@ export CLAUDE_PROJECT_DIR="$tmp" OUT="$tmp/out"
 printf '%s\n' '#!/bin/bash' 'printf "%s\0" "$1" >> "$OUT"' > "$tmp/bin/notify"
 chmod +x "$tmp/bin/notify"
 
+printf '%s' '{"hook_event_name":"Notification","message":"Claude is waiting for your input"}' | bash "$hook"
+[[ ! -e "$OUT" ]]
+echo 'OK: Notification no avisa'
+
 text="$(printf '%05000d' 0)"
 jq -n --arg text "$text" '{hook_event_name:"Stop",last_assistant_message:$text}' | bash "$hook"
 python3 -c 'import os; p=open(os.environ["OUT"],"rb").read().split(b"\0")[:-1]; assert len(p)==2 and all(len(x)<=4096 for x in p) and b"".join(p)==b"Turn finished. "+b"0"*5000'
