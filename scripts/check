@@ -1,0 +1,7 @@
+#!/bin/bash
+# Pruebas locales del repo, antes de cada push: el repo no usa GitHub Actions.
+set -euo pipefail
+cd "$(dirname "$0")/../skills/wiki-radiant"
+bash scripts/check-skill-sync.sh
+uv run --no-project --with-requirements skills/wiki-lint/scripts/requirements.txt --with pytest --with pyyaml \
+  python -B -m unittest discover -s tests
