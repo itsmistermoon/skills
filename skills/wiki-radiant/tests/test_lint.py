@@ -77,6 +77,12 @@ class LintTests(unittest.TestCase):
         result, health = self.run_lint()
         self.assertEqual(health["raw_without_source_page"], [".raw/unrelated.html"])
 
+    def test_url_source_needs_no_raw(self):
+        path = self.page("video.md", raw=None)
+        path.write_text(path.read_text().replace("urn:radiant:test", "https://www.youtube.com/watch?v=x"))
+        result, health = self.run_lint()
+        self.assertEqual(health["missing_raw"], [])
+
     def test_missing_raw(self):
         self.page("example.md")
         result, health = self.run_lint()

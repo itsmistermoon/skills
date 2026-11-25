@@ -90,6 +90,9 @@ def check(vault: Path) -> dict:
             continue
         raw = data.get("raw") if isinstance(data, dict) else None
         paths = [raw] if isinstance(raw, str) else raw if isinstance(raw, list) else []
+        resource = data.get("resource") if isinstance(data, dict) else None
+        if raw in (None, "", []) and isinstance(resource, str) and re.match(r"https?://", resource):
+            continue  # A URL is enough provenance when no copy is kept.
         if not paths or not all(isinstance(p, str) and p.strip() for p in paths):
             health["missing_raw"].append(relative)
             report("HIGH", f"Source has no usable raw path: {relative}")
