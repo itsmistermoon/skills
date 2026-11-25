@@ -26,12 +26,8 @@ telegram_active() {
   done
   return 1
 }
-[[ "$event" == Notification || "$event" == Stop ]] && [[ ! -x "$notify" ]] && exit 0
+[[ "$event" == Stop ]] && [[ ! -x "$notify" ]] && exit 0
 case "$event" in
-  Notification)
-    [[ -f "$root/.mcc/COAST.md" ]] || exit 0
-    msg="$(jq -r '.message // "The session is waiting for you."' <<<"$input")"
-    NOTIFY_ORIGIN="$(basename "$root")" "$notify" "$msg" >/dev/null 2>&1 || true ;;
   Stop)
     [[ -f "$root/.mcc/COAST.md" ]] || exit 0
     telegram_active && exit 0

@@ -13,9 +13,8 @@ Read from `mcc-setup` step 4. Each section is optional; run the ones the user ch
 
 The notification hooks act only when `bin/notify` exists; the return reminder works without it.
 
-[../scripts/claude-hook.sh](../scripts/claude-hook.sh) adds three behaviours:
+[../scripts/claude-hook.sh](../scripts/claude-hook.sh) adds two behaviours:
 
-- `Notification`: while `.mcc/COAST.md` exists, notifies whenever the session waits for input or a permission.
 - `Stop`: while `.mcc/COAST.md` exists, sends the complete last message in parts of at most 4096 characters, preferring paragraph boundaries. It skips a session whose Claude process also owns a live Telegram plugin claim under `${TELEGRAM_STATE_DIR:-${CLAUDE_CONFIG_DIR:-~/.claude}/channels/telegram}/claims/<repo-key>/<pid>`.
 - `UserPromptSubmit`: while `.mcc/COAST.md` exists, a prompt typed in the terminal gets a reminder to run `mcc-sitrep` first. Channel messages and `<task-notification>` events are skipped; messages starting with `[from ` are skipped only when Fleet is configured as Rex.
 
@@ -24,7 +23,6 @@ Copy it to `.claude/hooks/mcc-coast.sh`, make it executable, and register it in 
 ```json
 {
   "hooks": {
-    "Notification": [{ "hooks": [{ "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/mcc-coast.sh" }] }],
     "Stop": [{ "hooks": [{ "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/mcc-coast.sh" }] }],
     "UserPromptSubmit": [{ "hooks": [{ "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/mcc-coast.sh" }] }]
   }
