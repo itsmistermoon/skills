@@ -1,7 +1,7 @@
 ---
 name: mcc-debrief
 license: MIT
-description: "Debrief the session state: prune expired lessons, close stale tasks and decisions, and surface recurring patterns. Use when state feels stale or a handover suggests it."
+description: "Debrief stale session state: prune expired lessons, review tasks and decisions, and surface recurring patterns."
 disable-model-invocation: true
 argument-hint: ""
 ---
@@ -22,4 +22,4 @@ A debrief reviews the flights so far and keeps only what the next one needs. Sta
 
 6. **Review archive duplication.** Look for archived blocks that repeat the same work. Propose a dated superseding note referencing those blocks. HISTORY is append-only: preserve existing entries. **Done when:** duplicate candidates are reported and any approved note has been appended.
 
-7. **Report.** Summarize the pruning performed and group remaining proposals by step. Ask only about changes not already authorized. State any incomplete checks explicitly.
+7. **Report.** Summarize the pruning performed and group remaining proposals by step. Ask only about changes not already authorized. State any incomplete checks explicitly. **Done when:** every performed change, proposal, and incomplete check is reported.

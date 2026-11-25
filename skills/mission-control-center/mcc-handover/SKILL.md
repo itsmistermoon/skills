@@ -1,12 +1,12 @@
 ---
 name: mcc-handover
 license: MIT
-description: "Hand over the session to the next shift: pending work to the task tracker, plus decisions, lessons, and history in `.mcc/`. Use at the end of a work session."
+description: "Hand over a work session: route pending work to the tracker and save decisions, lessons, and history in `.mcc/`."
 disable-model-invocation: true
 argument-hint: "[vault-name] [project-name] [scope:<path>,<path>] [next: <focus>]"
 ---
 
-A handover is the shift change in a mission control room: the incoming shift gets everything it needs to fly on without the outgoing one. Start with `Handing over session...` in the user's language. Use that language for confirmations. The Git root containing CWD is the base repo, including in a worktree.
+Start with `Handing over session...` in the user's language. Use that language for confirmations. The Git root containing CWD is the base repo, including in a worktree.
 
 ## Steps
 

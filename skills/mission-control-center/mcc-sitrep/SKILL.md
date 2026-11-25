@@ -1,6 +1,6 @@
 ---
 name: mcc-sitrep
-description: "Situation report and decision clearing. Use when the user asks for a sitrep or a catch-up (\"where were we?\"), or returns from mcc-coast away mode."
+description: "Give a situation report and clear decisions when the user asks for a sitrep or catch-up, or returns from mcc-coast away mode."
 argument-hint: "{since: date, time, or event}"
 ---
 
@@ -46,4 +46,4 @@ Present only the highest-impact open decision, and say the ordering is your pick
 
 ## 5. Closing a return
 
-When `.mcc/COAST.md` exists, delete it after the report: the user is back.
+When `.mcc/COAST.md` exists, delete it after the report: the user is back. **Done when:** the report is delivered and the file is absent.

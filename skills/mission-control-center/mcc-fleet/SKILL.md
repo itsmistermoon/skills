@@ -1,6 +1,6 @@
 ---
 name: mcc-fleet
-description: "Coordinate agents in Rex: launch and watch subagents, message crewmates, transfer work, set alarms, and clean up."
+description: "Coordinate Rex agents: launch and watch subagents, message crewmates, transfer work, set alarms, and clean up."
 ---
 
 # Fleet
@@ -17,7 +17,7 @@ Give each writer an isolated checkout following the backend. Write a self-contai
 rex do <skill>/scripts/spawn.lua name=<name> cwd=<checkout> task=<file> command="<agent and options>"
 ```
 
-Use `{prompt}` to choose the prompt position; otherwise it follows the executable. `depth=N` permits N levels of nesting. `notify=file` avoids typing into the parent's terminal. The backend may specify `prepare=<executable>` and `tracker=<executable>`; pass `base=<branch>` and comma-separated `writable=<paths>` as its instructions require. The prepare executable receives checkout and base and must exit zero before launch. The tracker receives `init <task-dir> <name> <checkout> <task-file> <result>` and prints task-specific instructions; `state <task-dir>` prints open, completed, failed or blocked. A tracker error stops launch or watch. Without a tracker, watch uses the atomic result file. The script prints the report path, reply and `watch:` commands. Run watch in the background. Read the report, verify STATUS, every requested outcome and evidence, checkout cleanliness and tracker state before accepting completion or closing the tab. Investigate failed or blocked reports and resolve or escalate them; retain work until reviewed and landed. Follow backend cleanup.
+Use `{prompt}` to choose the prompt position; otherwise it follows the executable. `depth=N` permits N levels of nesting. `notify=file` avoids typing into the parent's terminal. The backend may specify `prepare=<executable>` and `tracker=<executable>`; pass `base=<branch>` and comma-separated `writable=<paths>` as its instructions require. The prepare executable receives checkout and base and must exit zero before launch. The tracker receives `init <task-dir> <name> <checkout> <task-file> <result>` and prints task-specific instructions; `state <task-dir>` prints open, completed, failed or blocked. A tracker error stops launch or watch. Without a tracker, watch uses the atomic result file. The script prints the report path, reply and `watch:` commands. Run watch in the background. **Review:** read the report and verify STATUS, every requested outcome and evidence, checkout cleanliness and tracker state before accepting completion or closing the tab. Investigate failed or blocked reports and resolve or escalate them; retain work until reviewed and landed. Follow backend cleanup.
 
 Before a follow-up, archive the previous report outside the result path, reopen or reclaim the tracker task if applicable, send the task and restart watch. The agent replaces the report and signals delivery again.
 

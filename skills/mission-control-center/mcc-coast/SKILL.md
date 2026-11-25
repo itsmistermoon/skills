@@ -1,6 +1,6 @@
 ---
 name: mcc-coast
-description: "Away mode: the mission keeps flying while you are gone. Records your instructions, routes decisions to issues, and logs outcomes until you return. Use when you step away."
+description: "Run away mode: record instructions, route decisions to issues, and log outcomes until the user returns."
 disable-model-invocation: true
 argument-hint: "{instructions while away}"
 ---
@@ -44,4 +44,4 @@ Every decision and outcome below gets one **log** line under `## Log` in `.mcc/C
 
 ## 4. Return
 
-The user's first message typed in the terminal ends away mode: run the `mcc-sitrep` skill. It uses `since:` as its window start and deletes `.mcc/COAST.md` when done.
+The user's first message typed in the terminal ends away mode: run `mcc-sitrep`. It uses `since:` as its window start and deletes `.mcc/COAST.md` when done. **Done when:** the sitrep is complete and `.mcc/COAST.md` is deleted.
