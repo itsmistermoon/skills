@@ -1,6 +1,6 @@
 # Task tracker
 
-The task tracker is where pending work lives between sessions: the flight's open items, carried from one shift to the next. Every mcc skill that reads or changes pending work resolves it here.
+Every mcc skill that reads or changes pending work resolves the task tracker here.
 
 ## Triage
 

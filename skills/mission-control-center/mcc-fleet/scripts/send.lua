@@ -18,3 +18,5 @@ assert(not message:find("[\r\n]"), "the message must be one line; put longer tex
 local header = lib.header(lib.me())
 lib.attach(session)
 lib.paste_line(session, block, header .. message)
+-- Confirm delivery so the sender knows the message arrived.
+print("send.lua: entregado en " .. tostring(block))

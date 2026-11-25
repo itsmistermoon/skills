@@ -22,36 +22,25 @@ BotFather replies with a token that looks like `123456789:AAHfiqksKZ8...` — th
 
 **2. Install the plugin.**
 
-These are Claude Code commands — run `claude` to start a session first.
-
-Install the plugin:
-```
-/plugin install telegram@claude-plugins-official
+Install the marketplace and this fork:
+```sh
+claude plugin marketplace add itsmistermoon/skills
+claude plugin install telegram@itsmistermoon-skills --scope user
 ```
 
 **3. Give the server the token.**
 
-```
-/telegram:configure 123456789:AAHfiqksKZ8...
-```
+Choose a state directory for this bot instance and write `TELEGRAM_BOT_TOKEN=...` to `<state-dir>/.env` without exposing the token in chat. Shell environment variables take precedence. Use a separate `TELEGRAM_STATE_DIR` for each bot instance; sessions sharing a bot must share its state directory.
 
-Writes `TELEGRAM_BOT_TOKEN=...` to `~/.claude/channels/telegram/.env`. You can also write that file by hand, or set the variable in your shell environment — shell takes precedence.
+Each session creates `<state-dir>/claims/<repo-key>/<server-pid>`. A duplicate session has no claim and receives a warning on stderr and in the MCP instructions. Accepted messages and successful sends and edits are recorded in `<state-dir>/log/YYYY-MM-DD.md`. Treat logs as private conversation data.
 
-> To run multiple bots on one machine (different tokens, separate allowlists), point `TELEGRAM_STATE_DIR` at a different directory per instance.
-
-Each session receiving the channel creates `${TELEGRAM_STATE_DIR:-${CLAUDE_CONFIG_DIR:-~/.claude}/channels/telegram}/claims/<repo-key>/<server-pid>`. A Claude hook can identify its own channel by finding a live claim whose server process shares the hook's Claude ancestor. A duplicate session has no claim and receives a warning on stderr and in the MCP instructions.
-
-Accepted messages and successful sends and edits are recorded in `log/YYYY-MM-DD.md` under the state directory, with local time, direction, topic and text. The bot token, recognizable credential assignments and pairing codes are redacted; treat the logs as private conversation data.
-
-Each repo home's `bin/notify` sends notifications through the same bot using a separate token path.
-
-**4. Relaunch with the channel flag.**
-
-The server won't connect without this — exit your session and start a new one:
+**4. Launch with the channel flag.**
 
 ```sh
-claude --channels plugin:telegram@claude-plugins-official
+TELEGRAM_STATE_DIR="<state-dir>" claude --dangerously-load-development-channels plugin:telegram@itsmistermoon-skills
 ```
+
+For a launcher, shared topic registry and notification setup, see [NOTIFICATIONS.md](../mcc-setup/references/NOTIFICATIONS.md).
 
 **5. Pair.**
 
@@ -81,6 +70,7 @@ Quick reference: IDs are **numeric user IDs** (get yours from [@userinfobot](htt
 | --- | --- |
 | `reply` | Send to a chat. Takes `chat_id` + `text`, optionally `reply_to` (message ID) for native threading and `files` (absolute paths) for attachments. Images (`.jpg`/`.png`/`.gif`/`.webp`) send as photos with inline preview; other types send as documents. Max 50MB each. Auto-chunks text; files send as separate messages after the text. Returns the sent message ID(s). |
 | `react` | Add an emoji reaction to a message by ID. **Only Telegram's fixed whitelist** is accepted (👍 👎 ❤ 🔥 👀 etc). |
+| `download_attachment` | Download an incoming attachment by `attachment_file_id` to the local inbox (up to 20 MB). |
 | `edit_message` | Edit a message the bot previously sent. Useful for "working…" → result progress updates. Only works on the bot's own messages. |
 
 Inbound messages trigger a typing indicator automatically — Telegram shows
@@ -88,7 +78,7 @@ Inbound messages trigger a typing indicator automatically — Telegram shows
 
 ## Photos
 
-Inbound photos are downloaded to `~/.claude/channels/telegram/inbox/` and the
+Inbound photos are downloaded to `<state-dir>/inbox/` and the
 local path is included in the `<channel>` notification so the assistant can
 `Read` it. Telegram compresses photos — if you need the original file, send it
 as a document instead (long-press → Send as File).
@@ -99,6 +89,4 @@ Telegram's Bot API exposes **neither** message history nor search. The bot
 only sees messages as they arrive — no `fetch_messages` tool exists. The local
 daily logs contain messages seen while the channel was running.
 
-This also means there's no `download_attachment` tool for historical messages
-— photos are downloaded eagerly on arrival since there's no way to fetch them
-later.
+Photos are downloaded on arrival. Other attachments can be downloaded using the `attachment_file_id` provided with an incoming message; historical messages cannot be retrieved.

@@ -1,6 +1,6 @@
 ---
 name: mcc-setup
-description: "Set up Mission Control Center in a repo: session-start block, task tracker, notifications, and decision label. Use once per repo, or when another mcc skill finds its config missing."
+description: "Set up Mission Control Center in a repo, including session start, tracker, notifications, decisions, and fleet. Use once per repo or when configuration is missing."
 disable-model-invocation: true
 argument-hint: ""
 ---
@@ -24,7 +24,7 @@ With the file present, show its values and ask for one confirmation in place of 
 
 ## 1. State folder
 
-`.mcc/` at the repo root holds the session state: `HANDOVER.md`, `PLAYBOOK.md`, `HISTORY.md`, and `COAST.md` while away mode is on. Confirm `.mcc/`, `.env`, and `.telegram-topics` are in `.gitignore`; add them if missing.
+`.mcc/` at the repo root holds the session state: `HANDOVER.md`, `PLAYBOOK.md`, `HISTORY.md`, and `COAST.md` while away mode is on. Confirm `.mcc/`, `.env`, and `.telegram-topics` are in `.gitignore`; add them if missing. **Done when:** all three are ignored.
 
 ## 2. Session start
 
