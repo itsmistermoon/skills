@@ -21,7 +21,7 @@ test('una segunda sesión informa la clave duplicada y no reclama el canal', asy
     await second.stdin.flush()
     const output = await second.stdout.getReader().read()
     const response = JSON.parse(new TextDecoder().decode(output.value))
-    const warning = `otra sesión ya atiende ${dir.split('/').pop()}; esta no recibirá mensajes`
+    const warning = `another session already handles ${dir.split('/').pop()}; this session will not receive messages`
     expect(response.result.instructions).toContain(warning)
     const stderr = await second.stderr.getReader().read()
     expect(new TextDecoder().decode(stderr.value)).toContain(warning)

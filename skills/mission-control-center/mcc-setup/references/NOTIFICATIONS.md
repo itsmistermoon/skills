@@ -7,6 +7,8 @@ Read from `mcc-setup` step 4. Each section is optional; run the ones the user ch
 1. Offer Telegram, using [../scripts/notify-telegram.sh](../scripts/notify-telegram.sh).
 2. For Telegram: copy the script to `bin/notify` in the repo and make it executable. The user creates a bot with @BotFather and stores `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in `.env` at the repo root. Have them write the token from the clipboard with a command you hand them, so it never appears in chat. The user must message the bot once before it can write to them.
    - Optional, one topic per origin: the user creates a group, turns on **Topics**, and adds the bot as admin with **Manage topics**. Add `TELEGRAM_GROUP_ID=<-100...>` to `.env` (read it from the bot's `getUpdates` while no session is listening). Each origin then posts to its own topic, created on first use.
+The command accepts `NOTIFY_ORIGIN` to override the main repo name (including from a worktree), `NOTIFY_FROM` to add a role after the origin, and `NOTIFY_FILE` to send a file with the text as its caption (up to 1024 characters). `TELEGRAM_TOPICS_FILE` overrides the topic registry path. On success it prints `notify: entregado a Telegram como [origin][role]` (the role is omitted when unset).
+
 3. Run `bin/notify "mcc setup test"`. **Done when** the user confirms the message arrived, or declined notifications.
 
 ## 2. Hooks (Claude Code, optional)

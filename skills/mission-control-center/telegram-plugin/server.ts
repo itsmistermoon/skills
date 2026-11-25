@@ -4,7 +4,7 @@
  *
  * Self-contained MCP server with full access control: pairing, allowlists,
  * group support with mention-triggering. State lives in
- * ~/.claude/channels/telegram/access.json — managed by the /telegram:access skill.
+ * <state-dir>/access.json — managed by the /telegram:access skill.
  *
  * Telegram's Bot API has no history or search. Reply-only tools.
  */
@@ -24,6 +24,7 @@ import { homedir } from 'os'
 import { execFileSync } from 'child_process'
 import { join, extname, sep, basename, dirname } from 'path'
 import { logMessage } from './message-log'
+import { createRouter } from './routing'
 
 const STATE_DIR = process.env.TELEGRAM_STATE_DIR
   ?? join(process.env.CLAUDE_CONFIG_DIR ?? join(homedir(), '.claude'), 'channels', 'telegram')
@@ -31,7 +32,7 @@ const ACCESS_FILE = join(STATE_DIR, 'access.json')
 const APPROVED_DIR = join(STATE_DIR, 'approved')
 const ENV_FILE = join(STATE_DIR, '.env')
 
-// Load ~/.claude/channels/telegram/.env into process.env. Real env wins.
+// Load <state-dir>/.env into process.env. Real env wins.
 // Plugin-spawned servers don't get an env block — this is where the token lives.
 try {
   // Token is a credential — lock to owner. No-op on Windows (would need ACLs).
@@ -63,7 +64,6 @@ const PID_FILE = join(STATE_DIR, 'bot.pid')
 // to the home key. Other instances (followers) only read their spool and send.
 mkdirSync(STATE_DIR, { recursive: true, mode: 0o700 })
 const HOME_KEY = process.env.TELEGRAM_HOME_KEY ?? 'moonbase'
-const SPOOL_DIR = join(STATE_DIR, 'spool')
 const CLAIMS_DIR = join(STATE_DIR, 'claims')
 const TOPICS_FILE = process.env.TELEGRAM_TOPICS_FILE ?? join(STATE_DIR, 'topics.tsv') // "name<TAB>thread_id", shared with bin/notify
 
@@ -78,7 +78,6 @@ function repoKey(): string {
   }
 }
 const KEY = repoKey()
-const IS_HOME = KEY === HOME_KEY
 
 function alive(pid: number): boolean {
   if (!(pid > 1)) return false
@@ -93,7 +92,7 @@ function alive(pid: number): boolean {
 mkdirSync(join(CLAIMS_DIR, KEY), { recursive: true, mode: 0o700 })
 const CLAIM_FILE = join(CLAIMS_DIR, KEY, String(process.pid))
 const duplicate = readdirSync(join(CLAIMS_DIR, KEY)).some(pid => alive(Number(pid)))
-const duplicateWarning = `otra sesión ya atiende ${KEY}; esta no recibirá mensajes`
+const duplicateWarning = `another session already handles ${KEY}; this session will not receive messages`
 if (duplicate) process.stderr.write(`telegram channel: ${duplicateWarning}\n`)
 else writeFileSync(CLAIM_FILE, '', { mode: 0o600 })
 
@@ -489,7 +488,7 @@ const mcp = new Server(
       '',
       'reply accepts file paths (files: ["/abs/path.png"]) for attachments. Use react to add emoji reactions, and edit_message for interim progress updates. Edits don\'t trigger push notifications — when a long task completes, send a new reply so the user\'s device pings.',
       '',
-      'Forum topics: when the tag has message_thread_id, pass it to reply so the answer stays in that topic, and start the text with "[<topic>]" using the tag\'s topic attribute. quoted is the text of the message the user replied to; use it to tell which earlier message they mean.',
+      'Forum topics: when the tag has message_thread_id, pass it to reply so the answer stays in that topic. quoted is the text of the message the user replied to; use it to tell which earlier message they mean.',
       '',
       `Telegram's Bot API exposes no history or search. Local daily logs of messages seen by the channel are in ${join(STATE_DIR, 'log')}.`,
       '',
@@ -742,54 +741,29 @@ await mcp.connect(new StdioServerTransport())
 
 type Payload = { method: string; params: Record<string, unknown> }
 
-function spool(key: string, payload: Payload): void {
-  const dir = join(SPOOL_DIR, key)
-  mkdirSync(dir, { recursive: true, mode: 0o700 })
-  const name = `${Date.now()}-${randomBytes(4).toString('hex')}.json`
-  writeFileSync(join(dir, `.${name}`), JSON.stringify(payload), { mode: 0o600 })
-  renameSync(join(dir, `.${name}`), join(dir, name))
-}
+const router = createRouter<Payload>(STATE_DIR, HOME_KEY)
 
 // Leader only: deliver to the session of the topic's repo, else to home.
 async function route(topic: string | undefined, payload: Payload): Promise<void> {
   const live = liveKeys()
   const target = topic && live.has(topic) ? topic : HOME_KEY
   if (target === KEY) return mcp.notification(payload as never)
-  spool(target, payload)
+  router.route(topic, payload, live)
 }
 
 function broadcast(payload: Payload): void {
   for (const k of liveKeys()) {
     if (k === KEY) void mcp.notification(payload as never)
-    else spool(k, payload)
+    else router.spool(k, payload)
   }
 }
 
-// Every instance: drain its spool. Home also drains General and the spools of
-// keys with no live session, so nothing waits unread.
 function drainSpools(): void {
   if (duplicate) return
-  const keys = [KEY]
-  if (IS_HOME) {
-    const live = liveKeys()
-    let dirs: string[] = []
-    try { dirs = readdirSync(SPOOL_DIR) } catch {}
-    for (const k of dirs) if (k !== KEY && !live.has(k)) keys.push(k)
-  }
-  for (const k of keys) {
-    const dir = join(SPOOL_DIR, k)
-    let files: string[] = []
-    try { files = readdirSync(dir).filter(n => n.endsWith('.json') && !n.startsWith('.')).sort() } catch { continue }
-    for (const n of files) {
-      const path = join(dir, n)
-      try {
-        const payload = JSON.parse(readFileSync(path, 'utf8')) as Payload
-        rmSync(path)
-        void mcp.notification(payload as never).catch(err => {
-          process.stderr.write(`telegram channel: spool delivery failed: ${err}\n`)
-        })
-      } catch {}
-    }
+  for (const payload of router.drain(KEY, liveKeys())) {
+    void mcp.notification(payload as never).catch(err => {
+      process.stderr.write(`telegram channel: spool delivery failed: ${err}\n`)
+    })
   }
 }
 setInterval(drainSpools, 1000).unref()
