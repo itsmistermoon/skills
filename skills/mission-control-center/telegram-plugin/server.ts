@@ -760,7 +760,7 @@ function broadcast(payload: Payload): void {
 
 function drainSpools(): void {
   if (duplicate) return
-  for (const payload of router.drain(KEY, liveKeys())) {
+  for (const payload of router.drain(KEY, KEY === HOME_KEY ? liveKeys() : new Set())) {
     void mcp.notification(payload as never).catch(err => {
       process.stderr.write(`telegram channel: spool delivery failed: ${err}\n`)
     })
