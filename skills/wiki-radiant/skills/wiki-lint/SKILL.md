@@ -31,7 +31,7 @@ Scripts live in `scripts/` inside this skill's directory (`<skill-dir>/scripts/`
 
 4. **Layer 3: Drift detection**: For each `wiki/sources/` page, check whether its `.raw/` file was modified after the page was last synthesized.
 
-   1. For each file in `{vault}/wiki/sources/`, read its `raw:` and `updated:` frontmatter fields. Skip pages with no `raw:` field.
+   1. For each file in `{vault}/wiki/sources/`, read its `raw:` (one path or a list) and `updated:` frontmatter fields. Skip pages with no `raw:` field; check each listed path.
    2. Skip invalid or missing raw targets reported by Layer 1's `missing_raw` check. For valid targets, run `stat -f "%Sm" -t "%Y-%m-%d" {vault}/{raw}` (macOS) or `date -r {vault}/{raw} "+%Y-%m-%d"` to get the modification date.
    3. If `.raw/` mtime > `updated:` → MEDIUM finding: "`.raw/{slug}.md` was modified after `wiki/sources/{slug}.md` was last synthesized: source page may be stale."
    4. If no drift found, note: "Layer 3: no drift detected."

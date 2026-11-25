@@ -89,23 +89,31 @@ def check(vault: Path) -> dict:
             report("HIGH", f"Invalid YAML frontmatter: {relative}")
             continue
         raw = data.get("raw") if isinstance(data, dict) else None
-        if not isinstance(raw, str) or not raw.strip():
+        paths = [raw] if isinstance(raw, str) else raw if isinstance(raw, list) else []
+        if not paths or not all(isinstance(p, str) and p.strip() for p in paths):
             health["missing_raw"].append(relative)
             report("HIGH", f"Source has no usable raw path: {relative}")
             continue
-        target = (vault / raw).resolve()
-        if Path(raw).is_absolute() or not target.is_relative_to(raw_root) or target == raw_root:
-            health["missing_raw"].append(relative)
-            report("HIGH", f"Source raw path must stay inside .raw/: {relative}")
-            continue
-        raw_sources[target].append(relative)
-        if not target.is_file():
-            health["missing_raw"].append(relative)
-            report("HIGH", f"Missing raw artifact for {relative}: {raw}")
+        for path in paths:
+            target = (vault / path).resolve()
+            if Path(path).is_absolute() or not target.is_relative_to(raw_root) or target == raw_root:
+                problem = f"Source raw path must stay inside .raw/: {relative}"
+            else:
+                raw_sources[target].append(relative)
+                if target.is_file():
+                    continue
+                problem = f"Missing raw artifact for {relative}: {path}"
+            if relative not in health["missing_raw"]:
+                health["missing_raw"].append(relative)
+            report("HIGH", problem)
 
+    # Companions share the cited artifact's name up to its first dot (video.en.vtt beside video.clean.txt).
+    def stem(path):
+        return path.parent / path.name.split(".", 1)[0]
+    cited_stems = {stem(target) for target in raw_sources}
     for artifact in sorted((vault / ".raw").rglob("*")):
         if artifact.is_file() and not any(part.startswith(".") for part in artifact.relative_to(vault / ".raw").parts):
-            if artifact.resolve() not in raw_sources:
+            if artifact.resolve() not in raw_sources and stem(artifact) not in cited_stems:
                 relative = artifact.relative_to(vault).as_posix()
                 health["raw_without_source_page"].append(relative)
                 report("HIGH", f"No source page for: {relative}")

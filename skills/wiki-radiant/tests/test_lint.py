@@ -54,6 +54,29 @@ class LintTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         self.assertTrue(all(not findings for findings in health.values()), health)
 
+    def test_raw_list_covers_every_artifact(self):
+        (self.vault / ".raw/example.md").write_text("Original")
+        (self.vault / ".raw/example-notes.md").write_text("Companion")
+        self.page("example.md", raw=[".raw/example.md", ".raw/example-notes.md"])
+        result, health = self.run_lint()
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertTrue(all(not findings for findings in health.values()), health)
+
+    def test_raw_list_reports_missing_entry(self):
+        (self.vault / ".raw/example.md").write_text("Original")
+        self.page("example.md", raw=[".raw/example.md", ".raw/gone.md"])
+        result, health = self.run_lint()
+        self.assertEqual(result.returncode, 1)
+        self.assertEqual(health["missing_raw"], ["wiki/sources/example.md"])
+
+    def test_companion_artifact_is_not_orphan(self):
+        (self.vault / ".raw/video.clean.txt").write_text("Transcript")
+        (self.vault / ".raw/video.en.vtt").write_text("Subtitles")
+        (self.vault / ".raw/unrelated.html").write_text("Other")
+        self.page("example.md", raw=".raw/video.clean.txt")
+        result, health = self.run_lint()
+        self.assertEqual(health["raw_without_source_page"], [".raw/unrelated.html"])
+
     def test_missing_raw(self):
         self.page("example.md")
         result, health = self.run_lint()
