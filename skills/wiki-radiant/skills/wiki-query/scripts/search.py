@@ -6,6 +6,7 @@ Usage: python search.py "query" [--top-k N] [--vault PATH]
 import argparse
 import json
 import sqlite3
+import struct
 import sys
 from pathlib import Path
 
@@ -49,63 +50,28 @@ def load_threshold(db_dir: Path) -> float:
 
 
 def open_db(db_path: Path) -> sqlite3.Connection:
-    sqlite_vec_path = None
-    search_paths = [
-        Path.home() / ".local/lib",
-        Path("/usr/local/lib"),
-        Path("/opt/homebrew/lib"),
-    ]
-    for sp in search_paths:
-        candidates = list(sp.glob("**/vec0*")) + list(sp.glob("**/sqlite_vec*"))
-        if candidates:
-            sqlite_vec_path = str(candidates[0])
-            break
-
     conn = sqlite3.connect(f"{db_path.as_uri()}?mode=ro", uri=True)
-    conn.enable_load_extension(True)
-    loaded = False
-    if sqlite_vec_path:
-        try:
-            conn.load_extension(sqlite_vec_path)
-            loaded = True
-        except sqlite3.OperationalError:
-            pass
-    if not loaded:
-        try:
-            import sqlite_vec
-            sqlite_vec.load(conn)
-        except ImportError:
-            print("ERROR: sqlite-vec not found.", file=sys.stderr)
-            sys.exit(1)
-    conn.enable_load_extension(False)
+    if conn.execute("SELECT 1 FROM sqlite_master WHERE name = 'vec_documents'").fetchone():
+        conn.close()
+        sys.exit("ERROR: Old semantic index detected. Delete .wiki/db/vault.db and reindex via /wiki-setup embeddings.")
     return conn
 
 
 def search(conn: sqlite3.Connection, query_vec_bytes: bytes, top_k: int, threshold: float) -> list[dict]:
-    inner_limit = top_k * 3
-    # sqlite-vec requires MATCH to run without JOINs; fetch rowids first
-    knn_rows = conn.execute(f"""
-        SELECT rowid, distance FROM vec_documents
-        WHERE embedding MATCH ? AND k = {inner_limit}
-        ORDER BY distance ASC
-    """, (query_vec_bytes,)).fetchall()
-
-    results = []
-    for rowid, distance in knn_rows:
-        if distance >= threshold:
-            continue
-        doc = conn.execute(
-            "SELECT path, heading, chunk_index, content FROM documents WHERE rowid = ?",
-            (rowid,)
-        ).fetchone()
-        if doc:
-            results.append({
-                "path": doc[0], "heading": doc[1],
-                "chunk_index": doc[2], "content": doc[3],
-                "distance": round(distance, 4)
-            })
-
-    return results[:top_k]
+    query = struct.unpack(f"<{emb.DIMENSIONS}f", query_vec_bytes)
+    best = {}
+    for path, heading, chunk_index, content, blob in conn.execute(
+        "SELECT path, heading, chunk_index, content, embedding FROM documents"
+    ):
+        vector = struct.unpack(f"<{emb.DIMENSIONS}f", blob)
+        distance = 1.0 - sum(map(lambda pair: pair[0] * pair[1], zip(query, vector)))
+        if distance < threshold and (path not in best or distance < best[path]["distance"]):
+            best[path] = {"path": path, "heading": heading, "chunk_index": chunk_index,
+                          "content": content, "distance": distance}
+    results = sorted(best.values(), key=lambda result: result["distance"])[:top_k]
+    for result in results:
+        result["distance"] = round(result["distance"], 4)
+    return results
 
 
 def main():
@@ -121,7 +87,7 @@ def main():
     db_path = find_db(Path(args.vault).resolve() if args.vault else None)
     threshold = args.threshold if args.threshold is not None else load_threshold(db_path.parent)
 
-    emb.load_embedding_model()
+    conn = open_db(db_path)
     try:
         query_vec = emb.embed_query(args.query)
     except emb.EmbeddingBackendError as e:
@@ -129,7 +95,6 @@ def main():
         sys.exit(1)
     query_bytes = emb.vec_to_bytes(query_vec)
 
-    conn = open_db(db_path)
     results = search(conn, query_bytes, args.top_k, threshold)
     conn.close()
 

@@ -103,40 +103,17 @@ def get_chunks(content: str) -> list[tuple[int, str | None, str]]:
 
 
 def init_db(db_path: Path) -> sqlite3.Connection:
-    sqlite_vec_path = None
-    search_paths = [
-        Path.home() / ".local/lib",
-        Path("/usr/local/lib"),
-        Path("/opt/homebrew/lib"),
-    ]
-    for sp in search_paths:
-        candidates = list(sp.glob("**/vec0*")) + list(sp.glob("**/sqlite_vec*"))
-        if candidates:
-            sqlite_vec_path = str(candidates[0])
-            break
-
+    if not db_path.exists():
+        config_path = db_path.parent / "config.json"
+        if config_path.exists():
+            config = json.loads(config_path.read_text())
+            config.pop("distance_threshold", None)
+            config.pop("calibration_sample", None)
+            config_path.write_text(json.dumps(config, indent=2))
     conn = sqlite3.connect(str(db_path))
-    conn.enable_load_extension(True)
-    loaded = False
-    if sqlite_vec_path:
-        try:
-            conn.load_extension(sqlite_vec_path)
-            loaded = True
-        except sqlite3.OperationalError:
-            pass
-    if not loaded:
-        try:
-            import sqlite_vec
-            sqlite_vec.load(conn)
-        except ImportError:
-            print("ERROR: sqlite-vec not found. Install with: pip install sqlite-vec", file=sys.stderr)
-            sys.exit(1)
-    conn.enable_load_extension(False)
-
-    existing = conn.execute("SELECT sql FROM sqlite_master WHERE name = 'vec_documents'").fetchone()
-    if existing and not re.search(rf"float\s*\[\s*{emb.DIMENSIONS}\s*\]", existing[0], re.I):
+    if conn.execute("SELECT 1 FROM sqlite_master WHERE name = 'vec_documents'").fetchone():
         conn.close()
-        sys.exit("ERROR: Existing semantic index uses another embedding dimension. Rebuild it via /wiki-setup embeddings.")
+        sys.exit("ERROR: Old semantic index detected. Delete .wiki/db/vault.db and reindex via /wiki-setup embeddings.")
 
     conn.executescript(f"""
         CREATE TABLE IF NOT EXISTS documents (
@@ -146,11 +123,8 @@ def init_db(db_path: Path) -> sqlite3.Connection:
             chunk_index INTEGER NOT NULL,
             content TEXT NOT NULL,
             file_hash TEXT NOT NULL,
-            updated_at TEXT NOT NULL
-        );
-        CREATE VIRTUAL TABLE IF NOT EXISTS vec_documents USING vec0(
-            rowid INTEGER PRIMARY KEY,
-            embedding float[{emb.DIMENSIONS}] distance_metric=cosine
+            updated_at TEXT NOT NULL,
+            embedding BLOB NOT NULL
         );
         CREATE INDEX IF NOT EXISTS idx_documents_path
             ON documents(path);
@@ -172,11 +146,6 @@ def get_indexed_paths(conn: sqlite3.Connection) -> set[str]:
 
 
 def delete_file(conn: sqlite3.Connection, rel_path: str) -> None:
-    conn.execute("""
-        DELETE FROM vec_documents WHERE rowid IN (
-            SELECT rowid FROM documents WHERE path = ?
-        )
-    """, (rel_path,))
     conn.execute("DELETE FROM documents WHERE path = ?", (rel_path,))
 
 
@@ -188,27 +157,26 @@ def index_file(conn: sqlite3.Connection, vault: Path, md_path: Path) -> None:
     from datetime import datetime, timezone
     now = datetime.now(timezone.utc).isoformat()
 
+    chunks = [(i, h, t) for i, h, t in chunks if t.strip()]
+    rows = []
+    for start in range(0, len(chunks), 32):
+        batch = chunks[start:start + 32]
+        vectors = emb.embed_documents([text for _, _, text in batch])
+        rows.extend((rel_path, heading, chunk_index, text, file_hash, now, emb.vec_to_bytes(vec))
+                    for (chunk_index, heading, text), vec in zip(batch, vectors))
+
     with conn:
         delete_file(conn, rel_path)
-        for chunk_index, heading, text in chunks:
-            if not text.strip():
-                continue
-            vec = emb.embed_document(text)
-            cur = conn.execute(
-                "INSERT INTO documents (path, heading, chunk_index, content, file_hash, updated_at) VALUES (?,?,?,?,?,?)",
-                (rel_path, heading, chunk_index, text, file_hash, now)
-            )
-            rowid = cur.lastrowid
-            conn.execute(
-                "INSERT INTO vec_documents (rowid, embedding) VALUES (?, ?)",
-                (rowid, emb.vec_to_bytes(vec))
-            )
+        conn.executemany(
+            "INSERT INTO documents (path, heading, chunk_index, content, file_hash, updated_at, embedding) VALUES (?,?,?,?,?,?,?)",
+            rows,
+        )
+
 
 
 def calibrate(conn: sqlite3.Connection, vault: Path, config_path: Path) -> None:
     """
     Sample intra-file pairs (similar) and inter-file pairs (dissimilar).
-    Re-embeds text directly to avoid sqlite-vec blob format issues.
     Sets threshold at p75 of dissimilar distances, saves to .wiki/db/config.json.
     """
     rows = conn.execute("""
@@ -231,11 +199,12 @@ def calibrate(conn: sqlite3.Connection, vault: Path, config_path: Path) -> None:
         by_path.setdefault(path, []).append(content)
 
     # Embed a representative sample (cap at 40 chunks to avoid slow runs)
-    sampled: list[tuple[str, list[float]]] = []
-    for path, chunks in list(by_path.items())[:40]:
-        chunk = chunks[0][:300]
-        vec = emb.embed_document(chunk)
-        sampled.append((path, vec))
+    samples = [(path, chunks[0][:300]) for path, chunks in list(by_path.items())[:40]]
+    sampled = []
+    for start in range(0, len(samples), 32):
+        batch = samples[start:start + 32]
+        vectors = emb.embed_documents([chunk for _, chunk in batch])
+        sampled.extend((path, vec) for (path, _), vec in zip(batch, vectors))
 
     intra_dists: list[float] = []
     inter_dists: list[float] = []
@@ -290,7 +259,6 @@ def main():
         sys.exit("ERROR: Git must ignore .wiki/ and have no tracked files there.")
 
     db_dir.mkdir(parents=True, exist_ok=True)
-    emb.load_embedding_model()
     conn = init_db(db_path)
 
     indexed_hashes = get_indexed_hashes(conn)
