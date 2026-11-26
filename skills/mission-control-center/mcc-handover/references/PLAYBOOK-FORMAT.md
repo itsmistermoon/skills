@@ -5,11 +5,11 @@ Gitignored: local agent artifact, not versioned content.
 
 ---
 
-## Zone 1: Permanent (NO TTL)
+## Zone 1: Permanent
 
-Structural conventions, architecture invariants, and confirmed technical workarounds. No TTL: an entry stays until the convention it describes no longer applies.
+Structural conventions, architecture invariants, and confirmed technical workarounds. An entry stays until the convention it describes no longer applies.
 
-Write here when the user stated it explicitly as a standing rule, or it already appears once in `## Working context` from a prior session and has now held true again: promote it: remove the old entry, never keep the same fact in both zones.
+Write here when the user stated it explicitly as a standing rule, or it already appears once in `## Working context` from a prior session and has now held true again: promote it by moving the entry and its evidence to Permanent.
 
 ```markdown
 ---
@@ -47,4 +47,4 @@ Write here for a single-session observation not yet confirmed: an untested worka
 - **`## Permanent`**: can be removed if the convention no longer applies; whoever deletes, explains.
 - **`## Working context`**: pruning is automatic, the agent does not ask.
 - **Evidence**: an entry accumulates evidence in either zone. When a later session confirms it, append that session's date, plus a link or commit when one exists.
-- **Not a session log**: neither section is a session log: that is what `HANDOVER.md` is for. PLAYBOOK captures learning that outlasts the session.
+- **Learning**: PLAYBOOK captures lessons that outlast the session; record session events in HANDOVER History.

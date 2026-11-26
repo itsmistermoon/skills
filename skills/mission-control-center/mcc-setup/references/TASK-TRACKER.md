@@ -1,6 +1,6 @@
 # Task tracker
 
-Every mcc skill that reads or changes pending work resolves the task tracker here.
+**Tracker:** resolve here before any List, Add, or Close operation. The resolved tracker owns its commands and required labels.
 
 ## Triage
 
@@ -24,4 +24,4 @@ Any other tool. `docs/agents/task-tracker.md` holds commands under three heading
 - `## Add`: create a task in `<channel>` exactly as the document's Add commands say, with every label they require (triage first), plus any links. Run for each destination repo, including outside scope.
 - `## Close`: complete or drop a task, with a one-line result.
 
-Substitute the destination channel in those commands: they are the whole contract, so switching tools means rewriting only that file. `.mcc/HANDOVER.md` keeps a single Pending line, `- Task tracker: <tool> (docs/agents/task-tracker.md)`.
+Read all three sections before the first operation. Substitute the destination channel in those commands: they are the whole contract, so switching tools means rewriting only that file. `.mcc/HANDOVER.md` keeps a single Pending line, `- Task tracker: <tool> (docs/agents/task-tracker.md)`.

@@ -7,7 +7,7 @@ Gitignored: local agent artifact, not versioned content.
 
 ## Zone 1: Current state (MUTABLE)
 
-Updated on every `/mcc-handover`. Hard limit: **max 3 active decisions**. Pending follows the task tracker rules in `../../mcc-setup/references/TASK-TRACKER.md`.
+Updated on every `/mcc-handover`. Hard limit: **max 3 active decisions**. **Tracker:** before writing Pending, read [TASK-TRACKER.md](../../mcc-setup/references/TASK-TRACKER.md) and use its representation for the resolved tracker.
 When adding an item, evaluate whether an existing one is obsolete and remove it.
 
 ```markdown
@@ -21,7 +21,7 @@ updated: {YYYY-MM-DD}
 ## Current state
 
 ### Pending
-- [ ] {concise description with enough context to resume}: {file or path if applicable}
+{Pending representation from TASK-TRACKER.md}
 
 ### Active decisions
 - {decision and rationale: to avoid re-litigating it}
@@ -35,7 +35,7 @@ updated: {YYYY-MM-DD}
 
 ## Zone 2: History (APPEND-ONLY)
 
-Never modify previous entries. Append at the end. `HISTORY.md` is never read automatically: consult it directly only when a session needs older history.
+Preserve previous entries verbatim; append new entries at the end. `HISTORY.md` is never read automatically: consult it directly only when a session needs older history.
 
 ```markdown
 ## History
@@ -54,8 +54,8 @@ Never modify previous entries. Append at the end. `HISTORY.md` is never read aut
 
 ```
 
-Empty sections (Attempted and failed, Fragile context): omit entirely: never write `_(none)_`.
+Include Attempted and failed and Fragile context only when they have content.
 
-Don't duplicate content already in ADRs, PRDs, issues, or commits: reference by path.
+Reference existing ADRs, PRDs, issues, or commits by path or link.
 
 In every section, omit unnecessary personal information, tokens, API keys, and credentials (patterns: `sk-*`, `Bearer *`, `ghp_*`, `?token=*`, flags `--password`/`-u user:pass`). If fragile context requires a credential to reproduce, replace it with `<REDACTED>` and note where to obtain it without reading credential files.

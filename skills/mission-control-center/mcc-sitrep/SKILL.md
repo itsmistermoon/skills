@@ -1,10 +1,10 @@
 ---
 name: mcc-sitrep
-description: "Give a situation report and clear decisions when the user asks for a sitrep or catch-up, or returns from mcc-coast away mode, and as the first skill of a fresh session: a short fleet map and the top decisions, ranked by WSJF, burned one at a time."
+description: "Sitrep: report fleet state and resolve decisions on a status request, return from mcc-coast, or fresh session start."
 argument-hint: "{since: date, time, or event} {focus: an owner or domain}"
 ---
 
-Reply in the user's language. The user reads a **brief**, not your research: you hold every fact, they get only what changes what they do. Name each item by what it is, with its number or link as support, never a bare list of numbers.
+The user reads a **brief**, not your research: you hold every fact, they get only what changes what they do. Name each item by what it is, with its number or link as support, never a bare list of numbers.
 
 ## 1. Window and focus
 
@@ -17,33 +17,35 @@ The window starts at the first that applies:
 
 A focus the user names ("Imaquinaria", "my personal projects") maps to one owner of the fleet manifest. With a focus, the report covers that owner only, plus one line of anomalies that cost elsewhere.
 
+**Done when:** the start and applicable owner filter are resolved.
+
 ## 2. Facts
 
-Gather in one parallel script:
+Read `## Mission control` in AGENTS.md. **Fleet:** when configured, read its backend document before running its map or identifying owners. **Tracker:** when listing or changing pending work, read [TASK-TRACKER.md](../mcc-setup/references/TASK-TRACKER.md) and execute the destination’s contract. Gather independent facts in one parallel script:
 
 - When Fleet is configured: the map command its backend document declares, in JSON (with the owner filter for a focus). It returns anomalies with their action, each owner's tasks with their WSJF, PRs, branches, worktrees, handover Pending and live sessions. Read only: each owner writes only its own `.mcc/`.
-- Without Fleet: open PRs and failing checks for each owner in the `## Mission control` section of `AGENTS.md`, branches and uncommitted changes in the repos this home repo points to, and the open tasks of the task tracker (`../mcc-setup/references/TASK-TRACKER.md`).
+- Without Fleet: open PRs and failing checks for each owner in the `## Mission control` section of `AGENTS.md`, branches and uncommitted changes in the repos this home repo points to, and the tracker’s open tasks.
 - This repo's `.mcc/HANDOVER.md` Current state, including its `### Decision queue`.
 - Open decisions: `gh search issues --owner <owner> label:decision state:open --json title,url,repository,body,updatedAt`, once per owner.
 - When `.mcc/COAST.md` exists: every line of its `## Log`, each owner's results through `mcc-fleet`, and the Telegram daily logs in `${TELEGRAM_STATE_DIR:-${CLAUDE_CONFIG_DIR:-~/.claude}/channels/telegram}/log/` for the window.
 
 Check each decision against the PR, branch or fact that raised it. One the facts already settled gets closed with a comment citing that evidence.
 
-**Done when** every item has its source checked.
+**Done when** every applicable source above has been checked, each decision has been reconciled with its evidence, and unavailable sources are identified.
 
 ## 3. Push right
 
 Before writing, do everything that needs no one: close what is already done, clean up merged leftovers inside your own domain, estimate cost of delay (`cod`) and `size` for tasks the map flags without them (1, 2, 3, 5, 8, 13, with a one-line reason as a reply). Actions outside your authority (remote deletes, other owners' repos, anything outward-facing) wait for one bundled go.
 
-## 4. Report
+**Done when:** each actionable item is resolved within existing authority or listed with the authorization it needs.
 
-Keep it short and complete; no fixed length, no detail the user did not ask for.
+## 4. Report
 
 1. One sentence: what waits on the user, or that nothing does.
 2. Anomalies that block or cost (quota, failed deploy, dead session), each with its action. Nominal state is not reported.
 3. The fleet: one line per owner, counts and its one most important point (`vc: 9 open, 6 for you, 4 blocked until Dec 1`).
 4. One line of what you already resolved, and one line of maintenance waiting for a go, when there is any.
-5. Three priorities, ranked by WSJF (`cod ÷ size`; cheap items that clear a pending rise), your pick first. Each is a **decision of impact**: it unblocks work, sets scope or direction, or carries cost or risk outside. A trivial yes or no is not one: decide it yourself and report it. For each, about 30 words: the call, your pick, what it changes, the evidence, the risk. Never invent a decision to fill the list.
+5. Three priorities, ranked by WSJF (`cod ÷ size`; cheap items that clear a pending rise), your pick first. Each is a **decision of impact**: it unblocks work, sets scope or direction, or carries cost or risk outside. A trivial yes or no is not one: decide it yourself and report it. For each, about 30 words: the call, your pick, what it changes, the evidence, the risk. Include only decisions supported by the facts.
 
 Write the chosen order into `### Decision queue` in Current state of `.mcc/HANDOVER.md`, so a later session resumes it. Recompute only when the facts changed.
 

@@ -1,6 +1,6 @@
 # Notifications and channel
 
-Read from `mcc-setup` step 4. Each section is optional; run the ones the user chose.
+Run the branches selected in `mcc-setup` step 4: Notify command for delivery, Hooks for Claude Code return reminders, Two-way channel for replies from the phone.
 
 ## 1. Notify command
 
@@ -33,14 +33,14 @@ Copy it to `.claude/hooks/mcc-coast.sh`, make it executable, and register it in 
 
 Merge into existing `hooks` arrays rather than replacing them. Requires `jq`.
 
-Run `bash skills/mission-control-center/mcc-setup/tests/claude-hook.sh` from the skills repository to check the hook.
+**Done when:** the hook is executable, both hook registrations are preserved alongside existing hooks, and `bash skills/mission-control-center/mcc-setup/tests/claude-hook.sh` passes from the skills repository.
 
 ## 3. Two-way channel (Claude Code, optional)
 
 To answer from the phone. Two plugin choices, both on the same bot as `bin/notify`:
 
 - **Official** `telegram@claude-plugins-official`: direct messages, or a group where every reply lands in General.
-- **Topics fork** in [../../telegram-plugin/](../../telegram-plugin/) (`telegram@itsmistermoon-skills`): with the topics group, each repo's sessions read and answer in that repo's topic, and the home repo takes General plus topics with no open session. See [../../telegram-plugin/CHANGES.md](../../telegram-plugin/CHANGES.md).
+- **Topics fork** in [../../telegram-plugin/](../../telegram-plugin/) (`telegram@itsmistermoon-skills`): with the topics group, each repo's sessions read and answer in that repo's topic, and the home repo takes General plus topics with no open session. **Routing:** read [CHANGES.md](../../telegram-plugin/CHANGES.md) when choosing the topics fork.
 
 Steps for the topics fork:
 

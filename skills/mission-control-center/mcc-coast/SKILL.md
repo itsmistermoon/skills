@@ -5,13 +5,11 @@ disable-model-invocation: true
 argument-hint: "{instructions while away}"
 ---
 
-Reply in the user's language.
-
 ## 1. Setup
 
 Read the `## Mission control` section of the repo's `AGENTS.md`. If it is missing, run the `mcc-setup` skill first, then continue here in the same invocation.
 
-When Fleet is configured, read its backend document and stop unless this session is its designated fleet coordinator.
+**Fleet:** when configured, read its backend document and identify this session with its commands. Continue only as the designated coordinator. **Done when:** configuration is read (including completed setup when needed) and coordinator authority is verified when Fleet is configured.
 
 ## 2. Enter
 
@@ -38,10 +36,10 @@ Every decision and outcome below gets one **log** line under `## Log` in `.mcc/C
 
 - **Scope.** Act on the instructions and on authority the user already gave. Everything else waits for their return.
 - **Decisions.** Open an issue labeled with the configured decision label in the repo the decision belongs to (the home repo when none fits). Title: the question. Body: context, options, your recommendation, links. Log it with the title and full URL, then continue the unblocked work.
-- **Outcomes.** Log each result the user would want: a PR ready for review (full URL), a real failure, a long task finished. Work that stays pending for after the return goes to the task tracker (`../mcc-setup/references/TASK-TRACKER.md`) with its Add.
+- **Outcomes.** Log each result the user would want: a PR ready for review (full URL), a real failure, a long task finished. Work that stays pending for after the return goes to the tracker. **Tracker:** before adding pending work, read [TASK-TRACKER.md](../mcc-setup/references/TASK-TRACKER.md), resolve the destination, and execute its Add contract.
 - **Reserved.** Merges, irreversible deletions, credentials, and security changes wait for the user's return, whatever the instructions say.
 - **Replies from a channel.** With a two-way channel configured, a reply that arrives through it is the user's word on the decision it answers; away mode stays on.
 
 ## 4. Return
 
-The user's first message typed in the terminal ends away mode: run `mcc-sitrep`. It uses `since:` as its window start and deletes `.mcc/COAST.md` when done. **Done when:** the sitrep is complete and `.mcc/COAST.md` is deleted.
+The user's first message typed in the terminal ends away mode: run `mcc-sitrep`. Follow its return-closing step. **Done when:** the sitrep is complete and `.mcc/COAST.md` is deleted.

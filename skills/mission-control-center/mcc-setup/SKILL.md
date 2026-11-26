@@ -1,11 +1,11 @@
 ---
 name: mcc-setup
-description: "Set up Mission Control Center in a repo, including session start, tracker, notifications, decisions, and fleet. Use once per repo or when configuration is missing."
+description: "Configure session start, task tracking, notifications, decisions, and fleet for a repo."
 disable-model-invocation: true
 argument-hint: ""
 ---
 
-Reply in the user's language. One-time setup, safe to rerun: each step checks what already exists and asks before changing a file that already exists, preserving its other content. Write into `AGENTS.md` in the language that file already uses.
+One-time setup, safe to rerun: each step checks what already exists and asks before changing a file that already exists, preserving its other content. Write into `AGENTS.md` in the language that file already uses.
 
 The other mcc skills read their configuration from the `## Mission control` section of `AGENTS.md` and run this skill when it is missing.
 
@@ -20,7 +20,7 @@ decision_owners: []      # GitHub users or orgs
 fleet: none              # or { backend: rex, source: /absolute/path/to/fleet.md }
 ```
 
-With the file present, show its values and ask for one confirmation in place of the questions in steps 3 to 6; with no user present (you run as a subagent), apply them and list them in your report. With the file missing, ask as each step says, then write the file with the answers. Adapt a copied task tracker to the channel parameter contract in `references/TASK-TRACKER.md`. A saved Rex backend identifies a document to copy into this repo as `docs/agents/fleet.md`; adapt and verify it here.
+With the file present, show its values and ask for one confirmation in place of the questions in steps 3 to 6; with no user present (you run as a subagent), apply them and list them in your report. With the file missing, ask as each step says, then write the file with the answers. **Tracker:** when choosing or copying a tracker, read [TASK-TRACKER.md](references/TASK-TRACKER.md) and apply its contract. A saved Rex backend identifies a document to copy into this repo as `docs/agents/fleet.md`; adapt and verify it here.
 
 ## 1. State folder
 
@@ -49,20 +49,22 @@ Without `AGENTS.md`, create it with the repo name as title and this block. **Don
 
 ## 3. Task tracker
 
-Ask the user where pending work should live. [references/TASK-TRACKER.md](references/TASK-TRACKER.md) defines both kinds: `handover` (the default, nothing to write) or an external tool, for which you write `docs/agents/task-tracker.md` with its List, Add, and Close commands. **Done when** the user picked a tracker and, for an external one, its List commands ran successfully.
+Ask the user where pending work should live. The tracker reference defines both kinds: `handover` (the default, nothing to write) or an external tool, for which you write `docs/agents/task-tracker.md` with its List, Add, and Close commands. **Done when** the user picked a tracker and, for an external one, its List commands ran successfully.
 
 ## 4. Notifications and hooks (optional)
 
-Without a notify command, `mcc-coast` is a plain away mode: everything goes to the log in `.mcc/COAST.md`, and `mcc-sitrep` reports it on return. Ask whether the user also wants those lines on their phone, and, in Claude Code, the hook that reminds a returning user to run `mcc-sitrep` (it works without notifications). Follow [references/NOTIFICATIONS.md](references/NOTIFICATIONS.md) for what they choose: notify command, hooks, and the two-way Telegram channel. **Done when** each choice is declined or verified as its section describes.
+Without a notify command, `mcc-coast` is a plain away mode: everything goes to the log in `.mcc/COAST.md`, and `mcc-sitrep` reports it on return. Ask whether the user also wants those lines on their phone, and, in Claude Code, the hook that reminds a returning user to run `mcc-sitrep` (it works without notifications). **Notifications:** read [NOTIFICATIONS.md](references/NOTIFICATIONS.md) for each chosen branch: notify command, hooks, and the two-way Telegram channel. **Done when** each choice is declined or verified as its section describes.
 
 ## 5. Decisions
 
 1. Ask which GitHub owners (users or orgs) hold the repos where decisions can live.
 2. The decision label is `decision`. For each repo that receives a decision, create the label on first use: `gh label create decision -R <owner>/<repo>`.
 
+**Done when:** the owners are recorded for step 7 and the first-use label command is specified.
+
 ## 6. Fleet backend (optional)
 
-Ask whether the repo uses a fleet. For Rex, write `docs/agents/fleet.md` with the coordinator and how to identify the current session, owner map, executable launch preparation, permissions, optional tracker integration and cleanup procedure. Declare the command that lists work for every owner for fleet-wide coast; if absent, coast operates on this repo only. Otherwise select `none`. Unattended, use the saved backend or `none` and report the choice. **Done when** Rex and each declared read-only identification and listing command run successfully, the coordinator and every owner are identifiable, and the document specifies usable launch, tracker and cleanup commands and the coast capability or its absence.
+Ask whether the repo uses a fleet. For Rex, write `docs/agents/fleet.md` with the coordinator and commands to identify the current session and coordinator at runtime, owner map, executable launch preparation, permissions, optional tracker integration and cleanup procedure. Store roles and discovery commands rather than live session or block IDs. Declare the command that lists work for every owner for fleet-wide coast; if absent, coast operates on this repo only. Otherwise select `none`. Unattended, use the saved backend or `none` and report the choice. **Done when** Rex and each declared read-only identification and listing command run successfully, the coordinator and every owner are identifiable, and the document specifies usable launch, tracker and cleanup commands and the coast capability or its absence.
 
 ## 7. Mission control section
 
@@ -78,6 +80,6 @@ Ask which repos the agent owns in addition to the base repo. Resolve each suppli
 - If `.mcc/COAST.md` exists, the user is away: follow the `mcc-coast` skill from step 3. Their first message typed in the terminal is the return: run the `mcc-sitrep` skill.
 ```
 
-The last line lets any session, in any harness that reads `AGENTS.md`, notice away mode.
+**Done when:** rereading AGENTS.md confirms the selected configuration, valid Scope paths when supplied, and away-mode routing.
 
 **Setup is complete when** every step above met its Done when.

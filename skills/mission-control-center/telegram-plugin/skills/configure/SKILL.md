@@ -1,6 +1,6 @@
 ---
 name: configure
-description: Set up the Telegram channel — save the bot token and review access policy. Use when the user pastes a Telegram bot token, asks to configure Telegram, asks "how do I set this up" or "who can reach me," or wants to check channel status.
+description: "Telegram setup: save or clear a bot token, inspect channel status, or review who can reach the assistant."
 user-invocable: true
 allowed-tools:
   - Read
@@ -23,8 +23,7 @@ per-project setups):
 echo "${TELEGRAM_STATE_DIR:-${CLAUDE_CONFIG_DIR:-$HOME/.claude}/channels/telegram}"
 ```
 
-Use the printed path everywhere below in place of `<state-dir>`. The default
-is `~/.claude/channels/telegram`.
+Use the printed path everywhere below in place of `<state-dir>`.
 
 Arguments passed: `$ARGUMENTS`
 
@@ -79,8 +78,7 @@ Drive the conversation this way:
    (have them message @userinfobot), or you can briefly flip to pairing:
    `/telegram:access policy pairing` → they DM → you pair → flip back."*
 
-Never frame `pairing` as the correct long-term choice. Don't skip the lockdown
-offer.
+Complete the review with the next step toward a defined allowlist.
 
 ### `<token>` — save it
 
@@ -97,6 +95,10 @@ offer.
 Delete the `TELEGRAM_BOT_TOKEN=` line (or the file if that's the only line).
 
 ---
+
+## Completion
+
+Status is complete when token presence, access state, and the next setup action are reported. Saving is complete when the token entry is updated, other keys are preserved, permissions are 600, and restart guidance is given. Clearing is complete when the token entry is absent and restart guidance is given.
 
 ## Implementation notes
 
