@@ -17,11 +17,22 @@ Give each writer an isolated checkout following the backend. Write a self-contai
 rex do <skill>/scripts/spawn.lua name=<name> cwd=<checkout> task=<file> command="<agent and options>"
 ```
 
-Use `{prompt}` to choose the prompt position; otherwise it follows the executable. `depth=N` permits N levels of nesting. `notify=file` avoids typing into the parent's terminal. The backend may specify `prepare=<executable>` and `tracker=<executable>`; pass `base=<branch>` and comma-separated `writable=<paths>` as its instructions require. The prepare executable receives checkout and base and must exit zero before launch. The tracker receives `init <task-dir> <name> <checkout> <task-file> <result>` and prints task-specific instructions; `state <task-dir>` prints open, completed, failed or blocked. A tracker error stops launch or watch. Without a tracker, watch uses the atomic result file. The script prints the report path, reply and `watch:` commands. Run watch in the background. **Launch complete when:** every writer has its isolated checkout, task, report path, and running watcher.
+Use `{prompt}` to choose the prompt position; otherwise it follows the executable. `depth=N` permits N levels of nesting. `notify=file` avoids typing into the parent's terminal. The backend may specify `prepare=<executable>` and `tracker=<executable>`; pass `base=<branch>` and comma-separated `writable=<paths>` as its instructions require. The prepare executable receives checkout and base and must exit zero before launch. The tracker receives `init <task-dir> <name> <checkout> <task-file> <result>` and prints task-specific instructions; `state <task-dir>` prints open, completed, failed or blocked. A tracker error stops launch or watch. Without a tracker, watch uses the atomic result file. Con `notify=file`, spawn inicia watch en segundo plano y entrega `watch log:` y `watch restart:`; la salida y el código final quedan en `<task-dir>/watch.log`. Sin esa opción, ejecuta en segundo plano el comando `watch:` impreso. **Launch complete when:** every writer has its isolated checkout, task, report path, and running watcher.
 
 **Review:** read the report and verify STATUS, every requested outcome and evidence, checkout cleanliness and tracker state before accepting completion or closing the tab. Investigate failed or blocked reports and resolve or escalate them; retain work until reviewed and landed. Follow backend cleanup. **Review complete when:** each requested outcome has verified evidence and the report is accepted or its remaining work is resolved or escalated.
 
-Before a follow-up, archive the previous report outside the result path, reopen or reclaim the tracker task if applicable, send the task and restart watch. The agent replaces the report and signals delivery again. **Follow-up complete when:** the previous report is archived, the task is reopened when applicable, and the new watcher is running.
+Para un follow-up, archiva el informe anterior fuera de `result.md`, reabre o retoma la tarea del tracker cuando corresponda, envía el encargo y ejecuta el mismo `watch restart:` del recibo (`bash <task-dir>/watch-start.sh`). Tras resolver una pausa, usa ese comando para reanudar la vigilancia. El agente reemplaza el informe y vuelve a entregar. **Follow-up complete when:** the previous report is archived, the task is reopened when applicable, and the new watcher is running.
+
+### Estados de watch
+
+La entrega exige que la primera línea de `result.md` sea `STATUS: completed`, `STATUS: failed` o `STATUS: blocked`; con tracker, este también debe declarar un estado final. El tracker consulta el contrato del backend: un bloqueo del board se detecta solo si ese contrato lo implementa.
+
+| Código | Estado |
+|---|---|
+| 0 | Informe entregado: completed, failed o blocked |
+| 1 | Panel perdido o tracker falló |
+| 2 | Pantalla de permiso o confianza |
+| 3 | Pantalla congelada durante el intervalo configurado |
 
 ## Crewmates and transfers
 

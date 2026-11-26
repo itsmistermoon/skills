@@ -158,4 +158,17 @@ if worktree then
   print("worktree: " .. worktree.path)
 end
 print("message it: " .. lib.send_command(session, block, "MESSAGE"))
-print("watch: " .. lib.quote(lib.dir .. "watch.sh") .. " " .. lib.quote(session) .. " " .. lib.quote(block) .. " " .. lib.quote(result) .. " 900" .. (a.tracker and (" " .. lib.quote(a.tracker) .. " " .. lib.quote(task_dir)) or ""))
+local watch = lib.quote(lib.dir .. "watch.sh") .. " " .. lib.quote(session) .. " " .. lib.quote(block) .. " " .. lib.quote(result) .. " 900"
+  .. (a.tracker and (" " .. lib.quote(a.tracker) .. " " .. lib.quote(task_dir)) or "")
+if a.notify == "file" then
+  local log, restart = task_dir .. "/watch.log", task_dir .. "/watch-start.sh"
+  local run = watch .. '; code=$?; echo "watch exit: $code"; exit "$code"'
+  lib.write(restart, "#!/usr/bin/env bash\nnohup bash -c " .. lib.quote(run)
+    .. " > " .. lib.quote(log) .. " 2>&1 < /dev/null &\n")
+  local started = assert(rex.exec({ "sh", "-c", "bash " .. lib.quote(restart) }))
+  assert(started.ok, "watch launch failed: " .. log)
+  print("watch log: " .. log)
+  print("watch restart: bash " .. lib.quote(restart))
+else
+  print("watch: " .. watch)
+end

@@ -3,11 +3,14 @@
 set -u
 session=$1 block=$2 result=$3 idle=${4:-900} tracker=${5:-} task_dir=${6:-}
 last_hash= same_since=$(date +%s)
+valid_report() {
+  [ -f "$result" ] && head -1 "$result" | grep -Eq '^STATUS: (completed|failed|blocked)$'
+}
 while :; do
   if [ -n "$tracker" ]; then
     state=$("$tracker" state "$task_dir") || { echo "tracker failed"; exit 1; }
-    case "$state" in completed|failed|blocked) echo "tracker: $state"; exit 0;; esac
-  elif [ -f "$result" ]; then echo "report: $result"; exit 0; fi
+    case "$state" in completed|failed|blocked) if valid_report; then echo "tracker: $state"; exit 0; fi;; esac
+  elif valid_report; then echo "report: $result"; exit 0; fi
   if ! screen=$(rex capture -s "$session" -b "$block" --trim 2>/dev/null); then
     echo "pane gone; report: $result"; exit 1
   fi
