@@ -58,7 +58,14 @@ end
 
 -- The agent running this script.
 function lib.me()
-  return assert(os.getenv("REX_SESSION"), "run this inside a Rex terminal"), os.getenv("REX_BLOCK")
+  local session, block = os.getenv("REX_SESSION"), os.getenv("REX_BLOCK")
+  -- Agent shells (Claude Code, Codex) keep REX_BLOCK but drop REX_SESSION: ask Rex for the session that holds the block.
+  if session == "" then session = nil end
+  if not session and block then
+    local r = rex.exec({ "rex", "whoami", "--json" })
+    session = r and r.ok and r.stdout:match('"session_id"%s*:%s*"([^"]+)"')
+  end
+  return assert(session, "run this inside a Rex terminal"), block
 end
 
 -- A script must attach to a session before it can act on it.
