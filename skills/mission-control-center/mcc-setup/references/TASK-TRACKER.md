@@ -21,7 +21,7 @@ Limit: at most five tasks. When a new task would make six, drop or merge the lea
 Any other tool. `docs/agents/task-tracker.md` holds commands under three headings. List and Add accept a `<channel>` parameter, mapped from the destination repo path to its channel by the document's instructions:
 
 - `## List`: show the open tasks, and the ready ones per triage label, for `<channel>`. Run once for each repo in the resolved scope.
-- `## Add`: create a task in `<channel>` with its triage label, plus any other labels or links. Run for each destination repo, including outside scope.
+- `## Add`: create a task in `<channel>` exactly as the document's Add commands say, with every label they require (triage first), plus any links. Run for each destination repo, including outside scope.
 - `## Close`: complete or drop a task, with a one-line result.
 
 Substitute the destination channel in those commands: they are the whole contract, so switching tools means rewriting only that file. `.mcc/HANDOVER.md` keeps a single Pending line, `- Task tracker: <tool> (docs/agents/task-tracker.md)`.

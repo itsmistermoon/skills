@@ -17,7 +17,7 @@ Start with `Handing over session...` in the user's language. Use that language f
 
 4. **Write the snapshot.** Update Current state and append a History entry using the format from step 2. Reconcile duplicates and resolved or superseded items in Current state; preserve previous History entries. Keep at most three active decisions. Carry `### Decision queue` forward as it stands: struck items with their result, open ones in order. Tailor pending work to `next:` when supplied.
 
-   - **Pending work:** List the tracker's open tasks for the scope, then Add each new one in its repo with its triage label and Close each one this session finished or dropped. Route out-of-scope items as in step 3.
+   - **Pending work:** List the tracker's open tasks for the scope, then Add each new one in its repo through the tracker's Add, with every label it requires, and Close each one this session finished or dropped. Route out-of-scope items as in step 3.
    - **Local vault health:** if `{repo}/meta/vault-report.json` exists, read `health.dead_links`, `health.raw_without_source_page`, `health.missing_confidence`, `health.orphan_pages`, `health.missing_raw`, `health.unindexed_pages`, and `health.duplicate_sources`. Keep one dated pending task with the finding count and report path while the report is nonempty, and Close it when the report is empty. Mention unresolved findings explicitly in the confirmation.
    - **Maintenance nudge:** for each scoped PLAYBOOK whose oldest Working-context date is over 30 days old, add a pending task in that repo to run `/mcc-debrief` for overdue pruning. On the first handover only, if AGENTS.md lacks `<!-- mcc:session-start -->` or the `## Mission control` section, suggest `/mcc-setup`. This skill does not edit AGENTS.md.
 
