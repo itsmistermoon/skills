@@ -19,30 +19,4 @@ assert(not message:find("[\r\n]"), "the message must be one line; put longer tex
 
 local header = lib.header(lib.me())
 lib.attach(session)
--- Never paste over someone typing: wait for the prompt to empty, then give up
--- with the message saved, so the sender retries later.
-local tries = tonumber(rex.args.wait or "20")
--- Quiet means empty on two reads 2 s apart: a single read races a person who
--- is about to type, and the paste would carry their half-written text with it.
-local function quiet()
-  if lib.input_pending(session, block) then return false end
-  rex.exec({ "sleep", "2" })
-  return not lib.input_pending(session, block)
-end
-while not quiet() do
-  if tries <= 0 then
-    local path = os.tmpname() .. "-send.txt"
-    local f = assert(io.open(path, "w")); f:write(header .. message, "\n"); f:close()
-    error("send.lua: entrada ocupada en " .. tostring(block) .. "; mensaje guardado en " .. path .. ". Reintenta más tarde.")
-  end
-  tries = tries - 1
-  rex.exec({ "sleep", "3" })
-end
-lib.paste_line(session, block, header .. message)
-rex.exec({ "sleep", "1" })
--- Delivered means the prompt is empty again: text left there means someone
--- typed into it and the submission may carry their words.
-if lib.input_pending(session, block) then
-  error("send.lua: la entrada de " .. tostring(block) .. " no quedó vacía tras enviar; revisa con rex capture que el mensaje no se mezcló con texto ajeno")
-end
-print("send.lua: entregado en " .. tostring(block))
+lib.send_guarded(session, block, header .. message, rex.args.wait)

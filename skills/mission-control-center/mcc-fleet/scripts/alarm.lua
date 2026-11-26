@@ -29,5 +29,5 @@ end
 lib.attach(a.session)
 local schedule = a.every and rex.every or rex.after
 schedule(seconds, function()
-  lib.paste_line(a.session, a.block, message)
+  lib.send_guarded(a.session, a.block, message, a.wait)
 end)

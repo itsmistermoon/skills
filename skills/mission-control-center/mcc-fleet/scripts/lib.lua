@@ -137,8 +137,33 @@ end
 
 function lib.input_pending(session, block)
   local r = rex.exec({ "rex", "capture", "-s", session, "-b", block, "--format=vt" })
-  if not (r and r.ok) then return false end
+  if not (r and r.ok) then return true end
   return lib.input_has_text(r.stdout)
+end
+
+-- Mensajes y alarmas comparten la misma espera y comprobación de entrada.
+function lib.send_guarded(session, block, text, tries)
+  tries = tonumber(tries or 20)
+  local function quiet()
+    if lib.input_pending(session, block) then return false end
+    rex.exec({ "sleep", "2" })
+    return not lib.input_pending(session, block)
+  end
+  while not quiet() do
+    if tries <= 0 then
+      local path = os.tmpname() .. "-send.txt"
+      lib.write(path, text .. "\n")
+      error("entrada ocupada en " .. tostring(block) .. "; mensaje guardado en " .. path .. ". Reintenta más tarde.")
+    end
+    tries = tries - 1
+    rex.exec({ "sleep", "3" })
+  end
+  lib.paste_line(session, block, text)
+  rex.exec({ "sleep", "1" })
+  if lib.input_pending(session, block) then
+    error("la entrada de " .. tostring(block) .. " no quedó vacía tras enviar; revisa con rex capture")
+  end
+  print("enviado al panel " .. tostring(block))
 end
 
 -- Single quotes keep every character literal in POSIX shells.

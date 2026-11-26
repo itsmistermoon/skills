@@ -13,4 +13,23 @@ local cases = {
 }
 local bad = 0
 for _, c in ipairs(cases) do local got = lib.input_has_text(c[2]); print((got == c[3]) and "ok " or "MAL", c[1], got); if got ~= c[3] then bad = bad + 1 end end
+local function check(label, condition)
+  print(condition and "ok" or "MAL", label)
+  if not condition then bad = bad + 1 end
+end
+check("captura fallida ocupa la entrada", lib.input_pending("session", "block"))
+rex.exec = function() return nil end
+check("captura ausente ocupa la entrada", lib.input_pending("session", "block"))
+local captures, pasted = 0, 0
+rex = {
+  args = {worker=true, ["in"]=1, session="session", block="block", message="recordatorio", wait=0},
+  call = function(method) if method == "block.event" then pasted = pasted + 1 end; return {} end,
+  exec = function(argv)
+    if argv[2] == "capture" then captures = captures + 1; return {ok=false} end
+    return {ok=true}
+  end,
+  after = function(_, callback) callback() end,
+}
+local ok = pcall(dofile, arg[0]:match("^(.*/)") .. "../scripts/alarm.lua")
+check("alarma protege entrada desconocida", not ok and pasted == 0 and captures > 0)
 os.exit(bad)
