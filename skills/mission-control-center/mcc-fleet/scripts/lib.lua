@@ -111,10 +111,12 @@ end
 -- line that starts with a prompt mark (❯ Claude Code and shells, › Codex) has
 -- text after it. No prompt mark on screen means nothing to protect.
 function lib.input_pending(session, block)
-  local r = rex.exec({ "rex", "capture", "-s", session, "-b", block })
+  -- VT keeps styling: a placeholder (Codex "Ask Codex to do anything") is dim text, not input.
+  local r = rex.exec({ "rex", "capture", "-s", session, "-b", block, "--format=vt" })
   if not (r and r.ok) then return false end
   local last
-  for line in r.stdout:gmatch("[^\n]+") do
+  for raw in r.stdout:gmatch("[^\r\n]+") do
+    local line = raw:gsub("\27%[2m.-\27%[[02]*m", ""):gsub("\27%[[%d;?]*[%a@]", "")
     local rest = line:match("^%s*❯(.*)$") or line:match("^%s*›(.*)$")
     if rest then last = rest:gsub("\194\160", " ") end -- Claude Code pads the prompt with NBSP
   end
