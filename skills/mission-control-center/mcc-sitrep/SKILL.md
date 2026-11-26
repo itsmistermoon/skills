@@ -1,12 +1,12 @@
 ---
 name: mcc-sitrep
-description: "Give a situation report and clear decisions when the user asks for a sitrep or catch-up, or returns from mcc-coast away mode, and as the first skill of a fresh session: a map of the whole fleet to choose what to work on."
-argument-hint: "{since: date, time, or event}"
+description: "Give a situation report and clear decisions when the user asks for a sitrep or catch-up, or returns from mcc-coast away mode, and as the first skill of a fresh session: a short fleet map and the top decisions, ranked by WSJF, burned one at a time."
+argument-hint: "{since: date, time, or event} {focus: an owner or domain}"
 ---
 
-Reply in the user's language.
+Reply in the user's language. The user reads a **brief**, not your research: you hold every fact, they get only what changes what they do. Name each item by what it is, with its number or link as support, never a bare list of numbers.
 
-## 1. Window
+## 1. Window and focus
 
 The window starts at the first that applies:
 
@@ -15,40 +15,52 @@ The window starts at the first that applies:
 3. The user's previous message in this session.
 4. 24 hours ago.
 
+A focus the user names ("Imaquinaria", "my personal projects") maps to one owner of the fleet manifest. With a focus, the report covers that owner only, plus one line of anomalies that cost elsewhere.
+
 ## 2. Facts
 
-Gather what happened in the window, each item checked at its source. Fetch every independent source in one parallel script:
+Gather in one parallel script:
 
-- PRs opened, merged, or with failing checks: `gh search prs --owner <owner> --updated ">=<date>"` for each owner in the `## Mission control` section of `AGENTS.md` (or the owners of repos this session touched, when that section is absent).
-- Commits on the branches of the repos this home repo points to, and any batch-run logs those repos keep.
-- `.mcc/HANDOVER.md` Current state, and the open tasks from the task tracker (resolve it with `../mcc-setup/references/TASK-TRACKER.md`).
-- When Fleet is configured, map every owner's open work with the commands the backend document declares, whether or not you are returning from coast: tracker tasks across all channels grouped by owner (ready for the user, ready for an agent, blocked, waiting, expired claims); open PRs and failing checks; unmerged branches, leased worktrees and uncommitted changes in their repos; the Pending section of each owner's `.mcc/HANDOVER.md`; and which agent sessions are live against the fleet manifest. Read only: each owner writes only its own `.mcc/`. Returning from coast, also collect each owner's results through `mcc-fleet` and consolidate them with links.
-- When `.mcc/COAST.md` exists: every line of its `## Log`, and what was done under its instructions.
-- On return from coast, read the Telegram daily logs in `${TELEGRAM_STATE_DIR:-${CLAUDE_CONFIG_DIR:-~/.claude}/channels/telegram}/log/` for the window and summarize the messages in the report.
+- When Fleet is configured: the map command its backend document declares, in JSON (with the owner filter for a focus). It returns anomalies with their action, each owner's tasks with their WSJF, PRs, branches, worktrees, handover Pending and live sessions. Read only: each owner writes only its own `.mcc/`.
+- Without Fleet: open PRs and failing checks for each owner in the `## Mission control` section of `AGENTS.md`, branches and uncommitted changes in the repos this home repo points to, and the open tasks of the task tracker (`../mcc-setup/references/TASK-TRACKER.md`).
+- This repo's `.mcc/HANDOVER.md` Current state, including its `### Decision queue`.
+- Open decisions: `gh search issues --owner <owner> label:decision state:open --json title,url,repository,body,updatedAt`, once per owner.
+- When `.mcc/COAST.md` exists: every line of its `## Log`, each owner's results through `mcc-fleet`, and the Telegram daily logs in `${TELEGRAM_STATE_DIR:-${CLAUDE_CONFIG_DIR:-~/.claude}/channels/telegram}/log/` for the window.
 
-**Done when** every event has its source checked. Write it as outcomes for the user: what finished, what failed, what is still running, what is still pending, with the full URL of every PR. Present the fleet map as one short block per owner (open, half-done, blocked), each item with its URL, path or task number.
+Check each decision against the PR, branch or fact that raised it. One the facts already settled gets closed with a comment citing that evidence.
 
-## 3. Open decisions
+**Done when** every item has its source checked.
 
-`gh search issues --owner <owner> label:decision state:open --json title,url,repository,body,updatedAt`, once per owner.
+## 3. Push right
 
-Before presenting a decision, check it is still live against the PR, branch, or fact that raised it. One the facts already settled gets closed with a comment citing that evidence.
+Before writing, do everything that needs no one: close what is already done, clean up merged leftovers inside your own domain, estimate cost of delay (`cod`) and `size` for tasks the map flags without them (1, 2, 3, 5, 8, 13, with a one-line reason as a reply). Actions outside your authority (remote deletes, other owners' repos, anything outward-facing) wait for one bundled go.
 
-## 4. Clearing
+## 4. Report
 
-Present only the highest-impact open decision, and say the ordering is your pick: what is decided, why it matters, the options, your recommendation. When the user answers:
+Keep it short and complete; no fixed length, no detail the user did not ask for.
 
-1. Comment their words verbatim on the issue and close it.
+1. One sentence: what waits on the user, or that nothing does.
+2. Anomalies that block or cost (quota, failed deploy, dead session), each with its action. Nominal state is not reported.
+3. The fleet: one line per owner, counts and its one most important point (`vc: 9 open, 6 for you, 4 blocked until Dec 1`).
+4. One line of what you already resolved, and one line of maintenance waiting for a go, when there is any.
+5. Three priorities, ranked by WSJF (`cod ÷ size`; cheap items that clear a pending rise), your pick first. Each is a **decision of impact**: it unblocks work, sets scope or direction, or carries cost or risk outside. A trivial yes or no is not one: decide it yourself and report it. For each, about 30 words: the call, your pick, what it changes, the evidence, the risk. Never invent a decision to fill the list.
+
+Write the chosen order into `### Decision queue` in Current state of `.mcc/HANDOVER.md`, so a later session resumes it. Recompute only when the facts changed.
+
+**Done when** the report is delivered and the queue is written.
+
+## 5. Burning decisions
+
+Take one decision at a time, in queue order. When the user answers:
+
+1. Record their words verbatim where the decision lives (issue comment, task reply) and close it.
 2. Carry out what the answer authorizes.
-3. Present the next one.
+3. When the answer opens a consequence, chain it: "with that yes, X follows; what do you decide on X? I suggest Y". Follow the branch until it closes or depends on something outside.
+4. Strike the item in the queue with a one-line result, then present the next.
 
-**Done when** no open decision remains or the user stops.
+After three, present the next three by the same rule, without repeating the report. Keep going until no decision remains or the user stops. Then name in one line what is now ready for agents, and offer to launch them with one go.
 
-## 5. Choosing the session's work
-
-Without `.mcc/COAST.md`, end with three candidates for this session, ranked by impact and urgency, your pick first, each with a one-line reason and its link. Prefer half-done work and what blocks others. When the user chooses, claim the task in the task tracker (create it with its Add if it does not exist) and start.
-
-**Done when** the user has chosen or declined.
+**Done when** the queue is empty or the user stopped.
 
 ## 6. Closing a return
 
