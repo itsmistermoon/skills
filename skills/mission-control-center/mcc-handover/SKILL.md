@@ -2,7 +2,6 @@
 name: mcc-handover
 license: MIT
 description: "Hand over a work session: route pending work to the tracker and save decisions, lessons, and history in `.mcc/`."
-disable-model-invocation: true
 argument-hint: "[vault-name] [project-name] [scope:<path>,<path>] [next: <focus>]"
 ---
 
