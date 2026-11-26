@@ -107,6 +107,20 @@ function lib.paste_line(session, block, text)
   end
 end
 
+-- True when the terminal's prompt line holds text someone is typing: the last
+-- line that starts with a prompt mark (❯ Claude Code and shells, › Codex) has
+-- text after it. No prompt mark on screen means nothing to protect.
+function lib.input_pending(session, block)
+  local r = rex.exec({ "rex", "capture", "-s", session, "-b", block })
+  if not (r and r.ok) then return false end
+  local last
+  for line in r.stdout:gmatch("[^\n]+") do
+    local rest = line:match("^%s*❯(.*)$") or line:match("^%s*›(.*)$")
+    if rest then last = rest:gsub("\194\160", " ") end -- Claude Code pads the prompt with NBSP
+  end
+  return last ~= nil and last:match("%S") ~= nil
+end
+
 -- Single quotes keep every character literal in POSIX shells.
 function lib.quote(s)
   return "'" .. s:gsub("'", "'\\''") .. "'"
