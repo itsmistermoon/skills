@@ -1,6 +1,6 @@
 ---
 name: configure
-description: "Telegram setup: save or clear a bot token, inspect channel status, or review who can reach the assistant."
+description: "Telegram setup: inspect channel status, review who can reach the assistant, set up or clear the bot token."
 user-invocable: true
 allowed-tools:
   - Read
@@ -8,12 +8,13 @@ allowed-tools:
   - Bash(ls *)
   - Bash(mkdir *)
   - Bash(echo *)
+  - Bash(grep -c *)
   - Bash(chmod *)
 ---
 
 # /telegram:configure — Telegram Channel Setup
 
-Writes the bot token to `<state-dir>/.env` and orients the user on access
+Reports the bot token state, guides the user to save it from their own terminal, and orients them on access
 policy. The server reads both files at boot.
 
 **Resolve the state directory first** (it may be overridden for multi-bot or
@@ -35,9 +36,9 @@ Arguments passed: `$ARGUMENTS`
 
 Read both state files and give the user a complete picture:
 
-1. **Token** — check `<state-dir>/.env` for
-   `TELEGRAM_BOT_TOKEN`. Show set/not-set; if set, show first 10 chars masked
-   (`123456789:...`).
+1. **Token** — check `<state-dir>/.env` for a
+   `TELEGRAM_BOT_TOKEN=` line with `grep -c`. Report set or not set, and nothing
+   of its value.
 
 2. **Access** — read `<state-dir>/access.json` (missing file
    = defaults: `dmPolicy: "pairing"`, empty allowlist). Show:
@@ -46,8 +47,7 @@ Read both state files and give the user a complete picture:
    - Pending pairings: count, with codes and display names if any
 
 3. **What next** — end with a concrete next step based on state:
-   - No token → *"Run `/telegram:configure <token>` with the token from
-     BotFather."*
+   - No token → give the token step below.
    - Token set, policy is pairing, nobody allowed → *"DM your bot on
      Telegram. It replies with a code; approve with `/telegram:access pair
      <code>`."*
@@ -80,15 +80,17 @@ Drive the conversation this way:
 
 Complete the review with the next step toward a defined allowlist.
 
-### `<token>` — save it
+### Token — the user saves it in their own terminal
 
-1. Treat `$ARGUMENTS` as the token (trim whitespace). BotFather tokens look
-   like `123456789:AAH...` — numeric prefix, colon, long string.
-2. `mkdir -p` the resolved `<state-dir>`.
-3. Read existing `.env` if present; update/add the `TELEGRAM_BOT_TOKEN=` line,
-   preserve other keys. Write back, no quotes around the value.
-4. `chmod 600` on `<state-dir>/.env` — the token is a credential.
-5. Confirm, then show the no-args status so the user sees where they stand.
+The token is a credential: it reaches `.env` from the user's terminal, never through this chat. Give the user this command, with this skill's base directory filled in, to run in their own terminal:
+
+```bash
+bash <skill-base-dir>/save-token.sh
+```
+
+It reads the token hidden, checks its BotFather shape, writes `TELEGRAM_BOT_TOKEN` to `<state-dir>/.env` keeping the other keys, and sets permissions to 600. When the user says it ran, show the no-args status.
+
+If `$ARGUMENTS` holds anything other than `clear`, treat it as a token pasted into the chat: save nothing, tell the user it is now exposed in this conversation, have them revoke it in BotFather (`/revoke`), and give the command above for the new token.
 
 ### `clear` — remove the token
 
@@ -98,7 +100,7 @@ Delete the `TELEGRAM_BOT_TOKEN=` line (or the file if that's the only line).
 
 ## Completion
 
-Status is complete when token presence, access state, and the next setup action are reported. Saving is complete when the token entry is updated, other keys are preserved, permissions are 600, and restart guidance is given. Clearing is complete when the token entry is absent and restart guidance is given.
+Status is complete when token presence, access state, and the next setup action are reported. The token step is complete when the user has the exact command, or a pasted token has been flagged for revocation, and restart guidance is given. Clearing is complete when the token entry is absent and restart guidance is given.
 
 ## Implementation notes
 
