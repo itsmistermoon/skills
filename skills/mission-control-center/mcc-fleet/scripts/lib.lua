@@ -107,20 +107,38 @@ function lib.paste_line(session, block, text)
   end
 end
 
--- True when the terminal's prompt line holds text someone is typing: the last
--- line that starts with a prompt mark (❯ Claude Code and shells, › Codex) has
--- text after it. No prompt mark on screen means nothing to protect.
-function lib.input_pending(session, block)
+-- True when the terminal's input holds text someone is typing. The input
+-- starts at the last line with a prompt mark (❯ Claude Code and shells,
+-- › Codex) and runs to Claude's box border (─) or, for Codex, the first blank
+-- line: a person may leave the prompt line empty and type below it.
+-- No prompt mark on screen means nothing to protect.
+local function visible(raw)
   -- VT keeps styling: a placeholder (Codex "Ask Codex to do anything") is dim text, not input.
+  return (raw:gsub("\27%[2m.-\27%[[02]*m", ""):gsub("\27%[[%d;?]*[%a@]", ""):gsub("\194\160", " "))
+end
+
+function lib.input_has_text(screen)
+  local lines = {}
+  for raw in screen:gmatch("[^\r\n]*") do lines[#lines + 1] = visible(raw) end
+  local at, mark
+  for i, line in ipairs(lines) do
+    if line:match("^%s*❯") then at, mark = i, "❯" elseif line:match("^%s*›") then at, mark = i, "›" end
+  end
+  if not at then return false end
+  if lines[at]:match("^%s*" .. mark .. "(.*)$"):match("%S") then return true end
+  for i = at + 1, #lines do
+    local line = lines[i]
+    if line:match("^%s*─") then return false end
+    if mark == "›" and not line:match("%S") then return false end
+    if line:match("%S") then return true end
+  end
+  return false
+end
+
+function lib.input_pending(session, block)
   local r = rex.exec({ "rex", "capture", "-s", session, "-b", block, "--format=vt" })
   if not (r and r.ok) then return false end
-  local last
-  for raw in r.stdout:gmatch("[^\r\n]+") do
-    local line = raw:gsub("\27%[2m.-\27%[[02]*m", ""):gsub("\27%[[%d;?]*[%a@]", "")
-    local rest = line:match("^%s*❯(.*)$") or line:match("^%s*›(.*)$")
-    if rest then last = rest:gsub("\194\160", " ") end -- Claude Code pads the prompt with NBSP
-  end
-  return last ~= nil and last:match("%S") ~= nil
+  return lib.input_has_text(r.stdout)
 end
 
 -- Single quotes keep every character literal in POSIX shells.
